@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trang cá nhân – VIAi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #1A56DB; --primary-dark: #1040B0; --primary-light: #4B82F4;
+      --accent: #FF6B00; --green: #00B341; --red: #E52222;
+      --gray-50: #F4F7FF; --gray-100: #DBEAFE; --gray-600: #1E3A8A; --gray-900: #0F172A;
+    }
+    body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); color: var(--gray-900); min-height: 100vh; }
+    a { text-decoration: none; color: inherit; }
+
+    /* Header */
+    .header {
+      background: white; border-bottom: 2px solid var(--primary);
+      box-shadow: 0 2px 12px rgba(26,86,219,0.08);
+      padding: 0 24px; height: 70px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 99;
+    }
+    .header-logo { font-size: 1.4rem; font-weight: 900; color: var(--primary); }
+    .header-logo em { color: var(--accent); font-style: normal; }
+    .header-back {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.85rem; font-weight: 600; color: var(--gray-600);
+      padding: 8px 16px; border-radius: 8px; border: 1.5px solid var(--gray-100);
+      transition: all 0.2s;
+    }
+    .header-back:hover { background: var(--gray-50); color: var(--primary); }
+
+    /* Layout */
+    .page-wrap { max-width: 900px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 280px 1fr; gap: 28px; }
+
+    /* Sidebar */
+    .profile-sidebar {
+      background: white; border-radius: 20px; padding: 32px 24px;
+      border: 1px solid #e8eef8; box-shadow: 0 4px 16px rgba(26,86,219,0.06);
+      height: fit-content;
+    }
+    .avatar-wrap { text-align: center; margin-bottom: 20px; }
+    .avatar {
+      width: 90px; height: 90px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white; font-size: 2rem; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 12px;
+    }
+    .profile-name { font-size: 1.1rem; font-weight: 800; color: var(--gray-900); }
+    .profile-email { font-size: 0.82rem; color: #64748b; margin-top: 4px; }
+    .profile-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 10px; background: #FFF3EC; color: var(--accent);
+      padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;
+    }
+    .sidebar-nav { margin-top: 24px; display: flex; flex-direction: column; gap: 4px; }
+    .snav-item {
+      display: flex; align-items: center; gap: 10px; padding: 11px 14px;
+      border-radius: 10px; font-size: 0.87rem; font-weight: 600;
+      color: #64748b; cursor: pointer; transition: all 0.2s;
+    }
+    .snav-item:hover { background: var(--gray-50); color: var(--primary); }
+    .snav-item.active { background: #FFF3EC; color: var(--accent); }
+    .btn-logout-side {
+      margin-top: 20px; width: 100%; padding: 10px; border-radius: 10px;
+      border: 1.5px solid #fee2e2; background: none; color: var(--red);
+      font-family: inherit; font-size: 0.85rem; font-weight: 700;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-logout-side:hover { background: #fee2e2; }
+
+    /* Main content */
+    .profile-main { display: flex; flex-direction: column; gap: 24px; }
+    .card {
+      background: white; border-radius: 20px; padding: 28px;
+      border: 1px solid #e8eef8; box-shadow: 0 4px 16px rgba(26,86,219,0.06);
+    }
+    .card-title { font-size: 1rem; font-weight: 800; color: var(--gray-900); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .field { margin-bottom: 0; }
+    .field label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--gray-600); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
+    .field input {
+      width: 100%; padding: 11px 14px; border: 1.5px solid #e2e8f0;
+      border-radius: 10px; font-family: inherit; font-size: 0.9rem; outline: none;
+      transition: all 0.2s; background: #F9FAFB;
+    }
+    .field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,107,0,0.1); background: white; }
+    .field input:disabled { background: #F8FAFF; color: #94a3b8; }
+    .btn-save {
+      padding: 11px 28px; background: var(--accent); color: white; border: none;
+      border-radius: 10px; font-family: inherit; font-size: 0.9rem; font-weight: 700;
+      cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(255,107,0,0.3);
+    }
+    .btn-save:hover { background: #D95800; transform: translateY(-1px); }
+    .alert { padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; margin-top: 14px; display: none; }
+    .alert-ok  { background: #dcfce7; color: #16a34a; }
+    .alert-err { background: #fee2e2; color: var(--red); }
+
+    /* Stats */
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .stat-box { background: var(--gray-50); border-radius: 14px; padding: 20px; text-align: center; }
+    .stat-num { font-size: 1.8rem; font-weight: 900; color: var(--primary); }
+    .stat-label { font-size: 0.78rem; color: #64748b; margin-top: 4px; font-weight: 600; }
+
+    /* CTA trial */
+    .trial-cta {
+      background: linear-gradient(135deg, #0F172A, #1A56DB 60%, #FF6B00);
+      border-radius: 16px; padding: 28px; color: white; text-align: center;
+    }
+    .trial-cta h3 { font-size: 1.1rem; font-weight: 900; margin-bottom: 8px; }
+    .trial-cta p { font-size: 0.85rem; opacity: 0.8; margin-bottom: 16px; }
+    .btn-trial {
+      padding: 12px 28px; background: var(--accent); color: white; border: none;
+      border-radius: 10px; font-family: inherit; font-size: 0.9rem; font-weight: 800;
+      cursor: pointer; box-shadow: 0 4px 16px rgba(255,107,0,0.4); transition: all 0.2s;
+    }
+    .btn-trial:hover { background: #D95800; transform: translateY(-1px); }
+
+    @media (max-width: 768px) {
+      .page-wrap { grid-template-columns: 1fr; }
+      .field-row { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <a href="home.html" class="header-logo">VI<em>Ai</em></a>
+    <a href="home.html" class="header-back">← Về trang chủ</a>
+  </header>
+
+  <div class="page-wrap">
+
+    <!-- SIDEBAR -->
+    <aside class="profile-sidebar">
+      <div class="avatar-wrap">
+        <div class="avatar" id="p-avatar">?</div>
+        <div class="profile-name" id="p-name">Đang tải...</div>
+        <div class="profile-email" id="p-contact">—</div>
+        <div class="profile-badge">🚀 Thành viên VIAi</div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="snav-item active" onclick="showSection('info')">👤 Thông tin cá nhân</div>
+        <div class="snav-item" onclick="showSection('security')">🔒 Đổi mật khẩu</div>
+      </nav>
+      <button class="btn-logout-side" onclick="logout()">🚪 Đăng xuất</button>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="profile-main">
+
+      <!-- Thống kê -->
+      <div class="card">
+        <div class="stats-row">
+          <div class="stat-box"><div class="stat-num" id="days-count">—</div><div class="stat-label">Ngày đã tham gia</div></div>
+          <div class="stat-box"><div class="stat-num">14</div><div class="stat-label">Ngày dùng thử còn lại</div></div>
+          <div class="stat-box"><div class="stat-num">0</div><div class="stat-label">AI Agent đang chạy</div></div>
+        </div>
+      </div>
+
+      <!-- Thông tin cá nhân -->
+      <div class="card" id="section-info">
+        <div class="card-title">👤 Thông tin cá nhân</div>
+        <div class="field-row">
+          <div class="field"><label>Họ và tên</label><input id="p-name-input" type="text" /></div>
+          <div class="field"><label>Số điện thoại</label><input id="p-phone" type="tel" /></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Email</label><input id="p-email" type="email" /></div>
+          <div class="field"><label>Ngày đăng ký</label><input id="p-created" type="text" disabled /></div>
+        </div>
+        <div style="margin-top:20px;display:flex;align-items:center;gap:12px">
+          <button class="btn-save" onclick="saveProfile()">Lưu thay đổi</button>
+          <div class="alert alert-ok" id="info-ok">✅ Đã lưu thành công</div>
+          <div class="alert alert-err" id="info-err"></div>
+        </div>
+      </div>
+
+      <!-- Đổi mật khẩu -->
+      <div class="card" id="section-security" style="display:none">
+        <div class="card-title">🔒 Đổi mật khẩu</div>
+        <div class="field" style="margin-bottom:16px"><label>Mật khẩu hiện tại</label><input id="pw-old" type="password" placeholder="••••••••" /></div>
+        <div class="field" style="margin-bottom:16px"><label>Mật khẩu mới</label><input id="pw-new" type="password" placeholder="Tối thiểu 6 ký tự" /></div>
+        <div class="field" style="margin-bottom:20px"><label>Xác nhận mật khẩu mới</label><input id="pw-confirm" type="password" placeholder="Nhập lại mật khẩu mới" /></div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <button class="btn-save" onclick="changePassword()">Đổi mật khẩu</button>
+          <div class="alert alert-ok" id="pw-ok">✅ Đổi mật khẩu thành công</div>
+          <div class="alert alert-err" id="pw-err"></div>
+        </div>
+      </div>
+
+      <!-- CTA dùng thử -->
+      <div class="trial-cta">
+        <h3>🚀 Bắt đầu trải nghiệm VIAi ngay hôm nay</h3>
+        <p>Kích hoạt AI Agent đầu tiên của bạn – triển khai trong 24 giờ</p>
+        <button class="btn-trial" onclick="window.location.href='dung-thu.html'">Kích hoạt dùng thử miễn phí →</button>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('user_token');
+    const name  = localStorage.getItem('user_name');
+
+    if (!token) { window.location.href = '/login.html'; }
+
+    // Hiển thị thông tin từ localStorage
+    function initProfile() {
+      const initials = (name||'U').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      document.getElementById('p-avatar').textContent = initials;
+      document.getElementById('p-name').textContent   = name || '—';
+      document.getElementById('p-name-input').value   = name || '';
+
+      // Tính ngày tham gia từ JWT
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const joined  = new Date(payload.iat * 1000);
+        const days    = Math.floor((Date.now() - joined) / 86400000);
+        document.getElementById('days-count').textContent  = days || 1;
+        document.getElementById('p-created').value = joined.toLocaleDateString('vi-VN');
+      } catch {}
+    }
+    initProfile();
+
+    // Load thêm thông tin từ server nếu cần
+    async function loadUserInfo() {
+      try {
+        const r = await fetch('/api/auth/me', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!r.ok) return;
+        const u = await r.json();
+        document.getElementById('p-phone').value = u.phone || '';
+        document.getElementById('p-email').value = u.email || '';
+        document.getElementById('p-contact').textContent = u.phone || u.email || '—';
+        document.getElementById('p-name').textContent    = u.name;
+        document.getElementById('p-name-input').value    = u.name;
+        const initials = u.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+        document.getElementById('p-avatar').textContent  = initials;
+      } catch {}
+    }
+    loadUserInfo();
+
+    function showSection(s) {
+      document.getElementById('section-info').style.display     = s==='info'     ? '' : 'none';
+      document.getElementById('section-security').style.display = s==='security' ? '' : 'none';
+      document.querySelectorAll('.snav-item').forEach((el,i) => {
+        el.classList.toggle('active', (i===0&&s==='info')||(i===1&&s==='security'));
+      });
+    }
+
+    async function saveProfile() {
+      const name  = document.getElementById('p-name-input').value.trim();
+      const phone = document.getElementById('p-phone').value.trim();
+      const email = document.getElementById('p-email').value.trim();
+      const okEl  = document.getElementById('info-ok');
+      const errEl = document.getElementById('info-err');
+      okEl.style.display = 'none'; errEl.style.display = 'none';
+
+      if (!name) { errEl.style.display='block'; errEl.textContent='⚠️ Tên không được để trống'; return; }
+      try {
+        const r = await fetch('/api/auth/update', {
+          method: 'PUT',
+          headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${token}` },
+          body: JSON.stringify({ name, phone, email })
+        });
+        if (r.ok) {
+          localStorage.setItem('user_name', name);
+          okEl.style.display = 'block';
+          setTimeout(() => okEl.style.display='none', 3000);
+        } else {
+          const d = await r.json();
+          errEl.style.display='block'; errEl.textContent='❌ '+d.error;
+        }
+      } catch { errEl.style.display='block'; errEl.textContent='❌ Lỗi kết nối'; }
+    }
+
+    async function changePassword() {
+      const oldPw  = document.getElementById('pw-old').value;
+      const newPw  = document.getElementById('pw-new').value;
+      const confirm= document.getElementById('pw-confirm').value;
+      const okEl   = document.getElementById('pw-ok');
+      const errEl  = document.getElementById('pw-err');
+      okEl.style.display='none'; errEl.style.display='none';
+
+      if (!oldPw||!newPw||!confirm) { errEl.style.display='block'; errEl.textContent='⚠️ Vui lòng điền đầy đủ'; return; }
+      if (newPw !== confirm)         { errEl.style.display='block'; errEl.textContent='⚠️ Mật khẩu xác nhận không khớp'; return; }
+      if (newPw.length < 6)          { errEl.style.display='block'; errEl.textContent='⚠️ Mật khẩu mới phải có ít nhất 6 ký tự'; return; }
+      try {
+        const r = await fetch('/api/auth/change-password', {
+          method:'PUT',
+          headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+          body: JSON.stringify({ oldPassword: oldPw, newPassword: newPw })
+        });
+        if (r.ok) {
+          okEl.style.display='block';
+          document.getElementById('pw-old').value='';
+          document.getElementById('pw-new').value='';
+          document.getElementById('pw-confirm').value='';
+          setTimeout(()=>okEl.style.display='none',3000);
+        } else {
+          const d = await r.json();
+          errEl.style.display='block'; errEl.textContent='❌ '+d.error;
+        }
+      } catch { errEl.style.display='block'; errEl.textContent='❌ Lỗi kết nối'; }
+    }
+
+    function logout() {
+      localStorage.removeItem('user_token');
+      localStorage.removeItem('user_name');
+      window.location.href = '/home.html';
+    }
+  </script>
+</body>
+</html>

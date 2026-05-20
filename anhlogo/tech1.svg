@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <defs>
+    <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F172A"/>
+      <stop offset="100%" style="stop-color:#1A56DB"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4B82F4;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#1A56DB;stop-opacity:1"/>
+    </linearGradient>
+    <filter id="blur1">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="glow-filter">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="400" fill="url(#bg1)" rx="0"/>
+
+  <!-- Background circles -->
+  <circle cx="500" cy="80" r="120" fill="#1A56DB" opacity="0.25"/>
+  <circle cx="80" cy="340" r="100" fill="#4B82F4" opacity="0.15"/>
+  <circle cx="300" cy="200" r="160" fill="#1040B0" opacity="0.20"/>
+
+  <!-- Grid dots -->
+  <g opacity="0.15" fill="#4B82F4">
+    <circle cx="60" cy="60" r="2"/><circle cx="120" cy="60" r="2"/><circle cx="180" cy="60" r="2"/><circle cx="240" cy="60" r="2"/>
+    <circle cx="60" cy="120" r="2"/><circle cx="120" cy="120" r="2"/><circle cx="180" cy="120" r="2"/><circle cx="240" cy="120" r="2"/>
+    <circle cx="360" cy="300" r="2"/><circle cx="420" cy="300" r="2"/><circle cx="480" cy="300" r="2"/><circle cx="540" cy="300" r="2"/>
+    <circle cx="360" cy="360" r="2"/><circle cx="420" cy="360" r="2"/><circle cx="480" cy="360" r="2"/><circle cx="540" cy="360" r="2"/>
+  </g>
+
+  <!-- Central brain/circuit -->
+  <g transform="translate(300,200)" filter="url(#glow-filter)">
+    <!-- Outer ring -->
+    <circle r="90" fill="none" stroke="#4B82F4" stroke-width="1.5" stroke-dasharray="8 4" opacity="0.6">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="20s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Inner ring -->
+    <circle r="65" fill="none" stroke="#FFB800" stroke-width="1" stroke-dasharray="4 6" opacity="0.5">
+      <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="14s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Core -->
+    <circle r="44" fill="#1A56DB" opacity="0.9"/>
+    <circle r="44" fill="none" stroke="#4B82F4" stroke-width="2"/>
+
+    <!-- Brain icon simplified -->
+    <text x="0" y="12" text-anchor="middle" font-size="38" fill="white" opacity="0.95">🤖</text>
+
+    <!-- Orbit nodes -->
+    <g opacity="0.9">
+      <circle cx="90" cy="0" r="8" fill="#FFB800"/>
+      <circle cx="-90" cy="0" r="8" fill="#FF6B00"/>
+      <circle cx="0" cy="-90" r="8" fill="#4B82F4"/>
+      <circle cx="0" cy="90" r="8" fill="#00B341"/>
+      <circle cx="64" cy="64" r="6" fill="#FF6B00" opacity="0.7"/>
+      <circle cx="-64" cy="-64" r="6" fill="#FFB800" opacity="0.7"/>
+    </g>
+
+    <!-- Connection lines -->
+    <line x1="0" y1="0" x2="90" y2="0" stroke="#FFB800" stroke-width="1" opacity="0.4"/>
+    <line x1="0" y1="0" x2="-90" y2="0" stroke="#FF6B00" stroke-width="1" opacity="0.4"/>
+    <line x1="0" y1="0" x2="0" y2="-90" stroke="#4B82F4" stroke-width="1" opacity="0.4"/>
+    <line x1="0" y1="0" x2="0" y2="90" stroke="#00B341" stroke-width="1" opacity="0.4"/>
+  </g>
+
+  <!-- Data flow lines -->
+  <g opacity="0.35" stroke="#4B82F4" stroke-width="1.5" fill="none">
+    <path d="M0,150 Q100,100 210,200"/>
+    <path d="M600,250 Q500,200 390,200"/>
+    <path d="M150,400 Q200,320 210,200"/>
+    <path d="M450,400 Q400,320 390,200"/>
+  </g>
+
+  <!-- Labels -->
+  <g font-family="Arial, sans-serif" font-weight="700" fill="white">
+    <text x="300" y="355" text-anchor="middle" font-size="18" letter-spacing="2" opacity="0.95">AI AGENT ENGINE</text>
+    <text x="300" y="375" text-anchor="middle" font-size="11" fill="#4B82F4" letter-spacing="1" opacity="0.8">Xử lý ngôn ngữ tự nhiên thế hệ mới</text>
+  </g>
+
+  <!-- Corner badges -->
+  <g>
+    <rect x="20" y="20" width="90" height="26" rx="13" fill="#4B82F4" opacity="0.85"/>
+    <text x="65" y="37" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="white">VIAi Core AI</text>
+  </g>
+  <g>
+    <rect x="490" y="20" width="90" height="26" rx="13" fill="#FFB800" opacity="0.9"/>
+    <text x="535" y="37" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#0F172A">GPT-4 Level</text>
+  </g>
+</svg>

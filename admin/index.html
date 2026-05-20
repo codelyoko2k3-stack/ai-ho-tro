@@ -1,0 +1,2489 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VIAi CMS Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #1A56DB; --primary-dark: #1040B0; --primary-light: #EEF3FF;
+      --accent: #FF6B00; --accent-dark: #D95800; --accent-light: #FFF3EC;
+      --green: #00B341; --red: #E52222; --yellow: #FFB800;
+      --dark: #0F172A; --dark2: #152444;
+      --gray-50: #F8FAFF; --gray-100: #DBEAFE; --gray-300: #6B93E8;
+      --gray-600: #1E3A8A; --gray-900: #0F172A;
+      --sidebar-w: 220px;
+      --header-h: 48px;
+    }
+    body { font-family: 'Be Vietnam Pro', sans-serif; background: #F0F4FF; color: var(--gray-900); font-size: 13px; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── LOGIN ─────────────────────────────────────────── */
+    #login-screen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #0F172A 0%, #1A56DB 55%, #FF6B00 100%);
+    }
+    .login-box {
+      background: white; border-radius: 24px; padding: 48px 40px;
+      width: 380px; box-shadow: 0 32px 80px rgba(0,0,0,0.35);
+      border-top: 4px solid var(--accent);
+    }
+    .login-logo { font-size: 2rem; font-weight: 900; color: var(--primary); margin-bottom: 8px; }
+    .login-logo em { color: var(--accent); font-style: normal; }
+    .login-sub { font-size: 0.85rem; color: #64748b; margin-bottom: 32px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 700; color: var(--gray-600); margin-bottom: 6px; }
+    .form-group input {
+      width: 100%; padding: 11px 14px; border: 1.5px solid #e2e8f0;
+      border-radius: 10px; font-family: inherit; font-size: 0.9rem; outline: none; transition: border-color 0.2s;
+    }
+    .form-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,107,0,0.1); }
+    .btn-login-submit {
+      width: 100%; padding: 13px; background: var(--accent); color: white;
+      border: none; border-radius: 10px; font-family: inherit; font-size: 0.95rem;
+      font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px rgba(255,107,0,0.35);
+    }
+    .btn-login-submit:hover { background: var(--accent-dark); transform: translateY(-1px); }
+    .login-error { color: var(--red); font-size: 0.82rem; margin-top: 12px; text-align: center; }
+
+    /* ── APP SHELL ─────────────────────────────────────── */
+    #app { display: none; }
+
+    /* ── TOP HEADER ────────────────────────────────────── */
+    .top-header {
+      position: fixed; top: 0; left: 0; right: 0; height: var(--header-h);
+      background: var(--dark);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 16px;
+      z-index: 300;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header-logo {
+      font-size: 1.3rem; font-weight: 900; color: white;
+      padding: 4px 14px 4px 10px;
+      border-right: 1px solid rgba(255,255,255,0.15);
+      margin-right: 4px;
+    }
+    .header-logo em { color: var(--accent); font-style: normal; }
+    .hamburger {
+      background: none; border: none; color: rgba(255,255,255,0.8);
+      font-size: 16px; cursor: pointer; padding: 6px 8px; border-radius: 4px;
+      transition: background 0.15s;
+    }
+    .hamburger:hover { background: rgba(255,255,255,0.1); }
+    .header-breadcrumb {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: rgba(255,255,255,0.5);
+    }
+    .header-breadcrumb .bc-sep { color: rgba(255,255,255,0.3); }
+    .header-breadcrumb .bc-current { color: rgba(255,255,255,0.85); font-weight: 600; }
+    .header-right { display: flex; align-items: center; gap: 10px; color: rgba(255,255,255,0.75); font-size: 12px; }
+    .header-right i { font-size: 20px; }
+    .btn-header-logout {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.7); padding: 4px 10px; border-radius: 4px;
+      font-size: 11px; cursor: pointer; font-family: inherit; transition: all 0.15s;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .btn-header-logout:hover { background: rgba(229,34,34,0.25); color: #ff8080; border-color: rgba(229,34,34,0.3); }
+
+    /* ── LAYOUT ────────────────────────────────────────── */
+    .layout { display: flex; margin-top: var(--header-h); min-height: calc(100vh - var(--header-h)); }
+
+    /* ── SIDEBAR ───────────────────────────────────────── */
+    .sidebar {
+      width: var(--sidebar-w); flex-shrink: 0;
+      background: linear-gradient(180deg, var(--dark) 0%, #1a3358 100%);
+      position: fixed; top: var(--header-h); left: 0; bottom: 0;
+      overflow-y: auto; display: flex; flex-direction: column;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      transition: transform 0.25s ease;
+      z-index: 200;
+    }
+    .sidebar.collapsed { transform: translateX(calc(-1 * var(--sidebar-w))); }
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+    .sidebar-user {
+      padding: 14px 12px; display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,107,0,0.1);
+    }
+    .sidebar-avatar {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--accent), #FFB800);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 800; font-size: 14px; flex-shrink: 0;
+    }
+    .sidebar-username { color: white; font-weight: 700; font-size: 13px; }
+    .sidebar-status { font-size: 10px; color: #2ecc71; display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+    .sidebar-status::before { content: '●'; font-size: 7px; }
+
+    .nav-section-label {
+      padding: 12px 12px 4px;
+      font-size: 9.5px; color: rgba(255,255,255,0.3);
+      text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700;
+    }
+
+    .nav-group-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 12px; cursor: pointer;
+      color: rgba(255,255,255,0.55);
+      border-left: 3px solid transparent;
+      user-select: none; transition: background 0.15s;
+      font-size: 11px; font-weight: 700;
+    }
+    .nav-group-header:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85); }
+    .nav-group-header.open { background: rgba(26,86,219,0.15); color: rgba(255,255,255,0.9); border-left-color: var(--primary); }
+    .nav-group-header-left { display: flex; align-items: center; gap: 8px; }
+    .nav-group-header-left i { font-size: 12px; width: 16px; }
+    .nav-chevron { font-size: 9px; transition: transform 0.2s; color: rgba(255,255,255,0.3); }
+    .nav-chevron.rotated { transform: rotate(180deg); }
+
+    .nav-submenu { display: none; background: rgba(0,0,0,0.12); }
+    .nav-submenu.open { display: block; }
+
+    .nav-sub-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px 8px 26px;
+      color: rgba(255,255,255,0.5); cursor: pointer;
+      font-size: 12px; font-weight: 500;
+      border-left: 3px solid transparent;
+      transition: background 0.15s;
+    }
+    .nav-sub-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85); }
+    .nav-sub-item.active {
+      background: rgba(26,86,219,0.25); color: white;
+      border-left-color: var(--accent); font-weight: 700;
+    }
+    .nav-sub-item i { font-size: 11px; width: 14px; }
+
+    /* ── MAIN ──────────────────────────────────────────── */
+    .main {
+      flex: 1; margin-left: var(--sidebar-w);
+      display: flex; flex-direction: column;
+      min-height: 100%; transition: margin-left 0.25s ease;
+      background: #F0F4FF;
+    }
+    .main.expanded { margin-left: 0; }
+
+    .content-topbar {
+      background: white; padding: 10px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-shrink: 0; position: sticky; top: var(--header-h); z-index: 100;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .content-title { font-size: 16px; font-weight: 800; color: var(--gray-900); }
+    .breadcrumb-inner { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #94a3b8; }
+    .breadcrumb-inner i { font-size: 10px; }
+    .breadcrumb-inner span { color: var(--primary); font-weight: 600; }
+
+    .content-body { padding: 16px 20px; flex: 1; }
+    .page-subtitle { font-size: 12px; color: #64748b; margin-bottom: 12px; }
+
+    /* ── FILTER BAR ────────────────────────────────────── */
+    .filter-bar {
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 12px; flex-wrap: wrap;
+      background: white; padding: 10px 14px;
+      border-radius: 10px; border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .filter-bar input[type="text"] {
+      border: 1px solid #e2e8f0; padding: 5px 10px; border-radius: 6px;
+      font-size: 12px; font-family: inherit; outline: none;
+      width: 200px; height: 30px; color: #555;
+      transition: border-color 0.15s;
+    }
+    .filter-bar input[type="text"]:focus { border-color: var(--primary); }
+    .filter-bar select {
+      border: 1px solid #e2e8f0; padding: 5px 8px; border-radius: 6px;
+      font-size: 12px; font-family: inherit; outline: none;
+      height: 30px; background: white; color: #555;
+    }
+    .filter-bar select:focus { border-color: var(--primary); }
+    .filter-count { font-size: 12px; color: #94a3b8; margin-left: 4px; }
+
+    .btn { height: 30px; padding: 0 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; gap: 5px; font-family: inherit; transition: background 0.15s; font-weight: 600; }
+    .btn-refresh { background: white; border: 1px solid #e2e8f0; color: #64748b; }
+    .btn-refresh:hover { background: #f8faff; border-color: var(--primary); color: var(--primary); }
+    .btn-add-bar { background: var(--accent); color: white; height: 30px; padding: 0 14px; margin-left: auto; box-shadow: 0 2px 8px rgba(255,107,0,0.25); }
+    .btn-add-bar:hover { background: var(--accent-dark); }
+    .btn-export { background: var(--green); color: white; height: 30px; padding: 0 14px; margin-left: auto; box-shadow: 0 2px 8px rgba(0,179,65,0.25); }
+    .btn-export:hover { background: #009c39; }
+
+    /* ── TABLE ─────────────────────────────────────────── */
+    .table-wrap {
+      background: white; border-radius: 10px; border: 1px solid #e2e8f0;
+      overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      background: linear-gradient(135deg, #1A56DB, #2563eb);
+      color: white; padding: 10px 12px; text-align: left;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; border: none; white-space: nowrap;
+    }
+    thead th:first-child { border-radius: 0; }
+    tbody tr { border-bottom: 1px solid #f1f5f9; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover td { background: #FFF8F5; }
+    td { padding: 10px 12px; font-size: 12px; color: #444; vertical-align: middle; }
+
+    .badge {
+      display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    }
+    .badge-hot    { background: var(--accent); color: white; }
+    .badge-pop    { background: var(--primary); color: white; }
+    .badge-new    { background: var(--green); color: white; }
+    .badge-beta   { background: var(--yellow); color: #333; }
+    .badge-active { background: #dcfce7; color: #16a34a; }
+    .badge-inactive { background: #fee2e2; color: var(--red); }
+
+    .actions { display: flex; gap: 5px; }
+    .btn-edit, .btn-del {
+      padding: 4px 10px; border-radius: 5px; font-family: inherit; font-size: 11px;
+      font-weight: 600; cursor: pointer; border: none; transition: all 0.15s;
+    }
+    .btn-edit { background: #EEF3FF; color: var(--primary); }
+    .btn-edit:hover { background: var(--primary); color: white; }
+    .btn-del  { background: #fee2e2; color: var(--red); }
+    .btn-del:hover  { background: var(--red); color: white; }
+
+    .empty-row td { text-align: center; color: #94a3b8; padding: 36px; font-size: 13px; }
+
+    /* ── CUSTOMER TABS ─────────────────────────────────── */
+    .ctab-row {
+      display: flex; gap: 0; margin-bottom: 14px;
+      border-radius: 8px; overflow: hidden;
+      border: 1.5px solid #e2e8f0; width: fit-content;
+    }
+    .ctab-btn {
+      padding: 8px 20px; border: none; font-family: inherit;
+      font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.15s;
+    }
+
+    /* ── MODAL ─────────────────────────────────────────── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(15,23,42,0.7); z-index: 999;
+      align-items: center; justify-content: center; backdrop-filter: blur(6px);
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: white; border-radius: 20px; padding: 36px; width: 540px;
+      max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+      border-top: 4px solid var(--accent);
+    }
+    .modal-title { font-size: 1.1rem; font-weight: 900; color: var(--gray-900); margin-bottom: 24px; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--gray-600); margin-bottom: 6px; }
+    .field input, .field textarea, .field select {
+      width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0;
+      border-radius: 10px; font-family: inherit; font-size: 0.88rem; outline: none;
+      transition: all 0.2s; background: white;
+    }
+    .field input:focus, .field textarea:focus, .field select:focus {
+      border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,107,0,0.1);
+    }
+    .field textarea { resize: vertical; min-height: 80px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+    .btn-save {
+      padding: 10px 24px; background: var(--accent); color: white; border: none;
+      border-radius: 10px; font-family: inherit; font-size: 0.9rem; font-weight: 700;
+      cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(255,107,0,0.3);
+    }
+    .btn-save:hover { background: var(--accent-dark); transform: translateY(-1px); }
+    .btn-cancel {
+      padding: 10px 20px; background: #f1f5f9; color: #64748b; border: 1.5px solid #e2e8f0;
+      border-radius: 10px; font-family: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-cancel:hover { background: #e2e8f0; }
+
+    .field input.error, .field textarea.error { border-color: var(--red) !important; box-shadow: 0 0 0 3px rgba(229,34,34,0.1) !important; }
+    .field-error { color: var(--red); font-size: 0.75rem; margin-top: 4px; font-weight: 600; }
+
+    /* ── TOAST ─────────────────────────────────────────── */
+    /* ── Rich text toolbar ────────────────────────────── */
+    .tb-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px; border: 1px solid transparent;
+      border-radius: 4px; background: transparent; cursor: pointer;
+      font-size: 12px; color: #374151; transition: all 0.12s;
+      font-family: inherit; flex-shrink: 0;
+    }
+    .tb-btn:hover { background: #EEF3FF; border-color: #c7d9f5; color: var(--primary); }
+    .tb-btn:active { background: #DBEAFE; }
+    [contenteditable][data-placeholder]:empty::before {
+      content: attr(data-placeholder); color: #adb5c0; pointer-events: none;
+    }
+
+    .toast {
+      position: fixed; bottom: 28px; right: 28px;
+      background: linear-gradient(135deg, var(--accent), #FF8C38); color: white;
+      padding: 11px 20px; border-radius: 10px; font-size: 13px; font-weight: 700;
+      opacity: 0; transform: translateY(10px); transition: all 0.3s; pointer-events: none;
+      z-index: 9999; box-shadow: 0 8px 24px rgba(255,107,0,0.35);
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    .seo-layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 390px) minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .seo-panel {
+      background: white;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 18px;
+    }
+    .seo-panel-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #0F172A;
+      margin-bottom: 14px;
+    }
+    .seo-panel-title i { color: var(--primary); }
+    .seo-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .seo-actions .btn { height: 38px; }
+    .seo-output {
+      width: 100%;
+      min-height: 560px;
+      resize: vertical;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      font-family: "Be Vietnam Pro", sans-serif;
+      font-size: 0.88rem;
+      line-height: 1.75;
+      color: #0F172A;
+      background: #fbfdff;
+      outline: none;
+      white-space: pre-wrap;
+    }
+    .seo-output:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(255,107,0,0.1);
+    }
+    .seo-preview {
+      width: 100%;
+      min-height: 560px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 18px;
+      background: #fbfdff;
+      overflow: auto;
+      max-height: 720px;
+    }
+    .seo-empty {
+      color: #94a3b8;
+      font-size: 0.88rem;
+      padding: 40px 0;
+      text-align: center;
+    }
+    .draft-meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .draft-meta-item {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.78rem;
+      color: #475569;
+      overflow-wrap: anywhere;
+    }
+    .draft-meta-item strong {
+      display: block;
+      color: #1A56DB;
+      font-size: 0.72rem;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+    }
+    .draft-title {
+      font-size: 1.25rem;
+      line-height: 1.35;
+      font-weight: 900;
+      color: #0F172A;
+      margin-bottom: 10px;
+    }
+    .draft-excerpt {
+      background: #EEF3FF;
+      border-left: 4px solid var(--primary);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 12px;
+      color: #1E3A8A;
+      font-size: 0.86rem;
+      line-height: 1.65;
+      margin-bottom: 14px;
+    }
+    .draft-content {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+      white-space: pre-wrap;
+      font-size: 0.86rem;
+      line-height: 1.75;
+      color: #334155;
+    }
+    .draft-faq {
+      margin-top: 14px;
+    }
+    .draft-faq-title {
+      font-size: 0.86rem;
+      font-weight: 800;
+      color: #0F172A;
+      margin-bottom: 8px;
+    }
+    .draft-faq-item {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 9px 10px;
+      margin-bottom: 8px;
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+    .seo-hint {
+      font-size: 0.78rem;
+      color: #64748b;
+      line-height: 1.6;
+      margin-top: 10px;
+    }
+    @media (max-width: 980px) {
+      .seo-layout { grid-template-columns: 1fr; }
+      .seo-output { min-height: 360px; }
+      .seo-preview { min-height: 360px; }
+      .draft-meta { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">VI<em>Ai</em></div>
+    <div class="login-sub">CMS Admin Dashboard</div>
+    <div class="form-group">
+      <label>Tên đăng nhập</label>
+      <input id="inp-user" type="text" placeholder="admin" />
+    </div>
+    <div class="form-group">
+      <label>Mật khẩu</label>
+      <input id="inp-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()" />
+    </div>
+    <button class="btn-login-submit" onclick="doLogin()">Đăng nhập</button>
+    <div class="login-error" id="login-err"></div>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app">
+
+  <!-- TOP HEADER -->
+  <header class="top-header">
+    <div class="header-left">
+      <div class="header-logo">VI<em>Ai</em></div>
+      <button class="hamburger" onclick="toggleSidebar()" title="Ẩn/hiện menu">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="header-breadcrumb">
+        <i class="fas fa-home"></i>
+        <span class="bc-sep">›</span>
+        <span>Admin</span>
+        <span class="bc-sep">›</span>
+        <span class="bc-current" id="bc-current">Sản phẩm / Agent</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <i class="fas fa-user-circle"></i>
+      <span>Admin</span>
+      <button class="btn-header-logout" onclick="doLogout()">
+        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+      </button>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">A</div>
+        <div>
+          <div class="sidebar-username">Admin</div>
+          <div class="sidebar-status">Online</div>
+        </div>
+      </div>
+
+      <!-- GROUP: NỘI DUNG -->
+      <div class="nav-section-label">Quản lý</div>
+      <div class="nav-group-header open" onclick="toggleNav(this)">
+        <div class="nav-group-header-left"><i class="fas fa-edit"></i> NỘI DUNG TRANG</div>
+        <i class="fas fa-chevron-down nav-chevron rotated"></i>
+      </div>
+      <div class="nav-submenu open">
+        <a class="nav-sub-item active" onclick="showPage('products',this,'Sản phẩm / Agent')">
+          <i class="fas fa-robot"></i> Sản phẩm / Agent
+        </a>
+        <a class="nav-sub-item" onclick="showPage('news',this,'Tin tức / Blog')">
+          <i class="fas fa-newspaper"></i> Tin tức / Blog
+        </a>
+        <a class="nav-sub-item" onclick="showPage('seo',this,'AI SEO Đăng bài')">
+          <i class="fas fa-wand-magic-sparkles"></i> AI SEO Đăng bài
+        </a>
+        <a class="nav-sub-item" onclick="showPage('blog-posts',this,'Bài viết Blog')">
+          <i class="fas fa-file-alt"></i> Bài viết Blog
+        </a>
+        <a class="nav-sub-item" onclick="showPage('why',this,'Lý do chọn VIAi')">
+          <i class="fas fa-check-circle"></i> Lý do chọn VIAi
+        </a>
+        <a class="nav-sub-item" onclick="showPage('how',this,'Các bước triển khai')">
+          <i class="fas fa-list-ol"></i> Các bước triển khai
+        </a>
+        <a class="nav-sub-item" onclick="showPage('tech',this,'Công nghệ')">
+          <i class="fas fa-microchip"></i> Công nghệ
+        </a>
+        <a class="nav-sub-item" onclick="showPage('gallery',this,'Thư viện ảnh')">
+          <i class="fas fa-images"></i> Thư viện ảnh
+        </a>
+      </div>
+
+      <!-- GROUP: KHÁCH HÀNG -->
+      <div class="nav-group-header" onclick="toggleNav(this)">
+        <div class="nav-group-header-left"><i class="fas fa-users"></i> KHÁCH HÀNG</div>
+        <i class="fas fa-chevron-right nav-chevron"></i>
+      </div>
+      <div class="nav-submenu">
+        <a class="nav-sub-item" onclick="showPage('customers',this,'Khách hàng & Liên hệ')">
+          <i class="fas fa-user-friends"></i> Khách hàng & Liên hệ
+        </a>
+      </div>
+
+      <!-- GROUP: HỆ THỐNG -->
+      <div class="nav-group-header" onclick="toggleNav(this)">
+        <div class="nav-group-header-left"><i class="fas fa-tools"></i> HỆ THỐNG</div>
+        <i class="fas fa-chevron-right nav-chevron"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="/home.html" target="_blank" class="nav-sub-item">
+          <i class="fas fa-external-link-alt"></i> Xem trang chủ
+        </a>
+        <a class="nav-sub-item" onclick="showPage('security',this,'Bảo mật')">
+          <i class="fas fa-shield-alt"></i> Bảo mật 2FA
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main" id="main-content">
+
+      <!-- ── PRODUCTS PAGE ── -->
+      <div id="page-products">
+        <div class="content-topbar">
+          <div class="content-title">Sản phẩm / AI Agent</div>
+          <div class="breadcrumb-inner">
+            <i class="fas fa-home"></i> › Nội dung › <span>Sản phẩm / Agent</span>
+          </div>
+        </div>
+        <div class="content-body">
+          <p class="page-subtitle">Quản lý danh sách AI Agent hiển thị trên trang chủ</p>
+          <div class="filter-bar">
+            <i class="fas fa-search" style="color:#94a3b8;font-size:12px"></i>
+            <input type="text" placeholder="Tìm theo tên Agent..." oninput="filterTable('prod-tbody',this.value)" />
+            <select onchange="filterTableByCol('prod-tbody',this.value,5)">
+              <option value="">Tất cả trạng thái</option>
+              <option value="Hiển thị">Hiển thị</option>
+              <option value="Ẩn">Ẩn</option>
+            </select>
+            <button class="btn btn-refresh" onclick="loadProducts()" title="Làm mới"><i class="fas fa-sync-alt"></i></button>
+            <span class="filter-count" id="prod-count"></span>
+            <button class="btn btn-add-bar" onclick="openProdModal()"><i class="fas fa-plus"></i> Thêm Agent</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Icon</th><th>Tên Agent</th><th>Danh mục</th>
+                  <th>Badge</th><th>Người dùng</th><th>Trạng thái</th><th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="prod-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── NEWS PAGE ── -->
+      <div id="page-news" style="display:none">
+        <div class="content-topbar">
+          <div class="content-title">Tin tức / Blog</div>
+          <div class="breadcrumb-inner">
+            <i class="fas fa-home"></i> › Nội dung › <span>Tin tức / Blog</span>
+          </div>
+        </div>
+        <div class="content-body">
+          <p class="page-subtitle">Quản lý bài báo và bài viết hiển thị trên trang chủ</p>
+          <div class="filter-bar">
+            <i class="fas fa-search" style="color:#94a3b8;font-size:12px"></i>
+            <input type="text" placeholder="Tìm theo tiêu đề..." oninput="filterTable('news-tbody',this.value)" />
+            <select onchange="filterTableByCol('news-tbody',this.value,3)">
+              <option value="">Tất cả trạng thái</option>
+              <option value="Hiển thị">Hiển thị</option>
+              <option value="Ẩn">Ẩn</option>
+            </select>
+            <button class="btn btn-refresh" onclick="loadNews()" title="Làm mới"><i class="fas fa-sync-alt"></i></button>
+            <span class="filter-count" id="news-count"></span>
+            <button class="btn btn-add-bar" onclick="openNewsModal()"><i class="fas fa-plus"></i> Thêm bài viết</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Tiêu đề</th><th>Nguồn</th><th>Ngày đăng</th><th>Trạng thái</th><th>Thao tác</th></tr>
+              </thead>
+              <tbody id="news-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── AI SEO ASSISTANT PAGE ── -->
+      <div id="page-seo" style="display:none">
+        <div class="content-topbar">
+          <div class="content-title">AI SEO Đăng bài</div>
+          <div class="breadcrumb-inner">
+            <i class="fas fa-home"></i> › Nội dung › <span>AI SEO Đăng bài</span>
+          </div>
+        </div>
+        <div class="content-body">
+          <p class="page-subtitle">Nhập yêu cầu, để AI tạo bản nháp đầy đủ, xem lại rồi bấm đăng bài</p>
+
+          <div class="seo-layout">
+            <div class="seo-panel">
+              <div class="seo-panel-title"><i class="fas fa-wand-magic-sparkles"></i> Yêu cầu cho AI</div>
+
+              <div class="field">
+                <label>Chế độ</label>
+                <select id="seo-mode" disabled>
+                  <option value="generate">Viết bài SEO mới</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>Từ khóa chính</label>
+                <input id="seo-keyword" type="text" placeholder="VD: AI Agent cho doanh nghiệp" />
+              </div>
+
+              <div class="field">
+                <label>Chủ đề bài viết</label>
+                <input id="seo-topic" type="text" placeholder="VD: Ứng dụng AI Agent trong bán hàng" />
+              </div>
+
+              <div class="field">
+                <label>Đối tượng đọc</label>
+                <input id="seo-audience" type="text" value="chủ doanh nghiệp và đội ngũ marketing tại Việt Nam" />
+              </div>
+
+              <div class="field">
+                <label>Mục đích tìm kiếm</label>
+                <select id="seo-intent">
+                  <option value="tìm hiểu và cân nhắc giải pháp">Tìm hiểu / cân nhắc</option>
+                  <option value="so sánh giải pháp trước khi mua">So sánh trước khi mua</option>
+                  <option value="tìm nhà cung cấp để triển khai">Muốn triển khai</option>
+                  <option value="học kiến thức tổng quan">Học kiến thức</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>Giọng văn</label>
+                <select id="seo-tone">
+                  <option value="chuyên nghiệp, rõ ràng, dễ hiểu">Chuyên nghiệp</option>
+                  <option value="thân thiện, tư vấn như chuyên gia">Thân thiện tư vấn</option>
+                  <option value="ngắn gọn, thuyết phục, tập trung chuyển đổi">Tập trung chuyển đổi</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>Yêu cầu thêm cho AI</label>
+                <textarea id="seo-request" placeholder="VD: Viết theo hướng VIAi hỗ trợ chủ shop online chốt đơn nhanh hơn, có CTA đăng ký dùng thử..." style="min-height:120px"></textarea>
+              </div>
+
+              <div class="field">
+                <label>Ảnh thumbnail (tùy chọn)</label>
+                <div style="display:flex;gap:8px;margin-bottom:6px">
+                  <input id="seo-image-url" type="text" placeholder="URL ảnh, để trống sẽ dùng ảnh mặc định"
+                    oninput="updateSeoImgPreview(this.value)" />
+                  <label style="padding:8px 14px;background:#F0F7FF;border:1.5px solid #c7d9f5;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;color:#1A56DB;white-space:nowrap;display:flex;align-items:center;gap:5px;flex-shrink:0">
+                    <i class="fas fa-upload"></i> Upload
+                    <input type="file" id="seo-img-file" accept="image/*" style="display:none" onchange="uploadSeoImg(this)" />
+                  </label>
+                </div>
+                <div id="seo-img-preview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;max-height:100px;text-align:center;background:#f8faff">
+                  <img id="seo-img-preview-el" src="" alt="" style="max-height:100px;max-width:100%;object-fit:contain" />
+                </div>
+                <div id="seo-upload-status" style="font-size:11px;color:#64748b;margin-top:4px;display:none"></div>
+              </div>
+
+              <div class="seo-actions">
+                <button class="btn btn-add-bar" id="btn-seo-run" onclick="runSeoAssistant()">
+                  <i class="fas fa-robot"></i> Tạo bản nháp
+                </button>
+                <button class="btn btn-refresh" onclick="fillSeoFromNewsForm()" title="Lấy dữ liệu từ form bài viết">
+                  <i class="fas fa-file-import"></i>
+                </button>
+              </div>
+              <div class="seo-hint">AI sẽ tự tạo tiêu đề, slug, meta, tóm tắt, nội dung bài, FAQ và gợi ý ảnh. Bạn chỉ đăng khi đã xem ổn.</div>
+            </div>
+
+            <div class="seo-panel">
+              <div class="seo-panel-title"><i class="fas fa-list-check"></i> Bản nháp trước khi đăng</div>
+              <div id="seo-preview" class="seo-preview">
+                <div class="seo-empty">Bản nháp AI sẽ hiện ở đây sau khi bấm Tạo bản nháp.</div>
+              </div>
+              <textarea id="seo-output" class="seo-output" readonly style="display:none"></textarea>
+              <div class="seo-actions">
+                <button class="btn btn-export" id="btn-seo-publish" onclick="publishSeoDraft()" disabled><i class="fas fa-paper-plane"></i> Đăng bài</button>
+                <button class="btn btn-refresh" onclick="copySeoResult()"><i class="fas fa-copy"></i> Copy nội dung</button>
+                <button class="btn btn-refresh" onclick="clearSeoAssistant()"><i class="fas fa-eraser"></i> Xóa</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CUSTOMERS PAGE ── -->
+      <div id="page-customers" style="display:none">
+        <div class="content-topbar">
+          <div class="content-title">Khách hàng & Liên hệ</div>
+          <div class="breadcrumb-inner">
+            <i class="fas fa-home"></i> › Khách hàng › <span>Danh sách</span>
+          </div>
+        </div>
+        <div class="content-body">
+          <p class="page-subtitle">Quản lý toàn bộ khách hàng – liên hệ và tài khoản đăng ký</p>
+          <div class="ctab-row">
+            <button id="ctab-contact" class="ctab-btn" onclick="switchCTab('contact')" style="background:var(--accent);color:white">📩 Form liên hệ</button>
+            <button id="ctab-users"   class="ctab-btn" onclick="switchCTab('users')"   style="background:#F8FAFF;color:#64748b">👤 Tài khoản đăng ký</button>
+          </div>
+
+          <!-- Form liên hệ -->
+          <div id="cpanel-contact">
+            <div class="filter-bar">
+              <i class="fas fa-search" style="color:#94a3b8;font-size:12px"></i>
+              <input type="text" placeholder="Tìm theo tên, SĐT..." oninput="filterTable('customers-tbody',this.value)" />
+              <button class="btn btn-refresh" onclick="loadCustomers()"><i class="fas fa-sync-alt"></i></button>
+              <span class="filter-count" id="customers-count"></span>
+              <span id="customers-new-count" style="font-size:11px;background:#FFF3EC;color:var(--accent);padding:3px 10px;border-radius:20px;font-weight:700;"></span>
+              <button class="btn btn-export" onclick="exportCustomers()"><i class="fas fa-download"></i> Xuất CSV</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Họ tên</th><th>Điện thoại</th><th>Email</th><th>Công ty</th><th>Tin nhắn</th><th>Trạng thái</th><th>Ngày</th><th>Thao tác</th></tr></thead>
+                <tbody id="customers-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tài khoản đăng ký -->
+          <div id="cpanel-users" style="display:none">
+            <div class="filter-bar">
+              <i class="fas fa-search" style="color:#94a3b8;font-size:12px"></i>
+              <input type="text" placeholder="Tìm theo tên, email..." oninput="filterTable('users-tbody',this.value)" />
+              <button class="btn btn-refresh" onclick="loadUsers()"><i class="fas fa-sync-alt"></i></button>
+              <span class="filter-count" id="users-count"></span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Họ tên</th><th>Số điện thoại</th><th>Email</th><th>Ngày đăng ký</th><th>Thao tác</th></tr></thead>
+                <tbody id="users-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── WHY PAGE ── -->
+      <div id="page-why" style="display:none">
+        <div class="content-topbar">
+          <div class="content-title">Lý do chọn VIAi</div>
+          <div class="breadcrumb-inner"><i class="fas fa-home"></i> › Nội dung › <span>Lý do chọn VIAi</span></div>
+        </div>
+        <div class="content-body">
+          <p class="page-subtitle">Quản lý các thẻ "Tại sao chọn VIAi" hiển thị trên trang chủ</p>
+          <div class="filter-bar">
+            <i class="fas fa-search" style="color:#94a3b8;font-size:12px"></i>
+            <input type="text" placeholder="Tìm theo tiêu đề..." oninput="filterTable('why-tbody',this.value)" />
+            <button class="btn btn-refresh" onclick="loadWhy()"><i class="fas fa-sync-alt"></i></button>
+            <span class="filter-count" id="why-count"></span>
+            <button class="btn btn-add-bar" onclick="openWhyModal()"><i class="fas fa-plus"></i> Thêm thẻ</button>
+          </div>
+          <div class="table-wrap">
+            <table><thead><tr><th>Icon</th><th>Tiêu đề</th><th>Mô tả</th><th>Thứ tự</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+            <tbody id="why-tbody"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── HOW PAGE ── -->
+      <div id="page-how" style="display:none">
+        <div class="content-topbar">
+          <div class="content-title">Các bước triển khai</div>
+          <div class="breadcrumb-inner"><i class="fas fa-home"></i> › Nội dung › <span>Các bước triển khai</span></div>
+        </div>
+        <div class="content-body">
+          <p class="page-subtitle">Quản lý 4 bước "AI làm việc thay bạn"</p>
+          <div class="filter-bar">
+            <button class="btn btn-refresh" onclick="loadHow()"><i class="fas fa-sync-alt"></i></button>
+            <span class="filter-count" id="how-count"></span>
+            <button class="btn btn-add-bar" onclick="openHowModal()"><i class="fas fa-plus"></i> Thêm bước</button>
+          </div>
+          <div class="table-wrap">
+            <table><thead><tr><th>Bước</th><th>Tiêu đề</th><th>Mô tả ngắn</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+            <tbody id="how-tbody"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TECH PAGE ── -->
+      <div id="page-tech" style="display:none">
+        <div class="content-topbar">
+          <div class="content-title">Công nghệ</div>
+          <div class="breadcrumb-inner"><i class="fas fa-home"></i> › Nội dung › <span>Công nghệ</span></div>
+        </div>
+        <div class="content-body">
+          <p class="page-subtitle">Quản lý các thẻ công nghệ hiển thị trên trang chủ</p>
+          <div class="filter-bar">
+            <i class="fas fa-search" style="color:#94a3b8;font-size:12px"></i>
+            <input type="text" placeholder="Tìm theo tên công nghệ..." oninput="filterTable('tech-tbody',this.value)" />
+            <button class="btn btn-refresh" onclick="loadTech()"><i class="fas fa-sync-alt"></i></button>
+            <span class="filter-count" id="tech-count"></span>
+            <button class="btn btn-add-bar" onclick="openTechModal()"><i class="fas fa-plus"></i> Thêm công nghệ</button>
+          </div>
+          <div class="table-wrap">
+            <table><thead><tr><th>Ảnh</th><th>Tiêu đề</th><th>Mô tả</th><th>Nổi bật</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+            <tbody id="tech-tbody"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── GALLERY PAGE ── -->
+      <div id="page-gallery" style="display:none">
+        <div class="content-topbar">
+          <div class="content-title">Thư viện ảnh</div>
+          <div class="breadcrumb-inner"><i class="fas fa-home"></i> › Nội dung › <span>Thư viện ảnh</span></div>
+        </div>
+        <div class="content-body">
+          <p class="page-subtitle">Quản lý ảnh carousel hiển thị trên trang chủ</p>
+          <div class="filter-bar">
+            <button class="btn btn-refresh" onclick="loadGallery()"><i class="fas fa-sync-alt"></i></button>
+            <span class="filter-count" id="gallery-count"></span>
+            <button class="btn btn-add-bar" onclick="openGalleryModal()"><i class="fas fa-plus"></i> Thêm ảnh</button>
+          </div>
+          <div class="table-wrap">
+            <table><thead><tr><th>Ảnh</th><th>Caption</th><th>Thứ tự</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+            <tbody id="gallery-tbody"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BLOG POSTS PAGE ── -->
+      <div id="page-blog-posts" style="display:none">
+        <div class="content-topbar">
+          <div class="content-title">Bài viết Blog</div>
+          <div class="breadcrumb-inner"><i class="fas fa-home"></i> › Nội dung › <span>Bài viết Blog</span></div>
+        </div>
+        <div class="content-body">
+          <p class="page-subtitle">Quản lý bài viết đầy đủ hiển thị tại /blog/[slug] — tạo nhanh bằng AI SEO ở mục trên</p>
+          <div class="filter-bar">
+            <i class="fas fa-search" style="color:#94a3b8;font-size:12px"></i>
+            <input type="text" placeholder="Tìm theo tiêu đề..." oninput="filterTable('blog-tbody',this.value)" />
+            <button class="btn btn-refresh" onclick="loadBlogPosts()" title="Làm mới"><i class="fas fa-sync-alt"></i></button>
+            <span class="filter-count" id="blog-count"></span>
+            <button class="btn btn-add-bar" onclick="openBlogModal()"><i class="fas fa-plus"></i> Thêm bài viết</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Tiêu đề</th><th>Slug / Link</th><th>Danh mục</th><th>Ngày đăng</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+              <tbody id="blog-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECURITY PAGE ── -->
+      <div id="page-security" style="display:none">
+        <div class="content-topbar">
+          <div class="content-title">Bảo mật tài khoản</div>
+          <div class="breadcrumb-inner"><i class="fas fa-home"></i> › Hệ thống › <span>Bảo mật 2FA</span></div>
+        </div>
+        <div class="content-body" style="max-width:560px">
+
+          <!-- 2FA Status -->
+          <div id="2fa-status-box" style="background:white;border-radius:14px;padding:28px;border:1.5px solid #e2e8f0;margin-bottom:20px">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+              <div style="width:44px;height:44px;border-radius:12px;background:#EEF3FF;display:flex;align-items:center;justify-content:center;font-size:1.3rem">🛡️</div>
+              <div>
+                <div style="font-size:0.95rem;font-weight:800;color:#0F172A">Xác thực 2 bước (2FA)</div>
+                <div style="font-size:0.8rem;color:#64748b">Bảo vệ tài khoản bằng Google Authenticator</div>
+              </div>
+              <div id="2fa-badge" style="margin-left:auto;font-size:0.75rem;font-weight:700;padding:4px 12px;border-radius:20px;background:#fee2e2;color:#E52222">Chưa bật</div>
+            </div>
+            <p style="font-size:0.83rem;color:#64748b;line-height:1.7;margin-bottom:20px">
+              Sau khi bật, mỗi lần đăng nhập bạn sẽ cần nhập thêm mã 6 số từ ứng dụng <strong>Google Authenticator</strong> hoặc <strong>Authy</strong> trên điện thoại.
+            </p>
+            <div style="display:flex;gap:10px">
+              <button id="btn-setup-2fa" onclick="setup2FA()" style="padding:10px 20px;background:var(--primary);color:white;border:none;border-radius:10px;font-family:inherit;font-size:0.88rem;font-weight:700;cursor:pointer">
+                <i class="fas fa-qrcode"></i> Thiết lập 2FA
+              </button>
+              <button id="btn-disable-2fa" onclick="disable2FA()" style="display:none;padding:10px 20px;background:#fee2e2;color:#E52222;border:none;border-radius:10px;font-family:inherit;font-size:0.88rem;font-weight:700;cursor:pointer">
+                Tắt 2FA
+              </button>
+            </div>
+          </div>
+
+          <!-- QR Setup -->
+          <div id="2fa-setup-box" style="display:none;background:white;border-radius:14px;padding:28px;border:1.5px solid var(--primary)">
+            <div style="font-size:0.95rem;font-weight:800;color:#0F172A;margin-bottom:16px">📱 Quét mã QR bằng Google Authenticator</div>
+            <div style="text-align:center;margin-bottom:16px">
+              <img id="2fa-qr" src="" alt="QR Code" style="width:180px;height:180px;border-radius:10px;border:3px solid #EEF3FF"/>
+            </div>
+            <p style="font-size:0.8rem;color:#64748b;margin-bottom:12px">Hoặc nhập thủ công secret key:</p>
+            <div id="2fa-secret" style="font-family:monospace;font-size:0.85rem;background:#f8faff;padding:10px 14px;border-radius:8px;word-break:break-all;color:var(--primary);font-weight:700;margin-bottom:16px"></div>
+            <p style="font-size:0.8rem;color:#64748b;margin-bottom:8px">Nhập mã 6 số từ app để xác nhận:</p>
+            <div style="display:flex;gap:10px">
+              <input id="2fa-confirm-code" type="text" maxlength="6" placeholder="000000"
+                style="flex:1;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:inherit;font-size:1rem;font-weight:800;letter-spacing:4px;text-align:center;outline:none"
+                onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='#e2e8f0'"
+                onkeydown="if(event.key==='Enter')confirm2FA()" />
+              <button onclick="confirm2FA()" style="padding:11px 20px;background:var(--accent);color:white;border:none;border-radius:10px;font-family:inherit;font-size:0.88rem;font-weight:700;cursor:pointer">
+                Xác nhận
+              </button>
+            </div>
+            <div id="2fa-msg" style="margin-top:10px;font-size:0.82rem;font-weight:700;display:none"></div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="prod-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="prod-modal-title">Thêm AI Agent</div>
+    <input type="hidden" id="prod-id" />
+    <div class="field-row">
+      <div class="field"><label>Icon (emoji)</label><input id="prod-icon" type="text" placeholder="💬" maxlength="4" /></div>
+      <div class="field"><label>Màu icon</label>
+        <select id="prod-icon-color">
+          <option value="blue">Xanh dương</option><option value="orange">Cam</option>
+          <option value="green">Xanh lá</option><option value="yellow">Vàng</option><option value="purple">Tím</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Tên Agent *</label><input id="prod-name" type="text" placeholder="Zalo Sales Agent" /></div>
+    <div class="field"><label>Mô tả</label><textarea id="prod-desc" data-rich placeholder="Mô tả ngắn về Agent..."></textarea></div>
+    <div class="field-row">
+      <div class="field"><label>Danh mục</label>
+        <select id="prod-cat">
+          <option value="all">Tất cả</option><option value="sales">Bán hàng</option>
+          <option value="ops">Vận hành</option><option value="marketing">Marketing</option><option value="analytics">Phân tích</option>
+        </select>
+      </div>
+      <div class="field"><label>Badge</label>
+        <select id="prod-badge-type">
+          <option value="">Không có</option><option value="hot">HOT</option>
+          <option value="pop">PHỔ BIẾN</option><option value="new">MỚI</option><option value="beta">BETA</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Số người dùng</label><input id="prod-users" type="number" placeholder="320" /></div>
+      <div class="field"><label>Thứ tự</label><input id="prod-order" type="number" placeholder="1" /></div>
+    </div>
+    <div class="field"><label>Link chi tiết</label><input id="prod-link" type="text" placeholder="#" /></div>
+    <div class="field"><label>Trạng thái</label>
+      <select id="prod-active"><option value="true">Hiển thị</option><option value="false">Ẩn</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeProdModal()">Huỷ</button>
+      <button class="btn-save" onclick="saveProd()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEWS MODAL -->
+<div class="modal-overlay" id="news-modal">
+  <div class="modal-box" style="width:620px">
+    <div class="modal-title" id="news-modal-title">Thêm bài viết</div>
+    <input type="hidden" id="news-id" />
+
+    <!-- Bước 1: nhập URL → tự động điền -->
+    <div class="field" style="background:#F0F7FF;border:1.5px dashed #1A56DB;border-radius:12px;padding:14px 16px;margin-bottom:18px">
+      <label style="color:#1A56DB;font-size:0.82rem;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+        <i class="fas fa-magic"></i> Dán URL bài báo → Tự động điền thông tin
+      </label>
+      <div style="display:flex;gap:8px">
+        <input id="news-fetch-url" type="text" placeholder="https://genk.vn/bai-bao-abc.html"
+          style="flex:1;padding:9px 12px;border:1.5px solid #c7d9f5;border-radius:8px;font-family:inherit;font-size:0.85rem;outline:none"
+          onkeydown="if(event.key==='Enter')fetchNewsUrl()" />
+        <button onclick="fetchNewsUrl()" id="btn-fetch"
+          style="padding:9px 16px;background:#1A56DB;color:white;border:none;border-radius:8px;font-family:inherit;font-size:0.82rem;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px">
+          <i class="fas fa-download"></i> Lấy dữ liệu
+        </button>
+      </div>
+      <div id="fetch-status" style="font-size:0.75rem;margin-top:6px;color:#64748b;display:none"></div>
+    </div>
+
+    <div class="field"><label>Tiêu đề *</label><input id="news-title" type="text" placeholder="Tiêu đề bài báo..." /></div>
+
+    <div class="field">
+      <label style="display:flex;align-items:center;justify-content:space-between">
+        <span>Đoạn tóm tắt</span>
+        <button onclick="aiSuggestExcerpt()" id="btn-ai"
+          style="background:linear-gradient(135deg,#7C3AED,#9F67F5);color:white;border:none;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px">
+          <i class="fas fa-robot"></i> AI gợi ý
+        </button>
+      </label>
+      <textarea id="news-excerpt" data-rich placeholder="Nội dung tóm tắt..." style="min-height:100px"></textarea>
+    </div>
+
+    <!-- Upload ảnh -->
+    <div class="field">
+      <label>Ảnh thumbnail</label>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input id="news-img" type="text" placeholder="URL ảnh hoặc upload bên dưới..."
+          oninput="updateImgPreview(this.value)" />
+        <label style="padding:8px 14px;background:#F0F7FF;border:1.5px solid #c7d9f5;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;color:#1A56DB;white-space:nowrap;display:flex;align-items:center;gap:5px">
+          <i class="fas fa-upload"></i> Upload
+          <input type="file" id="news-img-file" accept="image/*" style="display:none" onchange="uploadNewsImg(this)" />
+        </label>
+      </div>
+      <!-- Preview ảnh -->
+      <div id="news-img-preview" style="display:none;margin-top:6px;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;max-height:120px;text-align:center;background:#f8faff">
+        <img id="news-img-preview-el" src="" alt="" style="max-height:120px;max-width:100%;object-fit:contain" />
+      </div>
+      <div id="news-upload-status" style="font-size:11px;color:#64748b;margin-top:4px;display:none"></div>
+    </div>
+
+    <div class="field-row">
+      <div class="field"><label>Tên nguồn *</label><input id="news-source-name" type="text" placeholder="GENK.VN" /></div>
+      <div class="field"><label>Tag nguồn (CSS class)</label><input id="news-source-tag" type="text" placeholder="genk" /></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>URL nguồn</label><input id="news-source-url" type="text" placeholder="https://genk.vn" /></div>
+      <div class="field"><label>Ngày đăng</label><input id="news-date" type="date" /></div>
+    </div>
+    <div class="field"><label>Trạng thái</label>
+      <select id="news-active"><option value="true">Hiển thị</option><option value="false">Ẩn</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeNewsModal()">Huỷ</button>
+      <button class="btn-save" onclick="saveNews()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- BLOG POST MODAL -->
+<div class="modal-overlay" id="blog-modal">
+  <div class="modal-box" style="width:900px;max-width:98vw;padding:32px 36px">
+    <div class="modal-title" id="blog-modal-title">Thêm bài viết Blog</div>
+    <input type="hidden" id="blog-id" />
+
+    <!-- Row 1: tiêu đề + slug -->
+    <div class="field-row">
+      <div class="field" style="flex:2"><label>Tiêu đề *</label><input id="blog-title" type="text" placeholder="Tiêu đề bài viết..." oninput="autoSlug()" /></div>
+      <div class="field" style="flex:1"><label>Slug URL</label><input id="blog-slug" type="text" placeholder="tieu-de-bai-viet" oninput="blogSlugManual=true" /></div>
+    </div>
+
+    <!-- Row 2: 2 cột — tóm tắt + ảnh -->
+    <div class="field-row" style="align-items:start">
+      <div class="field" style="flex:1">
+        <label>Đoạn tóm tắt</label>
+        <textarea id="blog-excerpt" data-rich placeholder="Tóm tắt 2-3 câu..." style="min-height:100px"></textarea>
+      </div>
+      <div class="field" style="flex:1">
+        <label>Ảnh thumbnail</label>
+        <div style="display:flex;gap:8px;margin-bottom:6px">
+          <input id="blog-img" type="text" placeholder="URL hoặc upload bên phải"
+            oninput="updateBlogImgPreview(this.value)" style="flex:1" />
+          <label style="padding:8px 12px;background:#F0F7FF;border:1.5px solid #c7d9f5;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;color:#1A56DB;white-space:nowrap;display:flex;align-items:center;gap:4px;flex-shrink:0">
+            <i class="fas fa-upload"></i> Upload
+            <input type="file" id="blog-img-file" accept="image/*" style="display:none" onchange="uploadBlogImg(this)" />
+          </label>
+        </div>
+        <div id="blog-img-preview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;max-height:110px;text-align:center;background:#f8faff;margin-bottom:4px">
+          <img id="blog-img-preview-el" src="" alt="" style="max-height:110px;max-width:100%;object-fit:contain" />
+        </div>
+        <div id="blog-upload-status" style="font-size:11px;color:#64748b;display:none"></div>
+        <input id="blog-img-alt" type="text" placeholder="Alt ảnh (mô tả ảnh)" style="margin-top:6px" />
+      </div>
+    </div>
+
+    <!-- Nội dung markdown — full width, cao -->
+    <div class="field">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:6px">
+        <label style="margin:0">Nội dung bài viết (Markdown)</label>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span style="font-size:0.72rem;color:#94a3b8">## H2 | ### H3 | **đậm** | - list | 1. list | &gt; quote | --- | ![alt](url)</span>
+          <label id="btn-insert-img" style="padding:5px 12px;background:#EEF3FF;border:1.5px solid #c7d9f5;border-radius:6px;cursor:pointer;font-size:11px;font-weight:700;color:#1A56DB;display:inline-flex;align-items:center;gap:4px;white-space:nowrap">
+            <i class="fas fa-image"></i> Chèn ảnh
+            <input type="file" id="blog-content-img-file" accept="image/*" style="display:none" onchange="insertBlogImage(this)" />
+          </label>
+        </div>
+      </div>
+      <textarea id="blog-content"
+        style="min-height:320px;width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:monospace;font-size:0.83rem;line-height:1.75;resize:vertical;outline:none;transition:border-color 0.2s;background:#fafbff"
+        placeholder="## Giới thiệu&#10;Nội dung bài viết...&#10;&#10;![Mô tả ảnh](https://...)&#10;&#10;## Phần 1&#10;Nội dung...&#10;&#10;| Cột 1 | Cột 2 | Cột 3 |&#10;|---|---|---|&#10;| Dữ liệu | Dữ liệu | Dữ liệu |&#10;&#10;## Kết luận&#10;..."
+        onfocus="this.style.borderColor='#FF6B00';this.style.background='#fff'"
+        onblur="this.style.borderColor='#e2e8f0';this.style.background='#fafbff'"></textarea>
+    </div>
+
+    <!-- Row: SEO title + meta desc -->
+    <div class="field-row">
+      <div class="field"><label>SEO Title <span style="font-weight:400;color:#94a3b8">(≤60 ký tự)</span></label><input id="blog-seo-title" type="text" placeholder="SEO Title..." /></div>
+      <div class="field"><label>Meta Description <span style="font-weight:400;color:#94a3b8">(140–160 ký tự)</span></label><textarea id="blog-meta-desc" style="min-height:56px" placeholder="Mô tả SEO ngắn gọn..."></textarea></div>
+    </div>
+
+    <!-- Row: danh mục + tác giả + ngày + trạng thái -->
+    <div class="field-row">
+      <div class="field"><label>Danh mục</label>
+        <select id="blog-category">
+          <option value="Kiến thức AI">Kiến thức AI</option>
+          <option value="Hướng dẫn">Hướng dẫn</option>
+          <option value="Tin tức">Tin tức</option>
+          <option value="Case Study">Case Study</option>
+        </select>
+      </div>
+      <div class="field"><label>Tác giả</label><input id="blog-author" type="text" value="VIAi Team" /></div>
+      <div class="field"><label>Ngày đăng</label><input id="blog-date" type="date" /></div>
+      <div class="field"><label>Trạng thái</label><select id="blog-active"><option value="true">Hiển thị</option><option value="false">Ẩn</option></select></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('blog-modal')">Huỷ</button>
+      <button class="btn-save" onclick="saveBlogPost()"><i class="fas fa-save"></i> Lưu bài viết</button>
+    </div>
+  </div>
+</div>
+
+<!-- WHY MODAL -->
+<div class="modal-overlay" id="why-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="why-modal-title">Thêm thẻ</div>
+    <input type="hidden" id="why-id" />
+    <div class="field-row">
+      <div class="field"><label>Icon (emoji)</label><input id="why-icon" type="text" maxlength="4" placeholder="⚡" /></div>
+      <div class="field"><label>Màu icon</label>
+        <select id="why-color"><option value="blue">Xanh</option><option value="orange">Cam</option><option value="green">Xanh lá</option><option value="yellow">Vàng</option></select>
+      </div>
+    </div>
+    <div class="field"><label>Tiêu đề *</label><input id="why-title" type="text" /></div>
+    <div class="field"><label>Mô tả</label><textarea id="why-desc" data-rich placeholder="Mô tả lý do chọn VIAi..."></textarea></div>
+    <div class="field-row">
+      <div class="field"><label>Thứ tự</label><input id="why-order" type="number" /></div>
+      <div class="field"><label>Trạng thái</label><select id="why-active"><option value="true">Hiển thị</option><option value="false">Ẩn</option></select></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('why-modal')">Huỷ</button>
+      <button class="btn-save" onclick="saveWhy()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- HOW MODAL -->
+<div class="modal-overlay" id="how-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="how-modal-title">Thêm bước</div>
+    <input type="hidden" id="how-id" />
+    <div class="field-row">
+      <div class="field"><label>Số bước</label><input id="how-num" type="number" min="1" max="10" /></div>
+      <div class="field"><label>Thứ tự</label><input id="how-order" type="number" /></div>
+    </div>
+    <div class="field"><label>Tiêu đề (tab trái) *</label><input id="how-title" type="text" /></div>
+    <div class="field"><label>Mô tả ngắn (tab trái)</label><input id="how-short" type="text" /></div>
+    <div class="field"><label>Tiêu đề panel phải</label><input id="how-panel-title" type="text" /></div>
+    <div class="field"><label>Mô tả panel phải</label><textarea id="how-panel-desc" data-rich placeholder="Mô tả chi tiết bước này..."></textarea></div>
+    <div class="field"><label>Tính năng (mỗi dòng 1 mục)</label><textarea id="how-features" style="min-height:80px"></textarea></div>
+    <div class="field"><label>Trạng thái</label><select id="how-active"><option value="true">Hiển thị</option><option value="false">Ẩn</option></select></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('how-modal')">Huỷ</button>
+      <button class="btn-save" onclick="saveHow()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- TECH MODAL -->
+<div class="modal-overlay" id="tech-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="tech-modal-title">Thêm công nghệ</div>
+    <input type="hidden" id="tech-id" />
+    <div class="field"><label>URL ảnh</label><input id="tech-img" type="text" placeholder="anhlogo/tech1.svg" /></div>
+    <div class="field"><label>Tiêu đề *</label><input id="tech-title" type="text" /></div>
+    <div class="field"><label>Mô tả</label><textarea id="tech-desc" data-rich placeholder="Mô tả công nghệ..."></textarea></div>
+    <div class="field-row">
+      <div class="field"><label>Thứ tự</label><input id="tech-order" type="number" /></div>
+      <div class="field"><label>Nổi bật</label><select id="tech-featured"><option value="false">Không</option><option value="true">Có</option></select></div>
+    </div>
+    <div class="field"><label>Trạng thái</label><select id="tech-active"><option value="true">Hiển thị</option><option value="false">Ẩn</option></select></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('tech-modal')">Huỷ</button>
+      <button class="btn-save" onclick="saveTech()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- GALLERY MODAL -->
+<div class="modal-overlay" id="gallery-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="gallery-modal-title">Thêm ảnh</div>
+    <input type="hidden" id="gallery-id" />
+    <div class="field">
+      <label>Ảnh *</label>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input id="gallery-img" type="text" placeholder="anhthucte/ten-anh.jpg hoặc upload bên phải"
+          oninput="updateGalleryPreview(this.value)" />
+        <label style="padding:8px 14px;background:#F0F7FF;border:1.5px solid #c7d9f5;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;color:#1A56DB;white-space:nowrap;display:flex;align-items:center;gap:5px;flex-shrink:0">
+          <i class="fas fa-upload"></i> Upload
+          <input type="file" id="gallery-img-file" accept="image/*" style="display:none" onchange="uploadGalleryImg(this)" />
+        </label>
+      </div>
+      <div id="gallery-img-preview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;max-height:140px;text-align:center;background:#f8faff">
+        <img id="gallery-img-preview-el" src="" alt="" style="max-height:140px;max-width:100%;object-fit:contain" />
+      </div>
+      <div id="gallery-upload-status" style="font-size:11px;color:#64748b;margin-top:4px;display:none"></div>
+    </div>
+    <div class="field"><label>Caption (chú thích)</label><input id="gallery-caption" type="text" /></div>
+    <div class="field"><label>Alt text</label><input id="gallery-alt" type="text" /></div>
+    <div class="field-row">
+      <div class="field"><label>Thứ tự</label><input id="gallery-order" type="number" /></div>
+      <div class="field"><label>Trạng thái</label><select id="gallery-active"><option value="true">Hiển thị</option><option value="false">Ẩn</option></select></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('gallery-modal')">Huỷ</button>
+      <button class="btn-save" onclick="saveGallery()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const API = '/admin-api';
+  let token = localStorage.getItem('viai_token');
+  const badgeLabels = { hot:'HOT', pop:'PHỔ BIẾN', new:'MỚI', beta:'BETA' };
+  let currentSeoDraft = null;
+
+  document.addEventListener('DOMContentLoaded', initRichEditors);
+  if (token) showApp();
+
+  // ── AUTH ──────────────────────────────────────────────
+  let _loginUser = '', _loginPass = '';
+
+  async function doLogin() {
+    const username = document.getElementById('inp-user').value.trim();
+    const password = document.getElementById('inp-pass').value;
+    const totp     = document.getElementById('inp-totp')?.value?.trim() || '';
+    const r = await fetch(`${API}/login`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password, totp_code: totp || undefined })
+    });
+    const data = await r.json();
+    // Yêu cầu nhập mã 2FA
+    if (r.status === 206 && data.require2fa) {
+      _loginUser = username; _loginPass = password;
+      document.getElementById('login-err').textContent = '';
+      document.getElementById('login-err').style.color = '#1A56DB';
+      document.getElementById('login-err').textContent = '🔐 Nhập mã 6 số từ Google Authenticator';
+      let totpField = document.getElementById('inp-totp');
+      if (!totpField) {
+        totpField = document.createElement('input');
+        totpField.id = 'inp-totp'; totpField.type = 'text';
+        totpField.maxLength = 6; totpField.placeholder = '000000';
+        totpField.style.cssText = 'width:100%;margin-top:10px;padding:11px 14px;border:1.5px solid #1A56DB;border-radius:10px;font-family:inherit;font-size:1.2rem;font-weight:800;letter-spacing:6px;text-align:center;outline:none';
+        totpField.onkeydown = e => { if(e.key==='Enter') doLogin(); };
+        document.getElementById('inp-pass').parentElement.after(totpField);
+      }
+      totpField.focus();
+      return;
+    }
+    if (!r.ok) {
+      document.getElementById('login-err').style.color = '#E52222';
+      document.getElementById('login-err').textContent = data.error;
+      return;
+    }
+    token = data.token;
+    localStorage.setItem('viai_token', token);
+    showApp();
+  }
+
+  // ── 2FA Functions ──────────────────────────────────────
+  async function load2FAStatus() {
+    const r = await safeFetch(`${API}/2fa/status`, { headers: hdr() });
+    if (!r) return;
+    const data = await r.json();
+    const badge = document.getElementById('2fa-badge');
+    const btnDisable = document.getElementById('btn-disable-2fa');
+    const btnSetup   = document.getElementById('btn-setup-2fa');
+    if (data.enabled) {
+      badge.style.background = '#dcfce7'; badge.style.color = '#16a34a';
+      badge.textContent = '✅ Đang bật';
+      btnSetup.style.display = 'none';
+      btnDisable.style.display = '';
+    } else {
+      badge.style.background = '#fee2e2'; badge.style.color = '#E52222';
+      badge.textContent = 'Chưa bật';
+      btnSetup.style.display = '';
+      btnDisable.style.display = 'none';
+    }
+  }
+
+  async function setup2FA() {
+    const r = await safeFetch(`${API}/2fa/setup`, { method:'POST', headers: hdr() });
+    if (!r) return;
+    const data = await r.json();
+    document.getElementById('2fa-qr').src = data.qr;
+    document.getElementById('2fa-secret').textContent = data.secret;
+    document.getElementById('2fa-setup-box').style.display = 'block';
+    document.getElementById('2fa-confirm-code').value = '';
+    document.getElementById('2fa-msg').style.display = 'none';
+  }
+
+  async function confirm2FA() {
+    const code = document.getElementById('2fa-confirm-code').value.trim();
+    if (code.length !== 6) { toast('⚠️ Nhập đủ 6 số'); return; }
+    const r = await safeFetch(`${API}/2fa/enable`, { method:'POST', headers:hdr(), body:JSON.stringify({code}) });
+    if (!r) return;
+    const data = await r.json();
+    const msg = document.getElementById('2fa-msg');
+    msg.style.display = 'block';
+    if (r.ok) {
+      msg.style.color = '#00B341'; msg.textContent = '✅ 2FA đã được bật thành công!';
+      setTimeout(() => { document.getElementById('2fa-setup-box').style.display='none'; load2FAStatus(); }, 1500);
+    } else {
+      msg.style.color = '#E52222'; msg.textContent = '❌ ' + data.error;
+    }
+  }
+
+  async function disable2FA() {
+    if (!confirm('Tắt 2FA sẽ làm giảm bảo mật tài khoản. Bạn có chắc không?')) return;
+    const r = await safeFetch(`${API}/2fa/disable`, { method:'POST', headers:hdr() });
+    if (!r) return;
+    toast('2FA đã được tắt'); load2FAStatus();
+    document.getElementById('2fa-setup-box').style.display = 'none';
+  }
+
+  function showApp() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadProducts();
+  }
+
+  function doLogout() {
+    localStorage.removeItem('viai_token');
+    window.location.href = '/login.html';
+  }
+
+  function hdr() {
+    if (!token) { window.location.href = '/login.html'; return {}; }
+    return { 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` };
+  }
+
+  async function safeFetch(url, opts) {
+    try {
+      const r = await fetch(url, opts);
+      if (r.status === 401) {
+        localStorage.removeItem('viai_token');
+        token = null;
+        document.getElementById('app').style.display = 'none';
+        document.getElementById('login-screen').style.display = 'flex';
+        document.getElementById('login-err').textContent = '⚠️ Phiên đăng nhập hết hạn, vui lòng đăng nhập lại.';
+        return null;
+      }
+      return r;
+    } catch {
+      return null;
+    }
+  }
+
+  // ── LAYOUT ────────────────────────────────────────────
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('collapsed');
+    document.getElementById('main-content').classList.toggle('expanded');
+  }
+
+  function toggleNav(header) {
+    const chevron = header.querySelector('.nav-chevron');
+    const submenu = header.nextElementSibling;
+    const isOpen  = submenu.classList.contains('open');
+    if (isOpen) {
+      submenu.classList.remove('open'); chevron.classList.remove('rotated'); header.classList.remove('open');
+    } else {
+      submenu.classList.add('open'); chevron.classList.add('rotated'); header.classList.add('open');
+    }
+  }
+
+  function showPage(p, el, title) {
+    ['products','news','seo','blog-posts','why','how','tech','gallery','customers','security'].forEach(n => {
+      document.getElementById(`page-${n}`).style.display = n === p ? '' : 'none';
+    });
+    document.querySelectorAll('.nav-sub-item').forEach(x => x.classList.remove('active'));
+    if (el) el.classList.add('active');
+    document.getElementById('bc-current').textContent = title || p;
+    if (p === 'products')    loadProducts();
+    if (p === 'news')        loadNews();
+    if (p === 'blog-posts')  loadBlogPosts();
+    if (p === 'why')         loadWhy();
+    if (p === 'how')       loadHow();
+    if (p === 'tech')      loadTech();
+    if (p === 'gallery')   loadGallery();
+    if (p === 'security')  load2FAStatus();
+    if (p === 'customers') loadCustomers();
+  }
+
+  // ── FILTER ────────────────────────────────────────────
+  function filterTable(tbodyId, query) {
+    const q = query.toLowerCase();
+    document.querySelectorAll(`#${tbodyId} tr`).forEach(tr => {
+      tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  }
+
+  function filterTableByCol(tbodyId, value, colIndex) {
+    document.querySelectorAll(`#${tbodyId} tr`).forEach(tr => {
+      if (!value) { tr.style.display = ''; return; }
+      const cell = tr.cells[colIndex];
+      tr.style.display = cell && cell.textContent.includes(value) ? '' : 'none';
+    });
+  }
+
+  // ── TOAST ─────────────────────────────────────────────
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // ── MODAL HELPERS ─────────────────────────────────────
+  document.querySelectorAll('.modal-overlay').forEach(m =>
+    m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); })
+  );
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+  function openModal(id)  {
+    document.querySelectorAll(`#${id} .error`).forEach(el => el.classList.remove('error'));
+    document.querySelectorAll(`#${id} .field-error`).forEach(el => el.remove());
+    document.getElementById(id).classList.add('open');
+  }
+
+  function validate(rules) {
+    let ok = true;
+    rules.forEach(({ id, label }) => {
+      const el = document.getElementById(id);
+      const err = el.parentElement.querySelector('.field-error');
+      if (err) err.remove();
+      el.classList.remove('error');
+      if (!el.value.trim()) {
+        el.classList.add('error');
+        const msg = document.createElement('div');
+        msg.className = 'field-error';
+        msg.textContent = `⚠️ ${label} không được để trống`;
+        el.parentElement.appendChild(msg);
+        if (ok) el.focus();
+        ok = false;
+      }
+    });
+    return ok;
+  }
+
+  // ── PRODUCTS ──────────────────────────────────────────
+  let products = [];
+  async function loadProducts() {
+    const r = await safeFetch(`${API}/products`, { headers: hdr() });
+    if (!r) return;
+    const data = await r.json();
+    products = Array.isArray(data) ? data : [];
+    document.getElementById('prod-count').textContent = `${products.length} Agent`;
+    const tbody = document.getElementById('prod-tbody');
+    if (!products.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="7">Chưa có sản phẩm nào</td></tr>'; return;
+    }
+    tbody.innerHTML = products.map(p => `
+      <tr>
+        <td style="font-size:1.3rem">${p.icon}</td>
+        <td><strong>${p.name}</strong></td>
+        <td>${p.category}</td>
+        <td>${p.badge_type ? `<span class="badge badge-${p.badge_type}">${badgeLabels[p.badge_type]||p.badge}</span>` : '—'}</td>
+        <td>${p.users_count > 0 ? `👥 ${p.users_count}+` : 'Enterprise'}</td>
+        <td><span class="badge badge-${p.active?'active':'inactive'}">${p.active?'Hiển thị':'Ẩn'}</span></td>
+        <td class="actions">
+          <button class="btn-edit" onclick="editProd(${p.id})"><i class="fas fa-edit"></i> Sửa</button>
+          <button class="btn-del"  onclick="delProd(${p.id})"><i class="fas fa-times"></i> Xoá</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  function openProdModal(p) {
+    document.getElementById('prod-modal-title').textContent = p ? 'Sửa AI Agent' : 'Thêm AI Agent';
+    document.getElementById('prod-id').value         = p?.id || '';
+    document.getElementById('prod-icon').value       = p?.icon || '🤖';
+    document.getElementById('prod-icon-color').value = p?.icon_color || 'blue';
+    document.getElementById('prod-name').value       = p?.name || '';
+    setField('prod-desc', p?.description || '');
+    document.getElementById('prod-cat').value        = p?.category || 'all';
+    document.getElementById('prod-badge-type').value = p?.badge_type || '';
+    document.getElementById('prod-users').value      = p?.users_count || '';
+    document.getElementById('prod-order').value      = p?.order_index || '';
+    document.getElementById('prod-link').value       = p?.link || '#';
+    document.getElementById('prod-active').value     = p?.active !== false ? 'true' : 'false';
+    document.getElementById('prod-modal').classList.add('open');
+  }
+
+  function editProd(id) { openProdModal(products.find(p => p.id === id)); }
+  function closeProdModal() { document.getElementById('prod-modal').classList.remove('open'); }
+
+  async function saveProd() {
+    if (!validate([{ id:'prod-name', label:'Tên Agent' }])) return;
+    const id = document.getElementById('prod-id').value;
+    const body = {
+      name:        document.getElementById('prod-name').value,
+      description: getField('prod-desc'),
+      icon:        document.getElementById('prod-icon').value,
+      icon_color:  document.getElementById('prod-icon-color').value,
+      badge_type:  document.getElementById('prod-badge-type').value || null,
+      badge:       badgeLabels[document.getElementById('prod-badge-type').value] || null,
+      category:    document.getElementById('prod-cat').value,
+      users_count: parseInt(document.getElementById('prod-users').value) || 0,
+      order_index: parseInt(document.getElementById('prod-order').value) || 0,
+      link:        document.getElementById('prod-link').value,
+      active:      document.getElementById('prod-active').value === 'true',
+    };
+    await fetch(id ? `${API}/products/${id}` : `${API}/products`, {
+      method: id ? 'PUT' : 'POST', headers: hdr(), body: JSON.stringify(body)
+    });
+    closeProdModal(); loadProducts(); toast(id ? 'Đã cập nhật Agent' : 'Đã thêm Agent mới');
+  }
+
+  async function delProd(id) {
+    if (!confirm('Xoá Agent này?')) return;
+    await fetch(`${API}/products/${id}`, { method: 'DELETE', headers: hdr() });
+    loadProducts(); toast('Đã xoá Agent');
+  }
+
+  // ── NEWS ──────────────────────────────────────────────
+  let newsList = [];
+  async function loadNews() {
+    const r = await safeFetch(`${API}/news`, { headers: hdr() });
+    if (!r) return;
+    const data = await r.json();
+    newsList = Array.isArray(data) ? data : [];
+    document.getElementById('news-count').textContent = `${newsList.length} bài viết`;
+    const tbody = document.getElementById('news-tbody');
+    if (!newsList.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="5">Chưa có bài viết nào</td></tr>'; return;
+    }
+    tbody.innerHTML = newsList.map(n => `
+      <tr>
+        <td style="max-width:320px"><strong>${n.title}</strong></td>
+        <td><strong>${n.source_name}</strong></td>
+        <td>${n.published_at ? new Date(n.published_at).toLocaleDateString('vi-VN') : '—'}</td>
+        <td><span class="badge badge-${n.active?'active':'inactive'}">${n.active?'Hiển thị':'Ẩn'}</span></td>
+        <td class="actions">
+          <button class="btn-edit" onclick="editNews(${n.id})"><i class="fas fa-edit"></i> Sửa</button>
+          <button class="btn-del"  onclick="delNews(${n.id})"><i class="fas fa-times"></i> Xoá</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  function openNewsModal(n) {
+    document.getElementById('news-modal-title').textContent  = n ? 'Sửa bài viết' : 'Thêm bài viết';
+    document.getElementById('news-id').value          = n?.id || '';
+    document.getElementById('news-title').value       = n?.title || '';
+    setField('news-excerpt', n?.excerpt || '');
+    document.getElementById('news-img').value         = n?.image_url || '';
+    document.getElementById('news-source-name').value = n?.source_name || '';
+    document.getElementById('news-source-tag').value  = n?.source_tag || '';
+    document.getElementById('news-source-url').value  = n?.source_url || '';
+    document.getElementById('news-date').value        = n?.published_at ? n.published_at.slice(0,10) : '';
+    document.getElementById('news-active').value      = n?.active !== false ? 'true' : 'false';
+    document.getElementById('news-modal').classList.add('open');
+  }
+
+  function editNews(id) { openNewsModal(newsList.find(n => n.id === id)); }
+  function closeNewsModal() { document.getElementById('news-modal').classList.remove('open'); }
+
+  async function saveNews() {
+    if (!validate([{ id:'news-title', label:'Tiêu đề' }, { id:'news-source-name', label:'Tên nguồn' }])) return;
+    const id = document.getElementById('news-id').value;
+    const body = {
+      title:        document.getElementById('news-title').value,
+      excerpt:      getField('news-excerpt'),
+      image_url:    document.getElementById('news-img').value,
+      source_name:  document.getElementById('news-source-name').value,
+      source_tag:   document.getElementById('news-source-tag').value,
+      source_url:   document.getElementById('news-source-url').value,
+      published_at: document.getElementById('news-date').value || null,
+      active:       document.getElementById('news-active').value === 'true',
+    };
+    await fetch(id ? `${API}/news/${id}` : `${API}/news`, {
+      method: id ? 'PUT' : 'POST', headers: hdr(), body: JSON.stringify(body)
+    });
+    closeNewsModal(); loadNews(); toast(id ? 'Đã cập nhật bài viết' : 'Đã thêm bài viết mới');
+  }
+
+  async function delNews(id) {
+    if (!confirm('Xoá bài viết này?')) return;
+    await fetch(`${API}/news/${id}`, { method: 'DELETE', headers: hdr() });
+    loadNews(); toast('Đã xoá bài viết');
+  }
+
+  // ── CUSTOMER TABS ─────────────────────────────────────
+  function switchCTab(tab) {
+    document.getElementById('cpanel-contact').style.display = tab==='contact' ? '' : 'none';
+    document.getElementById('cpanel-users').style.display   = tab==='users'   ? '' : 'none';
+    document.getElementById('ctab-contact').style.background = tab==='contact' ? 'var(--accent)' : '#F8FAFF';
+    document.getElementById('ctab-contact').style.color      = tab==='contact' ? 'white' : '#64748b';
+    document.getElementById('ctab-users').style.background   = tab==='users'   ? 'var(--accent)' : '#F8FAFF';
+    document.getElementById('ctab-users').style.color        = tab==='users'   ? 'white' : '#64748b';
+    if (tab==='users') loadUsers();
+  }
+
+  // ── REGISTERED USERS ──────────────────────────────────
+  let usersList = [];
+  async function loadUsers() {
+    const r = await safeFetch(`${API}/users`, { headers: hdr() });
+    if (!r) return;
+    const data = await r.json();
+    usersList = Array.isArray(data) ? data : [];
+    document.getElementById('users-count').textContent = `${usersList.length} tài khoản`;
+    const tbody = document.getElementById('users-tbody');
+    if (!usersList.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="5">Chưa có tài khoản nào</td></tr>'; return;
+    }
+    tbody.innerHTML = usersList.map(u => `
+      <tr>
+        <td><strong>${u.name}</strong></td>
+        <td>${u.phone||'—'}</td>
+        <td>${u.email||'—'}</td>
+        <td style="color:#64748b">${new Date(u.created_at).toLocaleDateString('vi-VN')}</td>
+        <td class="actions"><button class="btn-del" onclick="delUser(${u.id})"><i class="fas fa-times"></i> Xoá</button></td>
+      </tr>`).join('');
+  }
+
+  async function delUser(id) {
+    if (!confirm('Xoá tài khoản này?')) return;
+    await fetch(`${API}/users/${id}`, { method:'DELETE', headers:hdr() });
+    loadUsers(); toast('Đã xoá tài khoản');
+  }
+
+  // ── CUSTOMERS ─────────────────────────────────────────
+  const STATUS_LABEL = { new:'🆕 Mới', processing:'⏳ Đang xử lý', done:'✅ Đã xử lý', spam:'🚫 Spam' };
+  const STATUS_COLOR = { new:'#FFF3EC;color:var(--accent)', processing:'#EEF3FF;color:var(--primary)', done:'#dcfce7;color:#16a34a', spam:'#fee2e2;color:var(--red)' };
+  let customersList = [];
+
+  async function loadCustomers() {
+    const r = await safeFetch(`${API}/customers`, { headers: hdr() });
+    if (!r) return;
+    const data = await r.json();
+    customersList = Array.isArray(data) ? data : [];
+    const newCount = customersList.filter(c => c.status === 'new').length;
+    document.getElementById('customers-count').textContent = `${customersList.length} khách hàng`;
+    document.getElementById('customers-new-count').textContent = newCount ? `${newCount} mới` : '';
+    const tbody = document.getElementById('customers-tbody');
+    if (!customersList.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="8">Chưa có khách hàng nào</td></tr>'; return;
+    }
+    tbody.innerHTML = customersList.map(c => `
+      <tr>
+        <td><strong>${c.name}</strong></td>
+        <td><a href="tel:${c.phone}" style="color:var(--primary);font-weight:700">${c.phone||'—'}</a></td>
+        <td>${c.email||'—'}</td>
+        <td>${c.company||'—'}</td>
+        <td style="max-width:160px;font-size:11px;color:#64748b">${(c.message||'').slice(0,50)}${c.message?.length>50?'...':''}</td>
+        <td>
+          <select onchange="updateStatus(${c.id},this.value)" style="padding:3px 6px;border-radius:6px;border:1px solid #e2e8f0;font-size:11px;font-weight:600;cursor:pointer;background:#${STATUS_COLOR[c.status]||'fff'}">
+            ${Object.entries(STATUS_LABEL).map(([k,v]) => `<option value="${k}" ${c.status===k?'selected':''}>${v}</option>`).join('')}
+          </select>
+        </td>
+        <td style="font-size:11px;color:#64748b">${new Date(c.created_at).toLocaleDateString('vi-VN')}</td>
+        <td class="actions"><button class="btn-del" onclick="delCustomer(${c.id})"><i class="fas fa-times"></i> Xoá</button></td>
+      </tr>`).join('');
+  }
+
+  async function updateStatus(id, status) {
+    await fetch(`${API}/customers/${id}`, { method:'PUT', headers:hdr(), body:JSON.stringify({status}) });
+    loadCustomers(); toast('Đã cập nhật trạng thái');
+  }
+
+  async function delCustomer(id) {
+    if (!confirm('Xoá khách hàng này?')) return;
+    await fetch(`${API}/customers/${id}`, { method:'DELETE', headers:hdr() });
+    loadCustomers(); toast('Đã xoá');
+  }
+
+  function exportCustomers() {
+    const rows = [['Họ tên','Điện thoại','Email','Công ty','Tin nhắn','Trạng thái','Ngày đăng ký']];
+    customersList.forEach(c => rows.push([c.name,c.phone,c.email,c.company,c.message,STATUS_LABEL[c.status],c.created_at]));
+    const csv = rows.map(r => r.map(v => `"${(v||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+    const a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,﻿' + encodeURIComponent(csv);
+    a.download = `khach-hang-${new Date().toISOString().slice(0,10)}.csv`; a.click();
+    toast('Đã xuất file CSV');
+  }
+
+  // ── WHY ───────────────────────────────────────────────
+  let whyList = [];
+  async function loadWhy() {
+    const r = await safeFetch(`${API}/why`, { headers: hdr() });
+    if (!r) return;
+    const data = await r.json();
+    whyList = Array.isArray(data) ? data : [];
+    document.getElementById('why-count').textContent = `${whyList.length} thẻ`;
+    if (!whyList.length) { document.getElementById('why-tbody').innerHTML = '<tr class="empty-row"><td colspan="6">Chưa có thẻ nào</td></tr>'; return; }
+    document.getElementById('why-tbody').innerHTML = whyList.map(w => `
+      <tr>
+        <td style="font-size:1.3rem">${w.icon}</td>
+        <td><strong>${w.title}</strong></td>
+        <td style="max-width:240px;font-size:11px;color:#64748b">${(w.description||'').slice(0,80)}...</td>
+        <td>${w.order_index}</td>
+        <td><span class="badge badge-${w.active?'active':'inactive'}">${w.active?'Hiển thị':'Ẩn'}</span></td>
+        <td class="actions">
+          <button class="btn-edit" onclick="editWhy(${w.id})"><i class="fas fa-edit"></i> Sửa</button>
+          <button class="btn-del"  onclick="delWhy(${w.id})"><i class="fas fa-times"></i> Xoá</button>
+        </td>
+      </tr>`).join('');
+  }
+  function openWhyModal(w) {
+    document.getElementById('why-modal-title').textContent = w ? 'Sửa thẻ' : 'Thêm thẻ';
+    document.getElementById('why-id').value    = w?.id||'';
+    document.getElementById('why-icon').value  = w?.icon||'⭐';
+    document.getElementById('why-color').value = w?.icon_color||'blue';
+    document.getElementById('why-title').value = w?.title||'';
+    setField('why-desc', w?.description||'');
+    document.getElementById('why-order').value = w?.order_index||'';
+    document.getElementById('why-active').value= w?.active!==0?'true':'false';
+    openModal('why-modal');
+  }
+  function editWhy(id) { openWhyModal(whyList.find(w=>w.id===id)); }
+  async function saveWhy() {
+    if (!validate([{ id:'why-title', label:'Tiêu đề' }])) return;
+    const id = document.getElementById('why-id').value;
+    const body = { icon:document.getElementById('why-icon').value, icon_color:document.getElementById('why-color').value, title:document.getElementById('why-title').value, description:getField('why-desc'), order_index:+document.getElementById('why-order').value||0, active:document.getElementById('why-active').value==='true' };
+    await fetch(id?`${API}/why/${id}`:`${API}/why`, { method:id?'PUT':'POST', headers:hdr(), body:JSON.stringify(body) });
+    closeModal('why-modal'); loadWhy(); toast(id?'Đã cập nhật':'Đã thêm thẻ mới');
+  }
+  async function delWhy(id) { if(!confirm('Xoá thẻ này?'))return; await fetch(`${API}/why/${id}`,{method:'DELETE',headers:hdr()}); loadWhy(); toast('Đã xoá'); }
+
+  // ── HOW ───────────────────────────────────────────────
+  let howList = [];
+  async function loadHow() {
+    const r = await safeFetch(`${API}/how-steps`, { headers: hdr() });
+    if (!r) return;
+    const data = await r.json();
+    howList = Array.isArray(data) ? data : [];
+    document.getElementById('how-count').textContent = `${howList.length} bước`;
+    document.getElementById('how-tbody').innerHTML = howList.map(h => `
+      <tr>
+        <td><strong>Bước ${h.step_number}</strong></td>
+        <td><strong>${h.title}</strong></td>
+        <td style="font-size:11px;color:#64748b">${h.short_desc||''}</td>
+        <td><span class="badge badge-${h.active?'active':'inactive'}">${h.active?'Hiển thị':'Ẩn'}</span></td>
+        <td class="actions">
+          <button class="btn-edit" onclick="editHow(${h.id})"><i class="fas fa-edit"></i> Sửa</button>
+          <button class="btn-del"  onclick="delHow(${h.id})"><i class="fas fa-times"></i> Xoá</button>
+        </td>
+      </tr>`).join('');
+  }
+  function openHowModal(h) {
+    document.getElementById('how-modal-title').textContent  = h ? 'Sửa bước' : 'Thêm bước';
+    document.getElementById('how-id').value         = h?.id||'';
+    document.getElementById('how-num').value         = h?.step_number||'';
+    document.getElementById('how-title').value       = h?.title||'';
+    document.getElementById('how-short').value       = h?.short_desc||'';
+    document.getElementById('how-panel-title').value = h?.panel_title||'';
+    setField('how-panel-desc', h?.panel_desc||'');
+    document.getElementById('how-features').value    = (h?.features||[]).join('\n');
+    document.getElementById('how-order').value       = h?.order_index||'';
+    document.getElementById('how-active').value      = h?.active!==0?'true':'false';
+    openModal('how-modal');
+  }
+  function editHow(id) { openHowModal(howList.find(h=>h.id===id)); }
+  async function saveHow() {
+    if (!validate([{ id:'how-num', label:'Số bước' }, { id:'how-title', label:'Tiêu đề' }])) return;
+    const id = document.getElementById('how-id').value;
+    const featText = document.getElementById('how-features').value;
+    const body = { step_number:+document.getElementById('how-num').value, title:document.getElementById('how-title').value, short_desc:document.getElementById('how-short').value, panel_title:document.getElementById('how-panel-title').value, panel_desc:getField('how-panel-desc'), features:featText.split('\n').filter(f=>f.trim()), mockup_bars:howList.find(h=>h.id==id)?.mockup_bars||[], order_index:+document.getElementById('how-order').value||0, active:document.getElementById('how-active').value==='true' };
+    await fetch(id?`${API}/how-steps/${id}`:`${API}/how-steps`, { method:id?'PUT':'POST', headers:hdr(), body:JSON.stringify(body) });
+    closeModal('how-modal'); loadHow(); toast(id?'Đã cập nhật':'Đã thêm bước mới');
+  }
+  async function delHow(id) { if(!confirm('Xoá bước này?'))return; await fetch(`${API}/how-steps/${id}`,{method:'DELETE',headers:hdr()}); loadHow(); toast('Đã xoá'); }
+
+  // ── TECH ──────────────────────────────────────────────
+  let techList = [];
+  async function loadTech() {
+    const r = await safeFetch(`${API}/tech`, { headers: hdr() });
+    if (!r) return;
+    const data = await r.json();
+    techList = Array.isArray(data) ? data : [];
+    document.getElementById('tech-count').textContent = `${techList.length} mục`;
+    document.getElementById('tech-tbody').innerHTML = techList.map(t => `
+      <tr>
+        <td><img src="/${t.image_url}" style="height:36px;object-fit:contain" onerror="this.style.display='none'" /></td>
+        <td><strong>${t.title}</strong></td>
+        <td style="font-size:11px;color:#64748b;max-width:200px">${(t.description||'').slice(0,60)}...</td>
+        <td>${t.is_featured?'<span class="badge badge-hot">Nổi bật</span>':'—'}</td>
+        <td><span class="badge badge-${t.active?'active':'inactive'}">${t.active?'Hiển thị':'Ẩn'}</span></td>
+        <td class="actions">
+          <button class="btn-edit" onclick="editTech(${t.id})"><i class="fas fa-edit"></i> Sửa</button>
+          <button class="btn-del"  onclick="delTech(${t.id})"><i class="fas fa-times"></i> Xoá</button>
+        </td>
+      </tr>`).join('');
+  }
+  function openTechModal(t) {
+    document.getElementById('tech-modal-title').textContent = t ? 'Sửa công nghệ' : 'Thêm công nghệ';
+    document.getElementById('tech-id').value      = t?.id||'';
+    document.getElementById('tech-img').value     = t?.image_url||'';
+    document.getElementById('tech-title').value   = t?.title||'';
+    setField('tech-desc', t?.description||'');
+    document.getElementById('tech-order').value   = t?.order_index||'';
+    document.getElementById('tech-featured').value= t?.is_featured?'true':'false';
+    document.getElementById('tech-active').value  = t?.active!==0?'true':'false';
+    openModal('tech-modal');
+  }
+  function editTech(id) { openTechModal(techList.find(t=>t.id===id)); }
+  async function saveTech() {
+    if (!validate([{ id:'tech-title', label:'Tiêu đề' }])) return;
+    const id = document.getElementById('tech-id').value;
+    const body = { image_url:document.getElementById('tech-img').value, title:document.getElementById('tech-title').value, description:getField('tech-desc'), order_index:+document.getElementById('tech-order').value||0, is_featured:document.getElementById('tech-featured').value==='true', active:document.getElementById('tech-active').value==='true' };
+    await fetch(id?`${API}/tech/${id}`:`${API}/tech`, { method:id?'PUT':'POST', headers:hdr(), body:JSON.stringify(body) });
+    closeModal('tech-modal'); loadTech(); toast(id?'Đã cập nhật':'Đã thêm mới');
+  }
+  async function delTech(id) { if(!confirm('Xoá mục này?'))return; await fetch(`${API}/tech/${id}`,{method:'DELETE',headers:hdr()}); loadTech(); toast('Đã xoá'); }
+
+  // ── GALLERY ───────────────────────────────────────────
+  let galleryList = [];
+  async function loadGallery() {
+    const r = await safeFetch(`${API}/gallery`, { headers: hdr() });
+    if (!r) return;
+    const data = await r.json();
+    galleryList = Array.isArray(data) ? data : [];
+    document.getElementById('gallery-count').textContent = `${galleryList.length} ảnh`;
+    document.getElementById('gallery-tbody').innerHTML = galleryList.map(g => `
+      <tr>
+        <td><img src="/${g.image_url}" style="height:44px;width:70px;object-fit:cover;border-radius:5px" onerror="this.style.display='none'" /></td>
+        <td>${g.caption||''}</td>
+        <td>${g.order_index}</td>
+        <td><span class="badge badge-${g.active?'active':'inactive'}">${g.active?'Hiển thị':'Ẩn'}</span></td>
+        <td class="actions">
+          <button class="btn-edit" onclick="editGallery(${g.id})"><i class="fas fa-edit"></i> Sửa</button>
+          <button class="btn-del"  onclick="delGallery(${g.id})"><i class="fas fa-times"></i> Xoá</button>
+        </td>
+      </tr>`).join('');
+  }
+  function openGalleryModal(g) {
+    document.getElementById('gallery-modal-title').textContent = g ? 'Sửa ảnh' : 'Thêm ảnh';
+    document.getElementById('gallery-id').value      = g?.id||'';
+    document.getElementById('gallery-img').value     = g?.image_url||'';
+    document.getElementById('gallery-caption').value = g?.caption||'';
+    document.getElementById('gallery-alt').value     = g?.alt_text||'';
+    document.getElementById('gallery-order').value   = g?.order_index||'';
+    document.getElementById('gallery-active').value  = g?.active!==0?'true':'false';
+    document.getElementById('gallery-upload-status').style.display = 'none';
+    document.getElementById('gallery-img-file').value = '';
+    updateGalleryPreview(g?.image_url||'');
+    openModal('gallery-modal');
+  }
+  function editGallery(id) { openGalleryModal(galleryList.find(g=>g.id===id)); }
+  async function saveGallery() {
+    if (!validate([{ id:'gallery-img', label:'URL ảnh' }])) return;
+    const id = document.getElementById('gallery-id').value;
+    const body = { image_url:document.getElementById('gallery-img').value, caption:document.getElementById('gallery-caption').value, alt_text:document.getElementById('gallery-alt').value, order_index:+document.getElementById('gallery-order').value||0, active:document.getElementById('gallery-active').value==='true' };
+    await fetch(id?`${API}/gallery/${id}`:`${API}/gallery`, { method:id?'PUT':'POST', headers:hdr(), body:JSON.stringify(body) });
+    closeModal('gallery-modal'); loadGallery(); toast(id?'Đã cập nhật':'Đã thêm ảnh mới');
+  }
+  function updateGalleryPreview(src) {
+    const wrap = document.getElementById('gallery-img-preview');
+    const img  = document.getElementById('gallery-img-preview-el');
+    if (src) { img.src = src; wrap.style.display = 'block'; }
+    else      { wrap.style.display = 'none'; }
+  }
+
+  async function uploadGalleryImg(input) {
+    if (!input.files[0]) return;
+    const statusEl = document.getElementById('gallery-upload-status');
+    statusEl.style.display = 'block';
+    statusEl.style.color   = '#64748b';
+    statusEl.textContent   = '⏳ Đang upload...';
+    const formData = new FormData();
+    formData.append('file', input.files[0]);
+    try {
+      const r    = await fetch(`${API}/upload`, { method:'POST', headers:{ 'Authorization': `Bearer ${token}` }, body: formData });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error);
+      document.getElementById('gallery-img').value = data.url;
+      updateGalleryPreview(data.url);
+      if (!document.getElementById('gallery-alt').value)
+        document.getElementById('gallery-alt').value = input.files[0].name.replace(/\.[^.]+$/, '');
+      statusEl.style.color = '#00B341';
+      statusEl.textContent = '✅ Upload thành công!';
+    } catch (e) {
+      statusEl.style.color = '#E52222';
+      statusEl.textContent = '❌ ' + e.message;
+    }
+  }
+
+  async function delGallery(id) { if(!confirm('Xoá ảnh này?'))return; await fetch(`${API}/gallery/${id}`,{method:'DELETE',headers:hdr()}); loadGallery(); toast('Đã xoá'); }
+
+  // ── Rich text editor (dùng chung) ────────────────────
+  function toolbarHTML(id) {
+    const uid = id.replace(/-/g,'_');
+    return `
+    <div style="display:flex;align-items:center;gap:2px;padding:6px 8px;background:#F8FAFF;border-bottom:1px solid #e2e8f0;flex-wrap:wrap">
+      <select onchange="fmtOn('${id}','fontSize',this.value);this.blur()"
+        style="height:26px;padding:0 4px;border:1px solid #e2e8f0;border-radius:4px;font-size:11px;font-family:inherit;background:white;cursor:pointer;margin-right:2px">
+        <option value="1">Nhỏ</option><option value="3" selected>Thường</option>
+        <option value="4">Lớn</option><option value="5">To</option><option value="6">Rất to</option>
+      </select>
+      <div style="width:1px;height:20px;background:#e2e8f0;margin:0 3px"></div>
+      <button class="tb-btn" onclick="fmtOn('${id}','bold')"          title="Đậm"><b>B</b></button>
+      <button class="tb-btn" onclick="fmtOn('${id}','italic')"        title="Nghiêng" style="font-style:italic">I</button>
+      <button class="tb-btn" onclick="fmtOn('${id}','underline')"     title="Gạch chân" style="text-decoration:underline">U</button>
+      <button class="tb-btn" onclick="fmtOn('${id}','strikeThrough')" title="Gạch ngang" style="text-decoration:line-through">S</button>
+      <div style="width:1px;height:20px;background:#e2e8f0;margin:0 3px"></div>
+      <label class="tb-btn" title="Màu chữ" style="position:relative;overflow:hidden">
+        <span style="font-size:12px;font-weight:700">A</span>
+        <span style="display:block;height:3px;background:#E52222;border-radius:1px;margin-top:1px" id="cbar-${uid}"></span>
+        <input type="color" value="#E52222"
+          onchange="fmtOn('${id}','foreColor',this.value);document.getElementById('cbar-${uid}').style.background=this.value"
+          style="position:absolute;opacity:0;width:100%;height:100%;top:0;left:0;cursor:pointer"/>
+      </label>
+      <label class="tb-btn" title="Màu nền chữ" style="position:relative;overflow:hidden">
+        <span style="font-size:12px">🖌</span>
+        <input type="color" value="#FFB800" onchange="fmtOn('${id}','hiliteColor',this.value)"
+          style="position:absolute;opacity:0;width:100%;height:100%;top:0;left:0;cursor:pointer"/>
+      </label>
+      <div style="width:1px;height:20px;background:#e2e8f0;margin:0 3px"></div>
+      <button class="tb-btn" onclick="fmtOn('${id}','justifyLeft')"   title="Căn trái"><i class="fas fa-align-left"   style="font-size:11px"></i></button>
+      <button class="tb-btn" onclick="fmtOn('${id}','justifyCenter')" title="Căn giữa"><i class="fas fa-align-center" style="font-size:11px"></i></button>
+      <button class="tb-btn" onclick="fmtOn('${id}','justifyRight')"  title="Căn phải"><i class="fas fa-align-right"  style="font-size:11px"></i></button>
+      <div style="width:1px;height:20px;background:#e2e8f0;margin:0 3px"></div>
+      <button class="tb-btn" onclick="fmtOn('${id}','insertUnorderedList')" title="Danh sách chấm"><i class="fas fa-list-ul" style="font-size:11px"></i></button>
+      <button class="tb-btn" onclick="fmtOn('${id}','insertOrderedList')"   title="Danh sách số"><i class="fas fa-list-ol"   style="font-size:11px"></i></button>
+      <div style="width:1px;height:20px;background:#e2e8f0;margin:0 3px"></div>
+      <button class="tb-btn" onclick="fmtOn('${id}','removeFormat')" title="Xoá định dạng" style="color:#E52222">
+        <i class="fas fa-times" style="font-size:11px"></i>
+      </button>
+    </div>`;
+  }
+
+  function initRichEditors() {
+    document.querySelectorAll('textarea[data-rich]').forEach(ta => {
+      const id    = ta.id;
+      const ph    = ta.getAttribute('placeholder') || '';
+      const minH  = ta.style.minHeight || '80px';
+      const wrap  = document.createElement('div');
+      wrap.style.cssText = 'border:1.5px solid #e2e8f0;border-radius:10px;overflow:hidden;transition:border-color 0.2s,box-shadow 0.2s';
+      wrap.setAttribute('onfocusin',  "this.style.borderColor='#FF6B00';this.style.boxShadow='0 0 0 3px rgba(255,107,0,0.1)'");
+      wrap.setAttribute('onfocusout', "this.style.borderColor='#e2e8f0';this.style.boxShadow='none'");
+      wrap.innerHTML = toolbarHTML(id) + `<div id="${id}" contenteditable="true" data-placeholder="${ph}"
+        style="min-height:${minH};padding:12px 14px;font-family:inherit;font-size:13px;line-height:1.7;outline:none"></div>`;
+      ta.parentNode.replaceChild(wrap, ta);
+    });
+  }
+
+  function fmtOn(id, cmd, val) {
+    document.getElementById(id).focus();
+    document.execCommand(cmd, false, val || null);
+  }
+
+  function getField(id) {
+    const el = document.getElementById(id);
+    if (!el) return '';
+    return el.contentEditable === 'true' ? el.innerHTML.trim() : el.value;
+  }
+  function setField(id, val) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (el.contentEditable === 'true') el.innerHTML = val || '';
+    else el.value = val || '';
+  }
+
+  // ── Fetch URL tự động điền ────────────────────────────
+  async function fetchNewsUrl() {
+    const url = document.getElementById('news-fetch-url').value.trim();
+    if (!url) return;
+    const btn    = document.getElementById('btn-fetch');
+    const status = document.getElementById('fetch-status');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lấy...';
+    btn.disabled  = true;
+    status.style.display = 'block';
+    status.style.color   = '#64748b';
+    status.textContent   = 'Đang tải trang...';
+    try {
+      const r    = await fetch(`${API}/fetch-url`, { method:'POST', headers:hdr(), body:JSON.stringify({ url }) });
+      const data = await r.json();
+      if (data.error) throw new Error(data.error);
+
+      if (data.title)    document.getElementById('news-title').value       = data.title;
+      if (data.excerpt)  setField('news-excerpt', data.excerpt);
+      if (data.image)  { document.getElementById('news-img').value         = data.image; updateImgPreview(data.image); }
+      if (data.siteName) document.getElementById('news-source-name').value = data.siteName.toUpperCase();
+      if (data.date)     document.getElementById('news-date').value        = data.date;
+
+      // Tự động điền tag & URL nguồn từ domain
+      try {
+        const domain = new URL(url).hostname.replace('www.','');
+        if (!document.getElementById('news-source-name').value) document.getElementById('news-source-name').value = domain.toUpperCase();
+        document.getElementById('news-source-tag').value  = domain.split('.')[0];
+        document.getElementById('news-source-url').value  = `https://${domain}`;
+      } catch {}
+
+      status.style.color = '#00B341';
+      status.textContent = '✅ Đã điền tự động từ URL!';
+    } catch (e) {
+      status.style.color = '#E52222';
+      status.textContent = '❌ ' + e.message;
+    }
+    btn.innerHTML = '<i class="fas fa-download"></i> Lấy dữ liệu';
+    btn.disabled  = false;
+  }
+
+  // ── Upload ảnh thumbnail ──────────────────────────────
+  async function uploadNewsImg(input) {
+    if (!input.files[0]) return;
+    const statusEl = document.getElementById('news-upload-status');
+    statusEl.style.display = 'block';
+    statusEl.style.color   = '#64748b';
+    statusEl.textContent   = '⏳ Đang upload...';
+
+    const formData = new FormData();
+    formData.append('file', input.files[0]);
+    try {
+      const r    = await fetch(`${API}/upload`, { method:'POST', headers:{ 'Authorization': `Bearer ${token}` }, body: formData });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error);
+      document.getElementById('news-img').value = data.url;
+      updateImgPreview(data.url);
+      statusEl.style.color = '#00B341';
+      statusEl.textContent = '✅ Upload thành công!';
+    } catch (e) {
+      statusEl.style.color = '#E52222';
+      statusEl.textContent = '❌ ' + e.message;
+    }
+  }
+
+  function updateImgPreview(src) {
+    const wrap = document.getElementById('news-img-preview');
+    const img  = document.getElementById('news-img-preview-el');
+    if (src) { img.src = src; wrap.style.display = 'block'; }
+    else      { wrap.style.display = 'none'; }
+  }
+
+  // ── AI gợi ý tóm tắt ─────────────────────────────────
+  async function aiSuggestExcerpt() {
+    const title   = document.getElementById('news-title').value.trim();
+    const excerpt = stripHtml(getField('news-excerpt'));
+    const btn     = document.getElementById('btn-ai');
+    if (!title && !excerpt) { toast('⚠️ Nhập tiêu đề trước để AI gợi ý'); return; }
+
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    btn.disabled  = true;
+    try {
+      const r = await fetch(`${API}/ai-suggest`, {
+        method: 'POST', headers: hdr(),
+        body: JSON.stringify({ title, excerpt })
+      });
+      const data = await r.json();
+      if (data.error) throw new Error(data.error);
+      setField('news-excerpt', data.result);
+      toast(data.fallback ? 'Đã tạo tóm tắt mẫu. Thêm Anthropic key thật để dùng Claude.' : '✅ AI đã gợi ý xong!');
+    } catch (e) {
+      toast('❌ ' + (e.message || 'Lỗi AI'));
+    }
+    btn.innerHTML = '<i class="fas fa-robot"></i> AI gợi ý';
+    btn.disabled  = false;
+  }
+
+  function stripHtml(html) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html || '';
+    return (tmp.textContent || tmp.innerText || '').trim();
+  }
+
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function formatSeoDraftText(draft) {
+    if (!draft) return '';
+    const faqText = (draft.faq || [])
+      .map((f, i) => `${i + 1}. ${f.question}\n${f.answer || ''}`)
+      .join('\n\n');
+    return [
+      `Tiêu đề: ${draft.title || ''}`,
+      `SEO Title: ${draft.seo_title || ''}`,
+      `Slug: ${draft.slug || ''}`,
+      `Meta description: ${draft.meta_description || ''}`,
+      `Tóm tắt: ${draft.excerpt || ''}`,
+      `Ảnh: ${draft.image_url || ''}`,
+      `Alt ảnh: ${draft.image_alt || ''}`,
+      `Prompt ảnh: ${draft.image_prompt || ''}`,
+      '',
+      draft.content || '',
+      faqText ? `\nFAQ\n${faqText}` : ''
+    ].join('\n');
+  }
+
+  function renderSeoDraft(draft, warning) {
+    currentSeoDraft = draft || null;
+    const preview = document.getElementById('seo-preview');
+    const output = document.getElementById('seo-output');
+    const publishBtn = document.getElementById('btn-seo-publish');
+    if (!draft) {
+      preview.innerHTML = '<div class="seo-empty">Bản nháp AI sẽ hiện ở đây sau khi bấm Tạo bản nháp.</div>';
+      output.value = '';
+      publishBtn.disabled = true;
+      return;
+    }
+    output.value = formatSeoDraftText(draft);
+    publishBtn.disabled = false;
+    preview.innerHTML = `
+      ${warning ? `<div class="draft-excerpt" style="background:#fff7ed;border-left-color:#FF6B00;color:#9a3412">${escapeHtml(warning)}</div>` : ''}
+      <div class="draft-title">${escapeHtml(draft.title)}</div>
+      <div class="draft-meta">
+        <div class="draft-meta-item"><strong>SEO Title</strong>${escapeHtml(draft.seo_title)}</div>
+        <div class="draft-meta-item"><strong>Slug</strong>${escapeHtml(draft.slug)}</div>
+        <div class="draft-meta-item"><strong>Danh mục</strong>${escapeHtml(draft.category || 'Kiến thức AI')}</div>
+        <div class="draft-meta-item"><strong>Ảnh</strong>${escapeHtml(draft.image_url || 'Ảnh mặc định')}</div>
+      </div>
+      <div class="draft-excerpt">${escapeHtml(draft.excerpt)}</div>
+      <div class="draft-meta-item" style="margin-bottom:14px"><strong>Meta Description</strong>${escapeHtml(draft.meta_description)}</div>
+      <div class="draft-content">${escapeHtml(draft.content)}</div>
+      ${(draft.faq || []).length ? `
+        <div class="draft-faq">
+          <div class="draft-faq-title">FAQ</div>
+          ${(draft.faq || []).map(f => `
+            <div class="draft-faq-item">
+              <strong>${escapeHtml(f.question)}</strong><br>
+              ${escapeHtml(f.answer || '')}
+            </div>`).join('')}
+        </div>` : ''}
+      <div class="draft-meta-item" style="margin-top:14px"><strong>Prompt ảnh</strong>${escapeHtml(draft.image_prompt || '')}</div>
+    `;
+  }
+
+  async function runSeoAssistant() {
+    const btn = document.getElementById('btn-seo-run');
+    const payload = {
+      mode: document.getElementById('seo-mode').value,
+      keyword: document.getElementById('seo-keyword').value.trim(),
+      topic: document.getElementById('seo-topic').value.trim(),
+      audience: document.getElementById('seo-audience').value.trim(),
+      intent: document.getElementById('seo-intent').value,
+      tone: document.getElementById('seo-tone').value,
+      request: document.getElementById('seo-request').value.trim(),
+      image_url: document.getElementById('seo-image-url').value.trim()
+    };
+
+    if (!payload.keyword && !payload.topic && !payload.request) {
+      toast('Nhập yêu cầu, từ khóa hoặc chủ đề bài viết trước');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
+    renderSeoDraft(null);
+    document.getElementById('seo-preview').innerHTML = '<div class="seo-empty">AI đang tạo bản nháp, vui lòng chờ...</div>';
+
+    try {
+      const r = await fetch(`${API}/ai-blog-draft`, {
+        method: 'POST',
+        headers: hdr(),
+        body: JSON.stringify(payload)
+      });
+      const data = await r.json();
+      if (!r.ok || data.error) throw new Error(data.error || 'Lỗi tạo bản nháp');
+      renderSeoDraft(data.draft, data.fallback ? 'Đang dùng bản nháp mẫu. Thêm Anthropic key thật để Claude tạo nội dung linh hoạt hơn.' : '');
+      toast(data.fallback ? 'Đã tạo bản nháp mẫu' : 'AI đã tạo bản nháp xong');
+    } catch (e) {
+      renderSeoDraft(null);
+      toast('Lỗi: ' + (e.message || 'Không tạo được bản nháp'));
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-robot"></i> Tạo bản nháp';
+  }
+
+  async function publishSeoDraft() {
+    if (!currentSeoDraft) {
+      toast('Chưa có bản nháp để đăng');
+      return;
+    }
+    if (!confirm('Đăng bài này lên website?')) return;
+    const btn = document.getElementById('btn-seo-publish');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang đăng...';
+    try {
+      const r = await fetch(`${API}/ai-blog-publish`, {
+        method: 'POST',
+        headers: hdr(),
+        body: JSON.stringify({ draft: currentSeoDraft })
+      });
+      const data = await r.json();
+      if (!r.ok || data.error) throw new Error(data.error || 'Không đăng được bài');
+      toast('Đã đăng bài lên website');
+      if (data.url) window.open(data.url, '_blank');
+      loadNews();
+    } catch (e) {
+      toast('Lỗi: ' + (e.message || 'Không đăng được bài'));
+    }
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Đăng bài';
+  }
+
+  function fillSeoFromNewsForm() {
+    const titleEl = document.getElementById('news-title');
+    const excerptEl = document.getElementById('news-excerpt');
+    const title = titleEl ? titleEl.value.trim() : '';
+    const excerpt = excerptEl ? stripHtml(getField('news-excerpt')) : '';
+
+    if (!title && !excerpt) {
+      toast('Chưa có dữ liệu trong form bài viết');
+      return;
+    }
+
+    document.getElementById('seo-mode').value = 'generate';
+    document.getElementById('seo-topic').value = title;
+    document.getElementById('seo-request').value = [title, excerpt].filter(Boolean).join('\n\n');
+    toast('Đã lấy dữ liệu từ form bài viết');
+  }
+
+  async function copySeoResult() {
+    const output = document.getElementById('seo-output');
+    if (!output.value.trim()) {
+      toast('Chưa có kết quả để copy');
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(output.value);
+    } catch {
+      output.select();
+      document.execCommand('copy');
+    }
+    toast('Đã copy kết quả');
+  }
+
+  function clearSeoAssistant() {
+    currentSeoDraft = null;
+    document.getElementById('seo-output').value = '';
+    document.getElementById('seo-request').value = '';
+    document.getElementById('seo-image-url').value = '';
+    document.getElementById('seo-img-file').value = '';
+    document.getElementById('seo-upload-status').style.display = 'none';
+    updateSeoImgPreview('');
+    renderSeoDraft(null);
+  }
+
+  // ── BLOG POSTS ────────────────────────────────────────
+  let blogList = [];
+  let blogSlugManual = false;
+
+  async function loadBlogPosts() {
+    const r = await safeFetch(`${API}/blog-posts`, { headers: hdr() });
+    if (!r) return;
+    const data = await r.json();
+    blogList = Array.isArray(data) ? data : [];
+    document.getElementById('blog-count').textContent = `${blogList.length} bài viết`;
+    const tbody = document.getElementById('blog-tbody');
+    if (!blogList.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Chưa có bài viết nào</td></tr>'; return;
+    }
+    tbody.innerHTML = blogList.map(b => `
+      <tr>
+        <td style="max-width:260px"><strong>${b.title}</strong></td>
+        <td style="font-size:11px">${b.slug ? `<a href="/blog/${b.slug}" target="_blank" style="color:var(--primary)">/blog/${b.slug}</a>` : '<span style="color:#E52222">Chưa có slug</span>'}</td>
+        <td>${b.category||'—'}</td>
+        <td>${b.published_at ? new Date(b.published_at).toLocaleDateString('vi-VN') : '—'}</td>
+        <td><span class="badge badge-${b.active?'active':'inactive'}">${b.active?'Hiển thị':'Ẩn'}</span></td>
+        <td class="actions">
+          <button class="btn-edit" onclick="editBlogPost(${b.id})"><i class="fas fa-edit"></i> Sửa</button>
+          <button class="btn-del"  onclick="delBlogPost(${b.id})"><i class="fas fa-times"></i> Xoá</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  function autoSlug() {
+    if (blogSlugManual) return;
+    const slug = document.getElementById('blog-title').value
+      .normalize('NFD').replace(/[̀-ͯ]/g,'')
+      .replace(/đ/gi,'d').toLowerCase()
+      .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,70);
+    document.getElementById('blog-slug').value = slug;
+  }
+
+  function openBlogModal(b) {
+    blogSlugManual = !!b;
+    document.getElementById('blog-modal-title').textContent = b ? 'Sửa bài viết Blog' : 'Thêm bài viết Blog';
+    document.getElementById('blog-id').value        = b?.id || '';
+    document.getElementById('blog-title').value     = b?.title || '';
+    document.getElementById('blog-slug').value      = b?.slug || '';
+    setField('blog-excerpt', b?.excerpt || '');
+    document.getElementById('blog-content').value   = b?.content || '';
+    document.getElementById('blog-img').value       = b?.image_url || '';
+    document.getElementById('blog-img-alt').value   = b?.image_alt || '';
+    document.getElementById('blog-seo-title').value = b?.seo_title || '';
+    document.getElementById('blog-meta-desc').value = b?.meta_description || '';
+    document.getElementById('blog-category').value  = b?.category || 'Kiến thức AI';
+    document.getElementById('blog-author').value    = b?.author || 'VIAi Team';
+    document.getElementById('blog-date').value      = b?.published_at ? b.published_at.slice(0,10) : new Date().toISOString().slice(0,10);
+    document.getElementById('blog-active').value    = (b?.active !== false && b?.active !== 0) ? 'true' : 'false';
+    document.getElementById('blog-img-file').value  = '';
+    document.getElementById('blog-upload-status').style.display = 'none';
+    updateBlogImgPreview(b?.image_url || '');
+    openModal('blog-modal');
+  }
+
+  function editBlogPost(id) { openBlogModal(blogList.find(b => b.id === id)); }
+
+  async function saveBlogPost() {
+    if (!validate([{ id:'blog-title', label:'Tiêu đề' }])) return;
+    const id = document.getElementById('blog-id').value;
+    const body = {
+      title:            document.getElementById('blog-title').value,
+      slug:             document.getElementById('blog-slug').value || null,
+      excerpt:          getField('blog-excerpt'),
+      content:          document.getElementById('blog-content').value,
+      image_url:        document.getElementById('blog-img').value,
+      image_alt:        document.getElementById('blog-img-alt').value,
+      seo_title:        document.getElementById('blog-seo-title').value,
+      meta_description: document.getElementById('blog-meta-desc').value,
+      category:         document.getElementById('blog-category').value,
+      author:           document.getElementById('blog-author').value,
+      published_at:     document.getElementById('blog-date').value,
+      active:           document.getElementById('blog-active').value === 'true',
+    };
+    await fetch(id ? `${API}/blog-posts/${id}` : `${API}/blog-posts`, {
+      method: id ? 'PUT' : 'POST', headers: hdr(), body: JSON.stringify(body)
+    });
+    closeModal('blog-modal'); loadBlogPosts(); toast(id ? 'Đã cập nhật bài viết' : 'Đã thêm bài viết mới');
+  }
+
+  async function insertBlogImage(input) {
+    if (!input.files[0]) return;
+    const btn = document.getElementById('btn-insert-img');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang upload...';
+    const formData = new FormData();
+    formData.append('file', input.files[0]);
+    try {
+      const r    = await fetch(`${API}/upload`, { method:'POST', headers:{ 'Authorization': `Bearer ${token}` }, body: formData });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error);
+      const ta  = document.getElementById('blog-content');
+      const alt = input.files[0].name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+      const txt = `\n![${alt}](${data.url})\n`;
+      const s   = ta.selectionStart, e = ta.selectionEnd;
+      ta.value  = ta.value.slice(0, s) + txt + ta.value.slice(e);
+      ta.selectionStart = ta.selectionEnd = s + txt.length;
+      ta.focus();
+      toast('✅ Đã chèn ảnh vào nội dung');
+    } catch (err) {
+      toast('❌ ' + err.message);
+    }
+    btn.innerHTML = '<i class="fas fa-image"></i> Chèn ảnh';
+    input.value = '';
+  }
+
+  function updateBlogImgPreview(src) {
+    const wrap = document.getElementById('blog-img-preview');
+    const img  = document.getElementById('blog-img-preview-el');
+    if (src) { img.src = src; wrap.style.display = 'block'; }
+    else      { wrap.style.display = 'none'; }
+  }
+
+  async function uploadBlogImg(input) {
+    if (!input.files[0]) return;
+    const statusEl = document.getElementById('blog-upload-status');
+    statusEl.style.display = 'block'; statusEl.style.color = '#64748b';
+    statusEl.textContent = '⏳ Đang upload...';
+    const formData = new FormData();
+    formData.append('file', input.files[0]);
+    try {
+      const r    = await fetch(`${API}/upload`, { method:'POST', headers:{ 'Authorization': `Bearer ${token}` }, body: formData });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error);
+      document.getElementById('blog-img').value = data.url;
+      updateBlogImgPreview(data.url);
+      if (!document.getElementById('blog-img-alt').value)
+        document.getElementById('blog-img-alt').value = input.files[0].name.replace(/\.[^.]+$/, '');
+      statusEl.style.color = '#00B341';
+      statusEl.textContent = '✅ Upload thành công!';
+    } catch (e) {
+      statusEl.style.color = '#E52222';
+      statusEl.textContent = '❌ ' + e.message;
+    }
+  }
+
+  function updateSeoImgPreview(src) {
+    const wrap = document.getElementById('seo-img-preview');
+    const img  = document.getElementById('seo-img-preview-el');
+    if (src) { img.src = src; wrap.style.display = 'block'; }
+    else      { wrap.style.display = 'none'; }
+  }
+
+  async function uploadSeoImg(input) {
+    if (!input.files[0]) return;
+    const statusEl = document.getElementById('seo-upload-status');
+    statusEl.style.display = 'block'; statusEl.style.color = '#64748b';
+    statusEl.textContent = '⏳ Đang upload...';
+    const formData = new FormData();
+    formData.append('file', input.files[0]);
+    try {
+      const r    = await fetch(`${API}/upload`, { method:'POST', headers:{ 'Authorization': `Bearer ${token}` }, body: formData });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error);
+      document.getElementById('seo-image-url').value = data.url;
+      updateSeoImgPreview(data.url);
+      statusEl.style.color = '#00B341';
+      statusEl.textContent = '✅ Upload thành công!';
+    } catch (e) {
+      statusEl.style.color = '#E52222';
+      statusEl.textContent = '❌ ' + e.message;
+    }
+  }
+
+  async function delBlogPost(id) {
+    if (!confirm('Xoá bài viết này?')) return;
+    await fetch(`${API}/blog-posts/${id}`, { method:'DELETE', headers:hdr() });
+    loadBlogPosts(); toast('Đã xoá bài viết');
+  }
+</script>
+</body>
+</html>

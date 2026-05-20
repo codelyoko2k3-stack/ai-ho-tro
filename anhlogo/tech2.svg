@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6B00"/>
+      <stop offset="50%" style="stop-color:#FFB800"/>
+      <stop offset="100%" style="stop-color:#FF8C38"/>
+    </linearGradient>
+    <filter id="glow2">
+      <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="400" fill="url(#bg2)"/>
+
+  <!-- BG shapes -->
+  <circle cx="550" cy="60" r="130" fill="#FF8C38" opacity="0.3"/>
+  <circle cx="60" cy="350" r="110" fill="#FF6B00" opacity="0.25"/>
+  <ellipse cx="300" cy="200" rx="180" ry="120" fill="#FFB800" opacity="0.15"/>
+
+  <!-- Grid -->
+  <g opacity="0.12" fill="white">
+    <circle cx="50" cy="50" r="2"/><circle cx="110" cy="50" r="2"/><circle cx="170" cy="50" r="2"/>
+    <circle cx="430" cy="350" r="2"/><circle cx="490" cy="350" r="2"/><circle cx="550" cy="350" r="2"/>
+  </g>
+
+  <!-- Center hub -->
+  <circle cx="300" cy="195" r="48" fill="white" opacity="0.15" filter="url(#glow2)"/>
+  <circle cx="300" cy="195" r="38" fill="white" opacity="0.2"/>
+  <circle cx="300" cy="195" r="28" fill="white" opacity="0.9"/>
+  <text x="300" y="205" text-anchor="middle" font-size="28" fill="#FF6B00">⚡</text>
+
+  <!-- Platform nodes -->
+  <!-- Zalo -->
+  <g transform="translate(140,110)">
+    <circle r="36" fill="white" opacity="0.92"/>
+    <text x="0" y="8" text-anchor="middle" font-size="26">💬</text>
+    <text x="0" y="54" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="white">Zalo</text>
+  </g>
+
+  <!-- Facebook -->
+  <g transform="translate(460,110)">
+    <circle r="36" fill="white" opacity="0.92"/>
+    <text x="0" y="8" text-anchor="middle" font-size="26">📘</text>
+    <text x="0" y="54" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="white">Facebook</text>
+  </g>
+
+  <!-- Website -->
+  <g transform="translate(130,280)">
+    <circle r="36" fill="white" opacity="0.92"/>
+    <text x="0" y="8" text-anchor="middle" font-size="26">🌐</text>
+    <text x="0" y="54" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="white">Website</text>
+  </g>
+
+  <!-- CRM -->
+  <g transform="translate(470,280)">
+    <circle r="36" fill="white" opacity="0.92"/>
+    <text x="0" y="8" text-anchor="middle" font-size="26">📊</text>
+    <text x="0" y="54" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="white">CRM</text>
+  </g>
+
+  <!-- ERP top -->
+  <g transform="translate(300,60)">
+    <circle r="30" fill="white" opacity="0.92"/>
+    <text x="0" y="8" text-anchor="middle" font-size="22">🏭</text>
+    <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="white">ERP</text>
+  </g>
+
+  <!-- Email bottom -->
+  <g transform="translate(300,335)">
+    <circle r="30" fill="white" opacity="0.92"/>
+    <text x="0" y="8" text-anchor="middle" font-size="22">📧</text>
+    <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="white">Email</text>
+  </g>
+
+  <!-- Connection lines -->
+  <g stroke="white" stroke-width="2" opacity="0.5" fill="none" stroke-dasharray="5 4">
+    <line x1="300" y1="90" x2="300" y2="157"/>
+    <line x1="176" y1="110" x2="265" y2="168"/>
+    <line x1="424" y1="110" x2="335" y2="168"/>
+    <line x1="166" y1="280" x2="270" y2="220"/>
+    <line x1="434" y1="280" x2="330" y2="220"/>
+    <line x1="300" y1="305" x2="300" y2="233"/>
+  </g>
+
+  <!-- Pulse dots on lines -->
+  <g fill="#FFB800" opacity="0.9">
+    <circle cx="233" cy="139" r="5"/>
+    <circle cx="368" cy="139" r="5"/>
+    <circle cx="218" cy="250" r="5"/>
+    <circle cx="382" cy="250" r="5"/>
+  </g>
+
+  <!-- Label -->
+  <text x="300" y="390" text-anchor="middle" font-family="Arial" font-size="17" font-weight="700" fill="white" letter-spacing="2">TÍCH HỢP ĐA NỀN TẢNG</text>
+</svg>

@@ -1,0 +1,4 @@
+node_modules
+viai.db
+*.log
+.env

@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F172A"/>
+      <stop offset="60%" style="stop-color:#0A2540"/>
+      <stop offset="100%" style="stop-color:#1E3A8A"/>
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00B341"/>
+      <stop offset="100%" style="stop-color:#4B82F4"/>
+    </linearGradient>
+    <filter id="glow3">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="400" fill="url(#bg3)"/>
+
+  <!-- BG glow circles -->
+  <circle cx="300" cy="180" r="180" fill="#1A56DB" opacity="0.08"/>
+  <circle cx="100" cy="80" r="90" fill="#00B341" opacity="0.10"/>
+  <circle cx="500" cy="320" r="110" fill="#4B82F4" opacity="0.08"/>
+
+  <!-- Binary/code rain effect -->
+  <g font-family="monospace" font-size="11" fill="#00B341" opacity="0.18">
+    <text x="30" y="50">10110</text><text x="30" y="70">01001</text><text x="30" y="90">11010</text>
+    <text x="540" y="150">01101</text><text x="540" y="170">10010</text><text x="540" y="190">11100</text>
+    <text x="20" y="300">10001</text><text x="20" y="320">01110</text>
+    <text x="545" y="280">11010</text><text x="545" y="300">00111</text>
+  </g>
+
+  <!-- Shield shape -->
+  <g transform="translate(300,185)" filter="url(#glow3)">
+    <!-- Shield path -->
+    <path d="M0,-95 L75,-60 L75,20 Q75,80 0,110 Q-75,80 -75,20 L-75,-60 Z"
+          fill="url(#shieldGrad)" opacity="0.9"/>
+    <path d="M0,-95 L75,-60 L75,20 Q75,80 0,110 Q-75,80 -75,20 L-75,-60 Z"
+          fill="none" stroke="#00B341" stroke-width="2.5" opacity="0.8"/>
+
+    <!-- Shield inner highlight -->
+    <path d="M0,-75 L56,-46 L56,18 Q56,62 0,86 Q-56,62 -56,18 L-56,-46 Z"
+          fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+
+    <!-- Lock icon inside shield -->
+    <rect x="-18" y="-15" width="36" height="28" rx="6" fill="white" opacity="0.95"/>
+    <path d="M-10,-15 L-10,-25 Q-10,-38 0,-38 Q10,-38 10,-25 L10,-15"
+          fill="none" stroke="white" stroke-width="4" stroke-linecap="round" opacity="0.95"/>
+    <circle cx="0" cy="-1" r="5" fill="#0F172A"/>
+
+    <!-- Tick mark -->
+    <path d="M-30,38 L-10,56 L35,16" stroke="#00B341" stroke-width="5" fill="none"
+          stroke-linecap="round" stroke-linejoin="round" opacity="0" filter="url(#glow3)"/>
+  </g>
+
+  <!-- Checkmark badges around shield -->
+  <g font-family="Arial" font-size="11" font-weight="700">
+    <!-- ISO badge -->
+    <g transform="translate(108,140)">
+      <rect x="-40" y="-16" width="80" height="32" rx="16" fill="#00B341" opacity="0.9"/>
+      <text x="0" y="5" text-anchor="middle" fill="white">✓ ISO 27001</text>
+    </g>
+    <!-- Encrypt badge -->
+    <g transform="translate(492,140)">
+      <rect x="-46" y="-16" width="92" height="32" rx="16" fill="#4B82F4" opacity="0.9"/>
+      <text x="0" y="5" text-anchor="middle" fill="white">🔐 Mã hóa 256</text>
+    </g>
+    <!-- VN data badge -->
+    <g transform="translate(120,280)">
+      <rect x="-46" y="-16" width="92" height="32" rx="16" fill="#1A56DB" opacity="0.9"/>
+      <text x="0" y="5" text-anchor="middle" fill="white">🇻🇳 Lưu tại VN</text>
+    </g>
+    <!-- 24/7 badge -->
+    <g transform="translate(478,280)">
+      <rect x="-46" y="-16" width="92" height="32" rx="16" fill="#FF6B00" opacity="0.9"/>
+      <text x="0" y="5" text-anchor="middle" fill="white">⚡ Monitor 24/7</text>
+    </g>
+  </g>
+
+  <!-- Connecting lines from shield to badges -->
+  <g stroke="#00B341" stroke-width="1" opacity="0.3" stroke-dasharray="4 4" fill="none">
+    <line x1="225" y1="175" x2="148" y2="155"/>
+    <line x1="375" y1="175" x2="446" y2="155"/>
+    <line x1="240" y1="235" x2="166" y2="270"/>
+    <line x1="360" y1="235" x2="432" y2="270"/>
+  </g>
+
+  <!-- Label -->
+  <text x="300" y="358" text-anchor="middle" font-family="Arial" font-size="17" font-weight="700" fill="white" letter-spacing="2">BẢO MẬT DOANH NGHIỆP</text>
+  <text x="300" y="378" text-anchor="middle" font-family="Arial" font-size="11" fill="#00B341" letter-spacing="1">Tiêu chuẩn quốc tế · Dữ liệu lưu tại Việt Nam</text>
+</svg>

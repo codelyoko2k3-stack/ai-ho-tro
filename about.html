@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Về chúng tôi – VIAi Technology</title>
+  <link rel="icon" type="image/png" href="/anhlogo/logo2.png" />
+  <link rel="shortcut icon" href="/anhlogo/logo2.png" />
+  <link rel="apple-touch-icon" href="/anhlogo/logo2.png" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-42Q77HM690"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-42Q77HM690');</script>
+  <meta name="description" content="VIAi Technology – Đội ngũ chuyên gia AI và công nghệ với sứ mệnh giúp 1 triệu doanh nghiệp Việt tự động hóa bằng AI Agent." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://respectful-courtesy-production-4318.up.railway.app/about.html" />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #1A56DB; --primary-dark: #1040B0;
+      --accent: #FF6B00; --green: #00B341; --yellow: #FFB800;
+      --gray-900: #0F172A; --gray-600: #1E3A8A; --gray-50: #EEF3FF;
+    }
+    body { font-family: 'Be Vietnam Pro', sans-serif; color: var(--gray-900); background: #fff; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── HEADER ── */
+    .site-header {
+      position: sticky; top: 0; z-index: 100;
+      background: white; border-bottom: 2px solid var(--primary);
+      box-shadow: 0 2px 12px rgba(26,86,219,0.08);
+    }
+    .header-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 24px; height: 72px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { font-size: 1.6rem; font-weight: 900; color: var(--primary); }
+    .logo em { color: var(--accent); font-style: normal; }
+    .header-nav { display: flex; align-items: center; gap: 28px; }
+    .header-nav a { font-size: 0.88rem; font-weight: 600; color: var(--gray-600); transition: color 0.2s; }
+    .header-nav a:hover { color: var(--primary); }
+    .btn-try {
+      padding: 9px 20px; background: var(--accent); color: white;
+      border-radius: 8px; font-weight: 700; font-size: 0.88rem;
+      transition: all 0.2s;
+    }
+    .btn-try:hover { background: #D95800; }
+
+    /* ── HERO ── */
+    .about-hero {
+      background: linear-gradient(135deg, var(--gray-900) 0%, #1a3a6b 60%, #1A56DB 100%);
+      padding: 90px 24px 80px;
+      text-align: center; color: white; position: relative; overflow: hidden;
+    }
+    .about-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(255,107,0,0.15) 0%, transparent 60%);
+    }
+    .about-hero .tag {
+      display: inline-block; background: rgba(255,107,0,0.2);
+      border: 1px solid rgba(255,107,0,0.4); color: #FFB800;
+      padding: 4px 16px; border-radius: 20px;
+      font-size: 0.78rem; font-weight: 800; letter-spacing: 1.5px;
+      text-transform: uppercase; margin-bottom: 20px;
+    }
+    .about-hero h1 {
+      font-size: clamp(2rem, 4vw, 3rem); font-weight: 900;
+      line-height: 1.2; margin-bottom: 20px; position: relative;
+    }
+    .about-hero h1 em { color: #FFB800; font-style: normal; }
+    .about-hero p {
+      font-size: 1.05rem; color: rgba(255,255,255,0.7);
+      max-width: 600px; margin: 0 auto; line-height: 1.8; position: relative;
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      background: var(--primary);
+      padding: 32px 24px;
+    }
+    .stats-bar-inner {
+      max-width: 900px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0; text-align: center;
+    }
+    .stat-item { color: white; padding: 8px 20px; }
+    .stat-item + .stat-item { border-left: 1px solid rgba(255,255,255,0.2); }
+    .stat-num { font-size: 2rem; font-weight: 900; line-height: 1; }
+    .stat-num em { color: #FFB800; font-style: normal; }
+    .stat-lbl { font-size: 0.78rem; color: rgba(255,255,255,0.65); margin-top: 4px; font-weight: 600; }
+
+    /* ── SECTIONS ── */
+    .section { padding: 80px 24px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .sec-tag {
+      display: inline-block; background: rgba(26,86,219,0.08);
+      color: var(--primary); font-size: 0.72rem; font-weight: 800;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 4px 14px; border-radius: 4px; margin-bottom: 12px;
+    }
+    .sec-title { font-size: clamp(1.6rem, 2.5vw, 2.2rem); font-weight: 900; line-height: 1.2; margin-bottom: 16px; }
+    .sec-desc { font-size: 1rem; color: #64748b; line-height: 1.8; max-width: 560px; }
+
+    /* ── STORY ── */
+    .story-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: center;
+    }
+    .story-text p { font-size: 0.95rem; color: #374151; line-height: 1.9; margin-bottom: 16px; }
+    .story-text p strong { color: var(--primary); }
+    .story-visual {
+      background: linear-gradient(135deg, #EEF3FF, #F0F7FF);
+      border-radius: 20px; padding: 40px;
+      border: 1.5px solid rgba(26,86,219,0.1);
+    }
+    .timeline { display: flex; flex-direction: column; gap: 24px; }
+    .tl-item { display: flex; gap: 16px; align-items: flex-start; }
+    .tl-year {
+      font-size: 0.78rem; font-weight: 900; color: white;
+      background: var(--primary); padding: 3px 10px; border-radius: 4px;
+      white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+    }
+    .tl-content .tl-title { font-size: 0.9rem; font-weight: 800; color: var(--gray-900); margin-bottom: 3px; }
+    .tl-content .tl-desc { font-size: 0.82rem; color: #64748b; line-height: 1.6; }
+
+    /* ── MISSION ── */
+    .mission-section { background: var(--gray-900); color: white; }
+    .mission-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px; }
+    .mission-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; padding: 28px;
+      transition: all 0.25s;
+    }
+    .mission-card:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,107,0,0.4); }
+    .mission-icon { font-size: 2rem; margin-bottom: 16px; }
+    .mission-title { font-size: 1rem; font-weight: 800; margin-bottom: 10px; }
+    .mission-desc { font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.75; }
+
+    /* ── TEAM ── */
+    .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 48px; }
+    .team-card {
+      text-align: center;
+      border: 1.5px solid #e8eef8;
+      border-radius: 16px; padding: 28px 20px;
+      transition: all 0.25s;
+    }
+    .team-card:hover { border-color: var(--primary); box-shadow: 0 8px 24px rgba(26,86,219,0.1); transform: translateY(-4px); }
+    .team-avatar {
+      width: 80px; height: 80px; border-radius: 50%;
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; font-weight: 900; color: white;
+    }
+    .team-name { font-size: 0.95rem; font-weight: 800; margin-bottom: 4px; }
+    .team-role { font-size: 0.78rem; color: #64748b; font-weight: 600; margin-bottom: 12px; }
+    .team-bio { font-size: 0.8rem; color: #94a3b8; line-height: 1.65; margin-bottom: 16px; }
+    .team-linkedin {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.75rem; font-weight: 700; color: var(--primary);
+      padding: 5px 12px; border: 1.5px solid var(--primary);
+      border-radius: 6px; transition: all 0.2s;
+    }
+    .team-linkedin:hover { background: var(--primary); color: white; }
+
+    /* ── VALUES ── */
+    .values-section { background: #F4F7FF; }
+    .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px; }
+    .value-card {
+      background: white; border-radius: 14px; padding: 28px 24px;
+      border: 1.5px solid #e8eef8;
+    }
+    .value-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .value-title { font-size: 0.95rem; font-weight: 800; margin-bottom: 8px; color: var(--gray-900); }
+    .value-desc { font-size: 0.85rem; color: #64748b; line-height: 1.7; }
+
+    /* ── CTA ── */
+    .about-cta {
+      background: linear-gradient(135deg, var(--accent), #FF8C38);
+      padding: 72px 24px; text-align: center; color: white;
+    }
+    .about-cta h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 900; margin-bottom: 16px; }
+    .about-cta p { font-size: 1rem; color: rgba(255,255,255,0.85); margin-bottom: 32px; }
+    .cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .cta-btn-white {
+      padding: 13px 28px; background: white; color: var(--accent);
+      border-radius: 10px; font-weight: 800; font-size: 0.95rem;
+      transition: all 0.2s; box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    .cta-btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+    .cta-btn-outline {
+      padding: 13px 28px; border: 2px solid rgba(255,255,255,0.6);
+      color: white; border-radius: 10px; font-weight: 700; font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+    .cta-btn-outline:hover { background: rgba(255,255,255,0.15); border-color: white; }
+
+    /* ── FOOTER MINI ── */
+    .page-footer { background: var(--gray-900); padding: 24px; text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+    .page-footer a { color: rgba(255,255,255,0.6); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .story-grid { grid-template-columns: 1fr; gap: 36px; }
+      .stats-bar-inner { grid-template-columns: repeat(2, 1fr); }
+      .stat-item + .stat-item { border-left: none; }
+      .stat-item:nth-child(2n+1) { border-right: 1px solid rgba(255,255,255,0.2); }
+      .mission-grid, .values-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+      .header-nav { display: none; }
+    }
+    @media (max-width: 480px) {
+      .team-grid { grid-template-columns: 1fr; }
+      .stats-bar-inner { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="logo">VI<em>Ai</em></a>
+    <nav class="header-nav">
+      <a href="/#products">Sản phẩm</a>
+      <a href="/#services">Dịch vụ</a>
+      <a href="/#pricing">Bảng giá</a>
+      <a href="/about.html" style="color:var(--primary)">Về chúng tôi</a>
+      <a href="/dung-thu.html" class="btn-try">🚀 Dùng thử FREE</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="about-hero">
+  <div class="tag">Về VIAi Technology</div>
+  <h1>Chúng tôi xây dựng<br/><em>tương lai tự động hóa</em><br/>cho doanh nghiệp Việt</h1>
+  <p>Từ một nhóm kỹ sư và chuyên gia kinh doanh với niềm tin rằng mọi doanh nghiệp SME đều xứng đáng được tiếp cận công nghệ AI hiệu quả — không cần ngân sách khổng lồ, không cần đội IT riêng.</p>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stats-bar-inner">
+    <div class="stat-item">
+      <div class="stat-num">2021<em></em></div>
+      <div class="stat-lbl">Năm thành lập</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">500<em>+</em></div>
+      <div class="stat-lbl">Doanh nghiệp tin dùng</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">50<em>+</em></div>
+      <div class="stat-lbl">Thành viên đội ngũ</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">98<em>%</em></div>
+      <div class="stat-lbl">Khách hàng hài lòng</div>
+    </div>
+  </div>
+</div>
+
+<!-- CÂU CHUYỆN -->
+<section class="section">
+  <div class="section-inner">
+    <div class="story-grid">
+      <div class="story-text">
+        <span class="sec-tag">Câu chuyện</span>
+        <h2 class="sec-title">Từ bài toán thực tế<br/>của chính chúng tôi</h2>
+        <p>VIAi bắt đầu từ năm 2021, khi đội ngũ sáng lập nhận ra một nghịch lý: các doanh nghiệp SME Việt Nam đang làm rất nhiều công việc lặp đi lặp lại mà AI hoàn toàn có thể xử lý thay — nhưng các giải pháp AI trên thị trường thì quá phức tạp, quá đắt hoặc quá chung chung.</p>
+        <p>Chúng tôi bắt tay xây dựng <strong>VIAi</strong> — nền tảng AI Agent chuyên biệt cho SME Việt, với triết lý đơn giản: <strong>dễ triển khai, tạo ra kết quả thực, chi phí hợp lý.</strong></p>
+        <p>Sau 3 năm phát triển, VIAi đã phục vụ hơn 500 doanh nghiệp trên khắp Việt Nam — từ cửa hàng bán lẻ nhỏ đến chuỗi F&B, từ phòng khám đến công ty thương mại điện tử.</p>
+      </div>
+      <div class="story-visual">
+        <div class="timeline">
+          <div class="tl-item">
+            <span class="tl-year">2021</span>
+            <div class="tl-content">
+              <div class="tl-title">Thành lập VIAi</div>
+              <div class="tl-desc">Đội ngũ 5 người, ra mắt sản phẩm Zalo Sales Agent đầu tiên</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <span class="tl-year">2022</span>
+            <div class="tl-content">
+              <div class="tl-title">100 khách hàng đầu tiên</div>
+              <div class="tl-desc">Mở rộng sang Order Agent và CRM Agent, đạt 100 doanh nghiệp sử dụng</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <span class="tl-year">2023</span>
+            <div class="tl-content">
+              <div class="tl-title">Gọi vốn Series A</div>
+              <div class="tl-desc">Nhận đầu tư, mở rộng đội ngũ lên 30 người, ra mắt thêm 5 Agent mới</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <span class="tl-year">2024</span>
+            <div class="tl-content">
+              <div class="tl-title">500+ doanh nghiệp</div>
+              <div class="tl-desc">Đạt mốc 500 khách hàng, ra mắt nền tảng AI Agent thế hệ mới</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <span class="tl-year">2026</span>
+            <div class="tl-content">
+              <div class="tl-title">Mục tiêu 1 triệu SME</div>
+              <div class="tl-desc">Sứ mệnh đưa AI Agent đến 1 triệu doanh nghiệp vừa và nhỏ Việt Nam</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SỨ MỆNH & TẦM NHÌN -->
+<section class="section mission-section">
+  <div class="section-inner">
+    <div style="text-align:center">
+      <span class="sec-tag" style="background:rgba(255,107,0,0.15);color:#FFB800">Sứ mệnh & Tầm nhìn</span>
+      <h2 class="sec-title" style="color:white;margin:0 auto">Tại sao VIAi tồn tại</h2>
+    </div>
+    <div class="mission-grid">
+      <div class="mission-card">
+        <div class="mission-icon">🎯</div>
+        <div class="mission-title">Sứ mệnh</div>
+        <div class="mission-desc">Giúp 1 triệu doanh nghiệp vừa và nhỏ Việt Nam tiếp cận công nghệ AI Agent hiệu quả, dễ dùng và chi phí hợp lý — để họ có thể cạnh tranh ngang bằng với các tập đoàn lớn.</div>
+      </div>
+      <div class="mission-card">
+        <div class="mission-icon">🔭</div>
+        <div class="mission-title">Tầm nhìn</div>
+        <div class="mission-desc">Trở thành nền tảng AI Agent hàng đầu Đông Nam Á cho SME — nơi mọi doanh nghiệp có thể tự động hóa bất kỳ quy trình nào chỉ trong vài giờ, không cần kỹ năng kỹ thuật.</div>
+      </div>
+      <div class="mission-card">
+        <div class="mission-icon">💡</div>
+        <div class="mission-title">Triết lý</div>
+        <div class="mission-desc">Công nghệ tốt nhất là công nghệ mà ai cũng dùng được. Chúng tôi tin rằng AI không nên chỉ dành cho người có đội IT — mà cho mọi chủ doanh nghiệp Việt Nam.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ĐỘI NGŨ -->
+<section class="section">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:0">
+      <span class="sec-tag">Đội ngũ sáng lập</span>
+      <h2 class="sec-title">Con người đứng sau VIAi</h2>
+      <p class="sec-desc" style="margin:0 auto">Kết hợp giữa chuyên môn AI, kinh nghiệm kinh doanh và am hiểu thị trường Việt Nam.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#1A56DB,#4B82F4)">NV</div>
+        <div class="team-name">Nguyễn Văn A</div>
+        <div class="team-role">CEO & Co-founder</div>
+        <div class="team-bio">10+ năm kinh nghiệm trong lĩnh vực công nghệ và khởi nghiệp. Cựu kỹ sư tại các tập đoàn công nghệ lớn.</div>
+        <!-- ✏️ Thay href="#" bằng link LinkedIn thực -->
+        <a href="#" class="team-linkedin" target="_blank">in LinkedIn</a>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#FF6B00,#FFB800)">TT</div>
+        <div class="team-name">Trần Thị B</div>
+        <div class="team-role">CTO & Co-founder</div>
+        <div class="team-bio">Chuyên gia AI và Machine Learning với bằng Tiến sĩ Khoa học Máy tính. 8 năm nghiên cứu NLP tiếng Việt.</div>
+        <a href="#" class="team-linkedin" target="_blank">in LinkedIn</a>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#00B341,#00D250)">LM</div>
+        <div class="team-name">Lê Minh C</div>
+        <div class="team-role">COO & Co-founder</div>
+        <div class="team-bio">15 năm trong quản lý vận hành doanh nghiệp SME. Hiểu sâu bài toán tự động hóa cho thị trường Việt.</div>
+        <a href="#" class="team-linkedin" target="_blank">in LinkedIn</a>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#7C3AED,#9F67F5)">PH</div>
+        <div class="team-name">Phạm Hoàng D</div>
+        <div class="team-role">CPO – Sản phẩm</div>
+        <div class="team-bio">Cựu Product Manager tại các startup unicorn Đông Nam Á. Chuyên về UX cho người dùng không rành công nghệ.</div>
+        <a href="#" class="team-linkedin" target="_blank">in LinkedIn</a>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:28px;font-size:0.85rem;color:#94a3b8">
+      ✏️ <em>Cập nhật tên và thông tin thực của đội ngũ vào đây</em>
+    </p>
+  </div>
+</section>
+
+<!-- GIÁ TRỊ CỐT LÕI -->
+<section class="section values-section">
+  <div class="section-inner">
+    <div style="text-align:center">
+      <span class="sec-tag">Giá trị cốt lõi</span>
+      <h2 class="sec-title">Những gì chúng tôi tin tưởng</h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon">🤝</div>
+        <div class="value-title">Khách hàng là trung tâm</div>
+        <div class="value-desc">Mọi quyết định sản phẩm đều bắt đầu từ câu hỏi: "Điều này có thực sự giúp ích cho khách hàng không?" Chúng tôi đo thành công bằng thành công của khách.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">⚡</div>
+        <div class="value-title">Đơn giản hóa cái phức tạp</div>
+        <div class="value-desc">Công nghệ AI có thể rất phức tạp — nhưng trải nghiệm người dùng thì không được phép như vậy. Chúng tôi ám ảnh với sự đơn giản trong mọi thứ.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">📊</div>
+        <div class="value-title">Kết quả thực, không PR</div>
+        <div class="value-desc">Chúng tôi không bán lời hứa. Mọi tính năng đều được đo bằng kết quả kinh doanh thực tế của khách hàng — doanh thu, tiết kiệm chi phí, thời gian.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🔒</div>
+        <div class="value-title">Tin tưởng bắt đầu từ bảo mật</div>
+        <div class="value-desc">Dữ liệu của doanh nghiệp là tài sản quý giá nhất. Chúng tôi bảo vệ nó như bảo vệ tài sản của chính mình.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🚀</div>
+        <div class="value-title">Không ngừng cải thiện</div>
+        <div class="value-desc">AI phát triển từng ngày — và VIAi cũng vậy. Chúng tôi liên tục cập nhật, nâng cấp sản phẩm để khách hàng luôn được dùng công nghệ tốt nhất.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🌱</div>
+        <div class="value-title">Xây dựng cùng cộng đồng</div>
+        <div class="value-desc">Chúng tôi không chỉ bán phần mềm — chúng tôi xây dựng cộng đồng doanh nghiệp Việt ứng dụng AI thành công và chia sẻ kiến thức với nhau.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="about-cta">
+  <h2>Tham gia cùng 500+ doanh nghiệp<br/>đang dùng VIAi</h2>
+  <p>Dùng thử miễn phí 14 ngày · Không cần thẻ tín dụng · Hỗ trợ cài đặt 1-1</p>
+  <div class="cta-btns">
+    <a href="/dung-thu.html" class="cta-btn-white">🚀 Bắt đầu miễn phí</a>
+    <a href="/#lien-he"      class="cta-btn-outline">📞 Liên hệ tư vấn</a>
+  </div>
+</section>
+
+<!-- FOOTER MINI -->
+<div class="page-footer">
+  © 2026 VIAi Technology. Bảo lưu mọi quyền. &nbsp;|&nbsp;
+  <a href="/privacy.html">Chính sách bảo mật</a> &nbsp;|&nbsp;
+  <a href="/terms.html">Điều khoản sử dụng</a> &nbsp;|&nbsp;
+  <a href="/">Trang chủ</a>
+</div>
+
+</body>
+</html>

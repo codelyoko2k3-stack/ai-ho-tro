@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trang không tìm thấy – VIAi</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/png" href="/anhlogo/logo2.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background: linear-gradient(135deg, #0F172A 0%, #1a3a6b 60%, #1A56DB 100%);
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      color: white; padding: 24px; text-align: center;
+    }
+    .logo { font-size: 1.8rem; font-weight: 900; margin-bottom: 48px; }
+    .logo em { color: #FF6B00; font-style: normal; }
+    .code {
+      font-size: clamp(6rem, 18vw, 10rem);
+      font-weight: 900; line-height: 1;
+      background: linear-gradient(135deg, #1A56DB, #4B82F4);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 4px 24px rgba(26,86,219,0.5));
+      margin-bottom: 16px;
+    }
+    h1 { font-size: clamp(1.3rem, 3vw, 1.8rem); font-weight: 800; margin-bottom: 12px; }
+    p { font-size: 1rem; color: rgba(255,255,255,0.6); max-width: 420px; line-height: 1.7; margin-bottom: 40px; }
+    .btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    .btn-home {
+      padding: 13px 28px; background: #FF6B00; color: white;
+      border-radius: 10px; font-weight: 700; font-size: 0.95rem;
+      text-decoration: none; transition: all 0.2s;
+      box-shadow: 0 4px 16px rgba(255,107,0,0.4);
+    }
+    .btn-home:hover { background: #D95800; transform: translateY(-2px); }
+    .btn-back {
+      padding: 13px 28px; border: 2px solid rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.8); border-radius: 10px;
+      font-weight: 700; font-size: 0.95rem; text-decoration: none;
+      transition: all 0.2s; cursor: pointer; background: none; font-family: inherit;
+    }
+    .btn-back:hover { border-color: white; color: white; background: rgba(255,255,255,0.08); }
+    .links {
+      margin-top: 52px;
+      display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;
+    }
+    .links a {
+      color: rgba(255,255,255,0.45); font-size: 0.85rem; text-decoration: none;
+      font-weight: 600; transition: color 0.2s;
+    }
+    .links a:hover { color: white; }
+  </style>
+</head>
+<body>
+
+  <div class="logo">VI<em>Ai</em></div>
+
+  <div class="code">404</div>
+
+  <h1>Trang không tìm thấy</h1>
+  <p>Trang bạn đang tìm kiếm có thể đã bị xóa, đổi tên hoặc tạm thời không khả dụng.</p>
+
+  <div class="btns">
+    <a href="/" class="btn-home">🏠 Về trang chủ</a>
+    <button class="btn-back" onclick="history.back()">← Quay lại</button>
+  </div>
+
+  <div class="links">
+    <a href="/#products">Sản phẩm</a>
+    <a href="/#pricing">Bảng giá</a>
+    <a href="/about.html">Về chúng tôi</a>
+    <a href="/dung-thu.html">Dùng thử</a>
+    <a href="tel:19008686">1900 8686 06</a>
+  </div>
+
+</body>
+</html>

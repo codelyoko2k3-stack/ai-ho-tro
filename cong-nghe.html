@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Công nghệ VIAi – AI Agent Engine, Tích hợp, Bảo mật</title>
+  <link rel="icon" type="image/png" href="/anhlogo/logo2.png" />
+  <link rel="shortcut icon" href="/anhlogo/logo2.png" />
+  <link rel="apple-touch-icon" href="/anhlogo/logo2.png" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Google Analytics GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-42Q77HM690"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-42Q77HM690');
+  </script>
+
+  <!-- SEO -->
+  <meta name="description" content="Khám phá hạ tầng công nghệ AI của VIAi: AI Agent Engine thế hệ mới, tích hợp đa nền tảng 50+ kết nối, bảo mật chuẩn doanh nghiệp ISO 27001." />
+  <meta name="keywords" content="AI Agent Engine, công nghệ AI Việt Nam, tích hợp Zalo AI, bảo mật AI doanh nghiệp, VIAi technology, AI platform" />
+  <meta name="author" content="VIAi" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://respectful-courtesy-production-4318.up.railway.app/cong-nghe.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://respectful-courtesy-production-4318.up.railway.app/cong-nghe.html" />
+  <meta property="og:title" content="Công nghệ VIAi – AI Agent Engine, Tích hợp, Bảo mật" />
+  <meta property="og:description" content="Hạ tầng AI được xây dựng riêng cho doanh nghiệp Việt: AI Agent Engine, tích hợp đa nền tảng và bảo mật chuẩn quốc tế." />
+  <meta property="og:image" content="https://respectful-courtesy-production-4318.up.railway.app/anhlogo/logo2.png" />
+  <meta property="og:locale" content="vi_VN" />
+  <meta property="og:site_name" content="VIAi" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Công nghệ VIAi – AI Agent Engine, Tích hợp, Bảo mật" />
+  <meta name="twitter:description" content="Hạ tầng AI được xây dựng riêng cho doanh nghiệp Việt. Khám phá AI Agent Engine, tích hợp 50+ nền tảng và bảo mật cấp doanh nghiệp." />
+  <meta name="twitter:image" content="https://respectful-courtesy-production-4318.up.railway.app/anhlogo/logo2.png" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #1A56DB;
+      --primary-dark: #1040B0;
+      --primary-light: #4B82F4;
+      --accent: #FF6B00;
+      --accent-light: #FF8C38;
+      --green: #00B341;
+      --yellow: #FFB800;
+      --white: #fff;
+      --gray-50: #EEF3FF;
+      --gray-100: #DBEAFE;
+      --gray-300: #6B93E8;
+      --gray-600: #1E3A8A;
+      --gray-900: #0F172A;
+      --red: #E52222;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      color: var(--gray-900);
+      background: #fff;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ========== HEADER / NAV ========== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: white;
+      border-bottom: 2px solid var(--primary);
+      box-shadow: 0 2px 12px rgba(26,86,219,0.08);
+    }
+    .header-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .logo-img {
+      height: 150px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      flex-shrink: 0;
+      mix-blend-mode: multiply;
+    }
+
+    .main-nav {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .nav-item {
+      position: relative;
+    }
+    .nav-item > a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      border-radius: 8px;
+      transition: all 0.2s;
+      white-space: nowrap;
+      position: relative;
+    }
+    .nav-item > a::after {
+      content: '';
+      position: absolute;
+      bottom: 2px; left: 14px; right: 14px;
+      height: 2.5px;
+      background: var(--primary);
+      border-radius: 2px;
+      transform: scaleX(0);
+      opacity: 0;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+      transform-origin: left center;
+    }
+    .nav-item > a:hover { color: var(--primary); background: var(--gray-50); }
+    .nav-item > a:hover::after { transform: scaleX(1); opacity: 1; }
+    .nav-item > a .arrow { font-size: 0.65rem; transition: transform 0.2s; }
+    .nav-item:hover > a .arrow { transform: rotate(180deg); }
+
+    /* Dropdown */
+    .dropdown {
+      display: block;
+      position: absolute;
+      top: calc(100% + 4px);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(-8px);
+      transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s cubic-bezier(0.16,1,0.3,1);
+      left: 0;
+      min-width: 220px;
+      background: white;
+      border: 1px solid rgba(26,86,219,0.1);
+      border-radius: 16px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.04), 0 20px 50px rgba(26,86,219,0.14);
+      padding: 10px;
+      z-index: 100;
+    }
+    .dropdown::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 20px;
+      width: 12px; height: 12px;
+      background: white;
+      border-left: 1px solid rgba(26,86,219,0.1);
+      border-top: 1px solid rgba(26,86,219,0.1);
+      transform: rotate(45deg);
+      border-radius: 2px 0 0 0;
+    }
+    .nav-item.dd-open .dropdown { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0); }
+    .dropdown a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--gray-600);
+      transition: all 0.18s ease;
+    }
+    .dropdown a:hover {
+      background: var(--gray-50);
+      color: var(--primary);
+      transform: translateX(3px);
+    }
+    .dropdown a .dd-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+    .dropdown-mega {
+      min-width: 480px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      padding: 14px;
+    }
+    .dropdown-mega::before { left: 50%; transform: translateX(-50%) rotate(45deg); }
+    .dropdown-mega .mega-title {
+      grid-column: 1 / -1;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--gray-300);
+      padding: 4px 14px 8px;
+      border-bottom: 1px solid var(--gray-100);
+      margin-bottom: 4px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .btn-login {
+      padding: 8px 18px;
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      transition: all 0.2s;
+    }
+    .btn-login:hover { background: var(--primary); color: white; }
+    .btn-register {
+      padding: 8px 18px;
+      background: var(--accent);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: white;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(255,107,74,0.35);
+    }
+    .btn-register:hover { background: var(--accent-light); transform: translateY(-1px); }
+
+    /* ========== HAMBURGER & MOBILE MENU ========== */
+    .hamburger-btn {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 40px; height: 40px;
+      background: none; border: none;
+      cursor: pointer; padding: 6px;
+      border-radius: 8px;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .hamburger-btn:hover { background: var(--gray-50); }
+    .hamburger-btn span {
+      display: block;
+      width: 22px; height: 2.5px;
+      background: var(--gray-600);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      transform-origin: center;
+    }
+    .hamburger-btn.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+    .hamburger-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger-btn.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 80px; left: 0; right: 0;
+      background: white;
+      border-top: 2px solid var(--primary);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      z-index: 998;
+      padding: 16px 20px 24px;
+      max-height: calc(100vh - 80px);
+      overflow-y: auto;
+      animation: slideDown 0.25s ease;
+    }
+    .mobile-menu.open { display: block; }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .mobile-nav-item { border-bottom: 1px solid #f1f5f9; }
+    .mobile-nav-link {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 4px;
+      font-size: 0.95rem; font-weight: 700;
+      color: var(--gray-600);
+      cursor: pointer;
+    }
+    .mobile-nav-link .m-arrow { font-size: 0.65rem; transition: transform 0.2s; color: var(--gray-300); }
+    .mobile-nav-item.m-open .m-arrow { transform: rotate(180deg); }
+    .mobile-submenu { display: none; padding: 0 0 8px 12px; }
+    .mobile-nav-item.m-open .mobile-submenu { display: block; }
+    .mobile-submenu a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 8px;
+      font-size: 0.88rem; font-weight: 500;
+      color: var(--gray-600);
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+    .mobile-submenu a:hover { background: var(--gray-50); color: var(--primary); }
+    .mobile-plain-link {
+      display: block; padding: 14px 4px;
+      font-size: 0.95rem; font-weight: 700;
+      color: var(--gray-600);
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .mobile-menu-actions {
+      display: flex; flex-direction: column; gap: 10px;
+      margin-top: 20px;
+    }
+    .mobile-menu-actions .btn-login {
+      text-align: center; padding: 12px;
+      border: 2px solid var(--primary); border-radius: 10px;
+      font-weight: 700; font-size: 0.95rem; color: var(--primary);
+    }
+    .mobile-menu-actions .btn-register {
+      text-align: center; padding: 12px;
+      background: var(--accent); border-radius: 10px;
+      font-weight: 700; font-size: 0.95rem; color: white;
+    }
+    @media (max-width: 640px) {
+      .hamburger-btn { display: flex; }
+      .header-actions { display: none; }
+      .main-nav { display: none; }
+    }
+
+    /* ========== FOOTER ========== */
+    footer {
+      background: #0A1F6E;
+      color: rgba(255,255,255,0.7);
+      position: relative;
+      overflow: hidden;
+    }
+    footer::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+    }
+    footer::after {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 50%;
+      top: -200px; right: -150px;
+      pointer-events: none;
+    }
+    .footer-main {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 40px 20px 32px;
+      display: grid;
+      grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr;
+      gap: 36px;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+    .footer-brand-col p {
+      font-size: 0.82rem;
+      line-height: 1.65;
+      margin-bottom: 16px;
+      color: rgba(255,255,255,0.65);
+    }
+    .footer-logo-row {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 14px;
+      backdrop-filter: blur(6px);
+    }
+    .footer-logo-img {
+      height: 110px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      flex-shrink: 0;
+      filter: drop-shadow(0 4px 24px rgba(0,0,0,0.35));
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+    .footer-logo-img:hover {
+      transform: scale(1.05);
+      filter: drop-shadow(0 8px 32px rgba(0,0,0,0.5));
+    }
+    .footer-col-nav h5 {
+      color: #FFB800;
+      font-size: 0.82rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .footer-col-nav ul { display: flex; flex-direction: column; gap: 7px; }
+    .footer-col-nav ul a {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.6);
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .footer-col-nav ul a:hover { color: white; }
+    .footer-col-nav ul a::before { content: '›'; color: #FFB800; font-weight: 700; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 20px;
+      background: rgba(0,0,0,0.2);
+      position: relative;
+      z-index: 1;
+    }
+    .footer-bottom-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footer-robot {
+      position: absolute;
+      bottom: 0;
+      height: 95%;
+      max-height: 440px;
+      width: auto;
+      object-fit: contain;
+      opacity: 0.28;
+      filter: brightness(1.8) saturate(0.4) drop-shadow(0 0 28px rgba(80,160,255,0.35));
+      pointer-events: none;
+      z-index: 0;
+    }
+    .fr-left  { left: -20px; }
+    .fr-right { right: -20px; transform: scaleX(-1); }
+    @media (max-width: 768px) { .footer-robot { display: none; } }
+    .footer-bottom p { font-size: 0.78rem; color: rgba(255,255,255,0.5); }
+    .footer-bottom a { color: rgba(255,255,255,0.4); }
+    .footer-bottom a:hover { color: white; }
+    .footer-social { display: flex; gap: 8px; }
+    .fsocial {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      cursor: pointer;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+    }
+    .fsocial:hover { background: #FFB800; border-color: #FFB800; color: white; }
+    .footer-contact-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+    }
+    .footer-contact-item .icon { font-size: 1rem; }
+    .footer-contact-item .label { color: rgba(255,255,255,0.45); font-size: 0.72rem; }
+    .footer-contact-item .val { color: white; font-weight: 700; }
+
+    /* ========== CTA ========== */
+    .cta-section { background: white; padding: 80px 20px; }
+    .cta-box {
+      max-width: 1240px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, #1040B0 0%, #1A56DB 55%, #FF6B00 100%);
+      border-radius: 24px;
+      padding: 64px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+      top: -250px; right: -150px;
+    }
+    .cta-box::after {
+      content: '';
+      position: absolute;
+      width: 200px; height: 200px;
+      background: rgba(255,107,74,0.15);
+      border-radius: 50%;
+      bottom: -80px; left: 250px;
+    }
+    .cta-text { position: relative; z-index: 1; }
+    .cta-text h2 {
+      font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+      font-weight: 900;
+      color: white;
+      margin-bottom: 10px;
+    }
+    .cta-text h2 em { font-style: normal; color: var(--yellow); }
+    .cta-text p { color: rgba(255,255,255,0.75); font-size: 0.95rem; }
+    .cta-actions {
+      display: flex;
+      gap: 14px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .cta-btn-main {
+      background: var(--accent);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      box-shadow: 0 6px 20px rgba(255,107,74,0.4);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .cta-btn-main:hover { background: var(--accent-light); transform: translateY(-2px); }
+    .cta-btn-out {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      padding: 15px 28px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: 1.5px solid rgba(255,255,255,0.3);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .cta-btn-out:hover { background: rgba(255,255,255,0.2); }
+
+    /* ========== SEC TAG ========== */
+    .sec-tag {
+      display: inline-block;
+      background: rgba(26,86,219,0.08);
+      color: var(--primary);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+
+    /* ========== SCROLL REVEAL ========== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ========== PAGE HERO ========== */
+    .page-hero {
+      background: linear-gradient(135deg, #0F172A 0%, #1A56DB 60%, #1040B0 100%);
+      padding: 84px 20px 76px;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+      top: -300px; right: -200px;
+      pointer-events: none;
+    }
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      width: 350px; height: 350px;
+      background: rgba(255,107,0,0.1);
+      border-radius: 50%;
+      bottom: -150px; left: -80px;
+      pointer-events: none;
+    }
+    .page-hero-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .page-hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--yellow);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 6px 16px;
+      border-radius: 50px;
+      margin-bottom: 24px;
+      letter-spacing: 0.5px;
+    }
+    .page-hero-tag .dot {
+      width: 7px; height: 7px;
+      background: var(--yellow);
+      border-radius: 50%;
+      animation: blink 1.5s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .page-hero h1 {
+      font-size: clamp(2rem, 3.8vw, 3.4rem);
+      font-weight: 900;
+      color: white;
+      line-height: 1.2;
+      margin-bottom: 20px;
+      letter-spacing: -0.5px;
+    }
+    .page-hero h1 em { font-style: normal; color: var(--yellow); }
+    .page-hero-desc {
+      font-size: 1.08rem;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.75;
+      margin-bottom: 36px;
+      max-width: 640px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .page-hero-pills {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 40px;
+      background: rgba(255,255,255,0.1);
+      border: 1.5px solid rgba(255,255,255,0.25);
+      color: white;
+      font-size: 0.88rem;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+    .hero-pill:hover {
+      background: rgba(255,255,255,0.2);
+      border-color: rgba(255,255,255,0.5);
+      transform: translateY(-2px);
+    }
+
+    /* ========== TECH SECTIONS ========== */
+    .tech-section { padding: 90px 20px; }
+    .tech-section-inner { max-width: 1240px; margin: 0 auto; }
+    .tech-section--white { background: #fff; }
+    .tech-section--blue  { background: #F8FAFF; }
+
+    /* Two column */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: center;
+    }
+    .two-col--reversed .col-visual { order: -1; }
+
+    /* Big number */
+    .big-number {
+      font-size: 5rem;
+      font-weight: 900;
+      color: rgba(26,86,219,0.07);
+      line-height: 1;
+      margin-bottom: -16px;
+      letter-spacing: -4px;
+    }
+    .tech-eyebrow {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tech-eyebrow .ey-dot {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .tech-title {
+      font-size: clamp(1.6rem, 2.6vw, 2.3rem);
+      font-weight: 900;
+      color: var(--gray-900);
+      line-height: 1.22;
+      margin-bottom: 16px;
+    }
+    .tech-title em { font-style: normal; color: var(--primary); }
+    .tech-desc {
+      font-size: 0.97rem;
+      color: #4B5563;
+      line-height: 1.8;
+      margin-bottom: 32px;
+    }
+
+    /* Feature list */
+    .feat-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-bottom: 36px;
+    }
+    .feat-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .feat-icon-wrap {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    .fi-blue   { background: linear-gradient(135deg,rgba(26,86,219,0.14),rgba(75,130,244,0.07)); }
+    .fi-orange { background: linear-gradient(135deg,rgba(255,107,0,0.14),rgba(255,140,56,0.07)); }
+    .fi-green  { background: linear-gradient(135deg,rgba(0,179,65,0.14),rgba(0,210,80,0.07)); }
+    .fi-yellow { background: linear-gradient(135deg,rgba(255,184,0,0.14),rgba(255,210,0,0.07)); }
+    .fi-purple { background: linear-gradient(135deg,rgba(120,60,255,0.14),rgba(160,100,255,0.07)); }
+
+    .feat-title {
+      font-size: 0.97rem;
+      font-weight: 800;
+      color: var(--gray-900);
+      margin-bottom: 4px;
+    }
+    .feat-desc {
+      font-size: 0.84rem;
+      color: #6B7280;
+      line-height: 1.6;
+    }
+
+    /* Stats row */
+    .stats-row {
+      display: flex;
+      gap: 28px;
+      padding-top: 28px;
+      border-top: 1px solid #E8EEFF;
+      flex-wrap: wrap;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      display: block;
+      font-size: 1.9rem;
+      font-weight: 900;
+      color: var(--primary);
+      line-height: 1;
+    }
+    .stat-num em { font-style: normal; color: var(--accent); }
+    .stat-lbl {
+      font-size: 0.75rem;
+      color: #6B7280;
+      font-weight: 600;
+      margin-top: 3px;
+    }
+
+    /* Visual cards */
+    .col-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .visual-card {
+      background: white;
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 24px 64px rgba(26,86,219,0.13);
+      border: 1px solid rgba(26,86,219,0.08);
+      width: 100%;
+      max-width: 440px;
+    }
+    .visual-card--blue { background: linear-gradient(160deg, #F0F5FF 0%, #fff 100%); }
+
+    .visual-badge-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+    .v-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 30px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      border: 1.5px solid;
+    }
+    .vb-blue   { background: rgba(26,86,219,0.07); border-color: rgba(26,86,219,0.2); color: var(--primary); }
+    .vb-orange { background: rgba(255,107,0,0.07); border-color: rgba(255,107,0,0.2); color: var(--accent); }
+    .vb-green  { background: rgba(0,179,65,0.07); border-color: rgba(0,179,65,0.2); color: var(--green); }
+    .vb-yellow { background: rgba(255,184,0,0.08); border-color: rgba(255,184,0,0.2); color: #8a6000; }
+
+    /* Tech chips */
+    .chip-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .tech-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 13px;
+      border-radius: 30px;
+      border: 1.5px solid #e2e8f0;
+      background: white;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--gray-600);
+      transition: all 0.2s;
+    }
+    .tech-chip:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .tc-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Security badge grid */
+    .sec-badge-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .sec-badge-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      padding: 14px 10px;
+      border-radius: 12px;
+      background: white;
+      border: 1.5px solid rgba(26,86,219,0.1);
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .sec-badge-item:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 14px rgba(26,86,219,0.1);
+    }
+    .sec-badge-icon { font-size: 1.5rem; }
+    .sec-badge-name { font-size: 0.77rem; font-weight: 800; color: var(--gray-900); }
+    .sec-badge-sub  { font-size: 0.66rem; color: #6B7280; }
+
+    /* UI Mockup */
+    .ui-mockup {
+      background: #0F172A;
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 18px;
+    }
+    .ui-mockup-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .ui-dot-row { display: flex; gap: 5px; }
+    .ui-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .ud-red { background: #FF5F57; }
+    .ud-yellow { background: #FEBC2E; }
+    .ud-green { background: #28C840; }
+    .ui-chip-row { display: flex; flex-direction: column; gap: 7px; }
+    .ui-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 11px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .ui-chip-icon {
+      width: 26px; height: 26px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+    .ui-chip-text { flex: 1; }
+    .ui-chip-name { font-size: 0.76rem; font-weight: 700; color: white; }
+    .ui-chip-sub  { font-size: 0.62rem; color: rgba(255,255,255,0.45); }
+    .ui-chip-badge {
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 20px;
+    }
+    .ucb-green { background: rgba(0,179,65,0.2); color: #00B341; }
+    .ucb-blue  { background: rgba(26,86,219,0.2); color: #4B82F4; }
+
+    /* Section divider */
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(26,86,219,0.12), transparent);
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 1024px) {
+      .two-col { grid-template-columns: 1fr; gap: 40px; }
+      .two-col--reversed .col-visual { order: 0; }
+      .cta-box { flex-direction: column; text-align: center; }
+      .cta-actions { justify-content: center; }
+      .footer-main { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .footer-main { grid-template-columns: 1fr; }
+      .cta-box { padding: 40px 24px; }
+      .tech-section { padding: 60px 20px; }
+      .big-number { font-size: 3.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <img src="anhlogo/logo2.png" alt="VIAi" class="logo-img" width="150" height="150" />
+      </a>
+
+      <nav class="main-nav" id="main-nav">
+        <div class="nav-item">
+          <a href="/#services-intro" class="nav-link">Phần mềm <span class="arrow">▾</span></a>
+          <div class="dropdown">
+            <a href="/#services-intro"><span class="dd-icon">🔍</span> Giới thiệu VIAi</a>
+            <a href="/#services"><span class="dd-icon">💡</span> Tại sao chọn VIAi</a>
+            <a href="/cong-nghe.html"><span class="dd-icon">🔗</span> Công nghệ</a>
+            <a href="/#gallery"><span class="dd-icon">⭐</span> Điểm nổi bật</a>
+          </div>
+        </div>
+        <div class="nav-item">
+          <a href="/#products" class="nav-link">Dịch vụ <span class="arrow">▾</span></a>
+          <div class="dropdown dropdown-mega">
+            <div class="mega-title">AI Agents cho doanh nghiệp</div>
+            <a href="/#products"><span class="dd-icon">💬</span> Zalo Sales Agent</a>
+            <a href="/#products"><span class="dd-icon">📦</span> Order Agent</a>
+            <a href="/#products"><span class="dd-icon">🤝</span> CRM Agent</a>
+            <a href="/#products"><span class="dd-icon">📊</span> Report Agent</a>
+            <a href="/#products"><span class="dd-icon">📧</span> Email Agent</a>
+            <a href="/#products"><span class="dd-icon">🏭</span> Enterprise Agent</a>
+          </div>
+        </div>
+        <div class="nav-item">
+          <a href="/#how" class="nav-link">Khóa học <span class="arrow">▾</span></a>
+          <div class="dropdown">
+            <a href="/#how"><span class="dd-icon">🤖</span> Chọn AI Agent phù hợp</a>
+            <a href="/#how"><span class="dd-icon">🔗</span> Kết nối hệ thống hiện tại</a>
+            <a href="/#how"><span class="dd-icon">⚡</span> Agent tự động chạy 24/7</a>
+            <a href="/#how"><span class="dd-icon">📊</span> Theo dõi & tối ưu kết quả</a>
+          </div>
+        </div>
+        <div class="nav-item"><a href="/#pricing" class="nav-link">Bảng giá</a></div>
+        <div class="nav-item"><a href="/#blog" class="nav-link">Blog</a></div>
+      </nav>
+
+      <div class="header-actions">
+        <div id="header-auth">
+          <a href="login.html" class="btn-login">Đăng nhập</a>
+        </div>
+        <a href="dung-thu.html" class="btn-register">🚀 Dùng thử FREE</a>
+      </div>
+
+      <button class="hamburger-btn" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-nav-item">
+      <div class="mobile-nav-link" onclick="toggleMobileSub(this)">
+        Phần mềm <span class="m-arrow">▾</span>
+      </div>
+      <div class="mobile-submenu">
+        <a href="/#services-intro" onclick="closeMobileMenu()"><span>🔍</span> Giới thiệu VIAi</a>
+        <a href="/#services"       onclick="closeMobileMenu()"><span>💡</span> Tại sao chọn VIAi</a>
+        <a href="/cong-nghe.html"  onclick="closeMobileMenu()"><span>🔗</span> Công nghệ</a>
+        <a href="/#gallery"        onclick="closeMobileMenu()"><span>⭐</span> Điểm nổi bật</a>
+      </div>
+    </div>
+    <div class="mobile-nav-item">
+      <div class="mobile-nav-link" onclick="toggleMobileSub(this)">
+        Dịch vụ <span class="m-arrow">▾</span>
+      </div>
+      <div class="mobile-submenu">
+        <a href="/#products" onclick="closeMobileMenu()"><span>💬</span> Zalo Sales Agent</a>
+        <a href="/#products" onclick="closeMobileMenu()"><span>📦</span> Order Agent</a>
+        <a href="/#products" onclick="closeMobileMenu()"><span>🤝</span> CRM Agent</a>
+        <a href="/#products" onclick="closeMobileMenu()"><span>📊</span> Report Agent</a>
+        <a href="/#products" onclick="closeMobileMenu()"><span>📧</span> Email Agent</a>
+        <a href="/#products" onclick="closeMobileMenu()"><span>🏭</span> Enterprise Agent</a>
+      </div>
+    </div>
+    <div class="mobile-nav-item">
+      <div class="mobile-nav-link" onclick="toggleMobileSub(this)">
+        Khóa học <span class="m-arrow">▾</span>
+      </div>
+      <div class="mobile-submenu">
+        <a href="/#how" onclick="closeMobileMenu()"><span>🤖</span> Chọn AI Agent phù hợp</a>
+        <a href="/#how" onclick="closeMobileMenu()"><span>🔗</span> Kết nối hệ thống</a>
+        <a href="/#how" onclick="closeMobileMenu()"><span>⚡</span> Agent tự động 24/7</a>
+        <a href="/#how" onclick="closeMobileMenu()"><span>📊</span> Theo dõi kết quả</a>
+      </div>
+    </div>
+    <a href="/#pricing" class="mobile-plain-link" onclick="closeMobileMenu()">Bảng giá</a>
+    <a href="/#blog"    class="mobile-plain-link" onclick="closeMobileMenu()">Blog</a>
+    <div class="mobile-menu-actions">
+      <a href="login.html"    class="btn-login">Đăng nhập</a>
+      <a href="dung-thu.html" class="btn-register">🚀 Dùng thử FREE</a>
+    </div>
+  </div>
+
+  <!-- ===================================================
+       HERO
+  =================================================== -->
+  <section class="page-hero">
+    <div class="page-hero-inner reveal">
+      <div class="page-hero-tag">
+        <div class="dot"></div>
+        Công nghệ VIAi
+      </div>
+      <h1>Hạ tầng AI được xây dựng<br><em>riêng cho doanh nghiệp Việt</em></h1>
+      <p class="page-hero-desc">
+        Từ lõi AI Agent Engine thế hệ mới, đến khả năng tích hợp hơn 50 nền tảng phổ biến tại Việt Nam và tiêu chuẩn bảo mật cấp doanh nghiệp — VIAi được thiết kế để vận hành thực tế, không chỉ để demo.
+      </p>
+      <div class="page-hero-pills">
+        <a href="#ai-engine" class="hero-pill">
+          🧠 AI Agent Engine
+        </a>
+        <a href="#tich-hop" class="hero-pill">
+          🔗 Tích hợp đa nền tảng
+        </a>
+        <a href="#bao-mat" class="hero-pill">
+          🔒 Bảo mật doanh nghiệp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================
+       SECTION 1 – AI AGENT ENGINE
+  =================================================== -->
+  <section class="tech-section tech-section--white" id="ai-engine">
+    <div class="tech-section-inner">
+      <div class="two-col">
+
+        <!-- LEFT: Text -->
+        <div class="col-text reveal">
+          <div class="big-number">01</div>
+          <div class="tech-eyebrow"><span class="ey-dot"></span> Kỹ thuật tác nhân AI</div>
+          <h2 class="tech-title">
+            AI Agent Engine –<br><em>Bộ não vận hành AI tự động</em><br>cho doanh nghiệp
+          </h2>
+          <p class="tech-desc">
+            AI Agent Engine là nền tảng lõi giúp doanh nghiệp xây dựng và vận hành các trợ lý AI tự động theo quy trình thực tế. Khác với chatbot thông thường chỉ trả lời theo kịch bản cố định, AI Agent Engine hoạt động như một "nhân sự AI" — tiếp nhận yêu cầu, phân tích dữ liệu, xử lý quy trình và đưa ra phản hồi chính xác theo mục tiêu doanh nghiệp.
+          </p>
+
+          <p style="font-size:0.88rem;font-weight:700;color:var(--primary);margin-bottom:10px;margin-top:20px">Doanh nghiệp có thể sử dụng để:</p>
+          <div class="feat-list">
+            <div class="feat-item">
+              <div class="feat-icon-wrap fi-blue">🤝</div>
+              <div class="feat-body">
+                <div class="feat-title">Tự động chăm sóc khách hàng 24/7</div>
+                <div class="feat-desc">Agent trực tiếp tiếp nhận, phản hồi và xử lý yêu cầu khách hàng xuyên suốt ngày đêm — không nghỉ lễ, không ốm đau.</div>
+              </div>
+            </div>
+            <div class="feat-item">
+              <div class="feat-icon-wrap fi-orange">💡</div>
+              <div class="feat-body">
+                <div class="feat-title">Hỗ trợ tư vấn bán hàng thông minh</div>
+                <div class="feat-desc">Phân tích nhu cầu khách hàng, gợi ý sản phẩm phù hợp và chốt đơn tự động theo kịch bản bán hàng của doanh nghiệp.</div>
+              </div>
+            </div>
+            <div class="feat-item">
+              <div class="feat-icon-wrap fi-green">📊</div>
+              <div class="feat-body">
+                <div class="feat-title">Phân loại và xử lý dữ liệu tự động</div>
+                <div class="feat-desc">Tự động phân loại khách hàng, ticket hỗ trợ, đơn hàng theo tiêu chí định sẵn — không cần nhân sự thao tác thủ công.</div>
+              </div>
+            </div>
+            <div class="feat-item">
+              <div class="feat-icon-wrap fi-purple">🏢</div>
+              <div class="feat-body">
+                <div class="feat-title">Quản lý quy trình nội bộ bằng AI</div>
+                <div class="feat-desc">Tạo AI Agent riêng cho từng phòng ban — kế toán, nhân sự, kho vận — giảm thời gian xử lý công việc lặp đi lặp lại.</div>
+              </div>
+            </div>
+          </div>
+
+          <p style="font-size:0.88rem;font-weight:700;color:var(--primary);margin:20px 0 10px">Điểm nổi bật:</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">
+            <span style="background:var(--gray-50);border:1.5px solid rgba(26,86,219,0.12);border-radius:30px;padding:5px 14px;font-size:0.78rem;font-weight:700;color:var(--primary)">✓ Hiểu tiếng Việt chuyên sâu</span>
+            <span style="background:var(--gray-50);border:1.5px solid rgba(26,86,219,0.12);border-radius:30px;padding:5px 14px;font-size:0.78rem;font-weight:700;color:var(--primary)">✓ Tốc độ phản hồi nhanh, chính xác</span>
+            <span style="background:var(--gray-50);border:1.5px solid rgba(26,86,219,0.12);border-radius:30px;padding:5px 14px;font-size:0.78rem;font-weight:700;color:var(--primary)">✓ Dễ tùy chỉnh theo ngành nghề</span>
+            <span style="background:var(--gray-50);border:1.5px solid rgba(26,86,219,0.12);border-radius:30px;padding:5px 14px;font-size:0.78rem;font-weight:700;color:var(--primary)">✓ Tích hợp workflow mạnh mẽ</span>
+            <span style="background:var(--gray-50);border:1.5px solid rgba(26,86,219,0.12);border-radius:30px;padding:5px 14px;font-size:0.78rem;font-weight:700;color:var(--primary)">✓ Giao diện đơn giản, dễ dùng</span>
+          </div>
+          <div class="stats-row">
+            <div class="stat-item">
+              <span class="stat-num">99<em>%</em></span>
+              <div class="stat-lbl">Độ chính xác phản hồi</div>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">&lt;2<em>s</em></span>
+              <div class="stat-lbl">Thời gian xử lý trung bình</div>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">24<em>/7</em></span>
+              <div class="stat-lbl">Uptime liên tục</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Visual -->
+        <div class="col-visual reveal">
+          <div class="visual-card visual-card--blue">
+            <!-- Header visual -->
+            <div style="background:linear-gradient(135deg,#1040B0,#1A56DB);border-radius:16px;height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;margin-bottom:18px;">
+              <div style="font-size:3.5rem;line-height:1;">🧠</div>
+              <div style="font-size:0.7rem;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:1px;text-transform:uppercase;">VIAi Agent Engine v2.4</div>
+              <div style="display:flex;gap:5px;align-items:center;">
+                <div style="width:6px;height:6px;background:#28C840;border-radius:50%;animation:blink 1.5s infinite"></div>
+                <span style="font-size:0.65rem;color:#28C840;font-weight:700;">All systems operational</span>
+              </div>
+            </div>
+
+            <div class="ui-mockup">
+              <div class="ui-mockup-bar">
+                <div class="ui-dot-row">
+                  <div class="ui-dot ud-red"></div>
+                  <div class="ui-dot ud-yellow"></div>
+                  <div class="ui-dot ud-green"></div>
+                </div>
+                <span style="font-size:0.62rem;color:rgba(255,255,255,0.4);font-weight:600;">Agent Core Processes</span>
+              </div>
+              <div class="ui-chip-row">
+                <div class="ui-chip">
+                  <div class="ui-chip-icon" style="background:rgba(26,86,219,0.3)">🧠</div>
+                  <div class="ui-chip-text">
+                    <div class="ui-chip-name">Context Analyzer</div>
+                    <div class="ui-chip-sub">Phân tích 128 token/giây</div>
+                  </div>
+                  <span class="ui-chip-badge ucb-green">ACTIVE</span>
+                </div>
+                <div class="ui-chip">
+                  <div class="ui-chip-icon" style="background:rgba(255,107,0,0.3)">⚡</div>
+                  <div class="ui-chip-text">
+                    <div class="ui-chip-name">Action Executor</div>
+                    <div class="ui-chip-sub">34 tác vụ xử lý hôm nay</div>
+                  </div>
+                  <span class="ui-chip-badge ucb-blue">RUNNING</span>
+                </div>
+                <div class="ui-chip">
+                  <div class="ui-chip-icon" style="background:rgba(0,179,65,0.3)">🎯</div>
+                  <div class="ui-chip-text">
+                    <div class="ui-chip-name">Decision Engine</div>
+                    <div class="ui-chip-sub">Độ chính xác 99.1%</div>
+                  </div>
+                  <span class="ui-chip-badge ucb-green">99.1%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="visual-badge-row">
+              <span class="v-badge vb-blue">🤖 LLM Fine-tuned</span>
+              <span class="v-badge vb-orange">⚡ &lt;2s response</span>
+              <span class="v-badge vb-green">✓ 99% accuracy</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ===================================================
+       SECTION 2 – TÍCH HỢP ĐA NỀN TẢNG
+  =================================================== -->
+  <section class="tech-section tech-section--blue" id="tich-hop">
+    <div class="tech-section-inner">
+      <div class="two-col two-col--reversed">
+
+        <!-- VISUAL (reversed → left side) -->
+        <div class="col-visual reveal">
+          <div class="visual-card">
+            <div style="background:linear-gradient(135deg,#0F172A,#1A56DB);border-radius:16px;height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;margin-bottom:18px;">
+              <div style="font-size:3rem;line-height:1;">🔗</div>
+              <div style="font-size:0.68rem;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:1px;text-transform:uppercase;">Integration Hub</div>
+            </div>
+
+            <div>
+              <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;margin-bottom:10px;">50+ nền tảng đã kết nối</div>
+              <div class="chip-grid">
+                <span class="tech-chip"><span class="tc-dot" style="background:#0068FF"></span>Zalo OA</span>
+                <span class="tech-chip"><span class="tc-dot" style="background:#1877F2"></span>Facebook</span>
+                <span class="tech-chip"><span class="tc-dot" style="background:#EE4D2D"></span>Shopee</span>
+                <span class="tech-chip"><span class="tc-dot" style="background:#F57820"></span>Lazada</span>
+                <span class="tech-chip"><span class="tc-dot" style="background:#34A853"></span>Google Sheets</span>
+                <span class="tech-chip"><span class="tc-dot" style="background:#00B341"></span>MISA</span>
+                <span class="tech-chip"><span class="tc-dot" style="background:#1A56DB"></span>Base.vn</span>
+                <span class="tech-chip"><span class="tc-dot" style="background:#21759B"></span>WordPress</span>
+                <span class="tech-chip"><span class="tc-dot" style="background:#96588A"></span>WooCommerce</span>
+                <span class="tech-chip"><span class="tc-dot" style="background:#FF6B00"></span>n8n / Zapier</span>
+                <span class="tech-chip"><span class="tc-dot" style="background:#EA4335"></span>Gmail</span>
+                <span class="tech-chip"><span class="tc-dot" style="background:#4285F4"></span>Google Drive</span>
+              </div>
+            </div>
+
+            <div style="margin-top:16px;display:flex;align-items:center;gap:10px;padding:11px 13px;background:#F0F5FF;border-radius:10px;border:1px solid rgba(26,86,219,0.1);">
+              <span style="font-size:1.3rem">🔄</span>
+              <div>
+                <div style="font-size:0.8rem;font-weight:800;color:#0F172A;">Đồng bộ dữ liệu 2 chiều</div>
+                <div style="font-size:0.7rem;color:#6B7280;">Webhook + REST API — dữ liệu luôn nhất quán</div>
+              </div>
+            </div>
+
+            <div class="visual-badge-row">
+              <span class="v-badge vb-blue">50+ integrations</span>
+              <span class="v-badge vb-green">✓ No-code setup</span>
+              <span class="v-badge vb-orange">⚡ Real-time sync</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Text -->
+        <div class="col-text reveal">
+          <div class="big-number">02</div>
+          <div class="tech-eyebrow"><span class="ey-dot"></span> Kết nối mọi nền tảng doanh nghiệp đang sử dụng</div>
+          <h2 class="tech-title">
+            Tích hợp đa nền tảng –<br><em>Kết nối toàn bộ hệ thống</em><br>trong một luồng AI
+          </h2>
+          <p class="tech-desc">
+            Hệ thống tích hợp đa nền tảng cho phép AI hoạt động xuyên suốt trên nhiều kênh như Zalo, Facebook, Website, CRM, ERP và các phần mềm quản lý khác chỉ trong vài phút. Thay vì thao tác thủ công giữa nhiều ứng dụng, doanh nghiệp có thể đồng bộ toàn bộ dữ liệu và quy trình vào một hệ thống AI trung tâm.
+          </p>
+          <div class="feat-list">
+            <div class="feat-item">
+              <div class="feat-icon-wrap fi-blue">🔄</div>
+              <div class="feat-body">
+                <div class="feat-title">Đồng bộ dữ liệu tự động</div>
+                <div class="feat-desc">Dữ liệu từ tất cả kênh được đồng bộ hai chiều theo thời gian thực — không có độ trễ, không mất mát thông tin.</div>
+              </div>
+            </div>
+            <div class="feat-item">
+              <div class="feat-icon-wrap fi-green">📉</div>
+              <div class="feat-body">
+                <div class="feat-title">Giảm thao tác thủ công</div>
+                <div class="feat-desc">Loại bỏ các công việc lặp đi lặp lại như copy dữ liệu, nhập thủ công giữa các hệ thống — AI xử lý toàn bộ tự động.</div>
+              </div>
+            </div>
+            <div class="feat-item">
+              <div class="feat-icon-wrap fi-orange">⚡</div>
+              <div class="feat-body">
+                <div class="feat-title">Tăng hiệu suất làm việc</div>
+                <div class="feat-desc">Nhân sự tập trung vào công việc sáng tạo, phán đoán — những thứ AI chưa làm được. AI lo phần lặp đi lặp lại.</div>
+              </div>
+            </div>
+            <div class="feat-item">
+              <div class="feat-icon-wrap fi-purple">🎛️</div>
+              <div class="feat-body">
+                <div class="feat-title">Quản lý tập trung trên một nền tảng</div>
+                <div class="feat-desc">Một giao diện duy nhất để theo dõi toàn bộ hoạt động — từ Zalo, Shopee đến CRM, ERP. Xây dựng workflow AI không cần code phức tạp.</div>
+              </div>
+            </div>
+          </div>
+
+          <p style="font-size:0.88rem;font-weight:700;color:var(--primary);margin:20px 0 10px">Lợi ích mang lại:</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">
+            <span style="background:var(--gray-50);border:1.5px solid rgba(26,86,219,0.12);border-radius:30px;padding:5px 14px;font-size:0.78rem;font-weight:700;color:var(--primary)">✓ Đồng bộ dữ liệu tự động</span>
+            <span style="background:var(--gray-50);border:1.5px solid rgba(26,86,219,0.12);border-radius:30px;padding:5px 14px;font-size:0.78rem;font-weight:700;color:var(--primary)">✓ Giảm thao tác thủ công</span>
+            <span style="background:var(--gray-50);border:1.5px solid rgba(26,86,219,0.12);border-radius:30px;padding:5px 14px;font-size:0.78rem;font-weight:700;color:var(--primary)">✓ Tăng hiệu suất làm việc</span>
+            <span style="background:var(--gray-50);border:1.5px solid rgba(26,86,219,0.12);border-radius:30px;padding:5px 14px;font-size:0.78rem;font-weight:700;color:var(--primary)">✓ Quản lý tập trung</span>
+            <span style="background:var(--gray-50);border:1.5px solid rgba(26,86,219,0.12);border-radius:30px;padding:5px 14px;font-size:0.78rem;font-weight:700;color:var(--primary)">✓ Workflow không cần code</span>
+          </div>
+          <div class="stats-row">
+            <div class="stat-item">
+              <span class="stat-num">50<em>+</em></span>
+              <div class="stat-lbl">Nền tảng tích hợp sẵn</div>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">&lt;5<em>ph</em></span>
+              <div class="stat-lbl">Thời gian kết nối trung bình</div>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">100<em>%</em></span>
+              <div class="stat-lbl">Không cần code</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ===================================================
+       SECTION 3 – BẢO MẬT DOANH NGHIỆP
+  =================================================== -->
+  <section class="tech-section tech-section--white" id="bao-mat">
+    <div class="tech-section-inner">
+      <div class="two-col">
+
+        <!-- LEFT: Text -->
+        <div class="col-text reveal">
+          <div class="big-number">03</div>
+          <div class="tech-eyebrow"><span class="ey-dot"></span> Bảo vệ dữ liệu là ưu tiên hàng đầu</div>
+          <h2 class="tech-title">
+            Bảo mật doanh nghiệp –<br><em>An toàn dữ liệu</em><br>trong kỷ nguyên AI
+          </h2>
+          <p class="tech-desc">
+            Trong thời đại AI và tự động hóa, dữ liệu doanh nghiệp là tài sản quan trọng nhất. Hệ thống bảo mật VIAi được xây dựng nhằm đảm bảo toàn bộ dữ liệu được mã hóa, lưu trữ an toàn và kiểm soát chặt chẽ — hạn chế rủi ro rò rỉ thông tin và đảm bảo tính ổn định khi vận hành AI quy mô lớn.
+          </p>
+
+          <p style="font-size:0.88rem;font-weight:700;color:var(--primary);margin-bottom:10px;margin-top:20px">Các tính năng bảo mật nổi bật:</p>
+          <div class="feat-list">
+            <div class="feat-item">
+              <div class="feat-icon-wrap fi-blue">🔐</div>
+              <div class="feat-body">
+                <div class="feat-title">Mã hóa dữ liệu đầu cuối</div>
+                <div class="feat-desc">Toàn bộ dữ liệu truyền tải và lưu trữ đều được mã hóa AES-256 — cùng chuẩn bảo mật ngân hàng. Không ai, kể cả VIAi, có thể đọc dữ liệu của bạn.</div>
+              </div>
+            </div>
+            <div class="feat-item">
+              <div class="feat-icon-wrap fi-green">🇻🇳</div>
+              <div class="feat-body">
+                <div class="feat-title">Lưu trữ dữ liệu tại Việt Nam</div>
+                <div class="feat-desc">Dữ liệu không rời lãnh thổ Việt Nam. Tuân thủ Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân và quy định của Bộ TT&TT.</div>
+              </div>
+            </div>
+            <div class="feat-item">
+              <div class="feat-icon-wrap fi-orange">👤</div>
+              <div class="feat-body">
+                <div class="feat-title">Phân quyền truy cập theo vai trò</div>
+                <div class="feat-desc">Mỗi nhân sự chỉ được truy cập đúng phần dữ liệu của mình. Nhật ký thao tác đầy đủ, phát hiện bất thường tức thì.</div>
+              </div>
+            </div>
+            <div class="feat-item">
+              <div class="feat-icon-wrap fi-purple">📡</div>
+              <div class="feat-body">
+                <div class="feat-title">Giám sát hệ thống 24/7 & Sao lưu tự động</div>
+                <div class="feat-desc">Hệ thống giám sát liên tục, phát hiện xâm nhập tự động. Dữ liệu được sao lưu định kỳ, phục hồi trong vòng 15 phút khi có sự cố.</div>
+              </div>
+            </div>
+          </div>
+
+          <p style="font-size:0.88rem;font-weight:700;color:var(--primary);margin:20px 0 10px">Giá trị dành cho doanh nghiệp:</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">
+            <span style="background:var(--gray-50);border:1.5px solid rgba(26,86,219,0.12);border-radius:30px;padding:5px 14px;font-size:0.78rem;font-weight:700;color:var(--primary)">✓ Bảo vệ thông tin khách hàng</span>
+            <span style="background:var(--gray-50);border:1.5px solid rgba(26,86,219,0.12);border-radius:30px;padding:5px 14px;font-size:0.78rem;font-weight:700;color:var(--primary)">✓ Đảm bảo an toàn vận hành</span>
+            <span style="background:var(--gray-50);border:1.5px solid rgba(26,86,219,0.12);border-radius:30px;padding:5px 14px;font-size:0.78rem;font-weight:700;color:var(--primary)">✓ Giảm rủi ro mất dữ liệu</span>
+            <span style="background:var(--gray-50);border:1.5px solid rgba(26,86,219,0.12);border-radius:30px;padding:5px 14px;font-size:0.78rem;font-weight:700;color:var(--primary)">✓ Tuân thủ tiêu chuẩn quốc tế</span>
+            <span style="background:var(--gray-50);border:1.5px solid rgba(26,86,219,0.12);border-radius:30px;padding:5px 14px;font-size:0.78rem;font-weight:700;color:var(--primary)">✓ Tăng độ tin cậy với đối tác</span>
+          </div>
+          <div class="stats-row">
+            <div class="stat-item">
+              <span class="stat-num">AES<em>-256</em></span>
+              <div class="stat-lbl">Mã hóa tiêu chuẩn quân sự</div>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">99.9<em>%</em></span>
+              <div class="stat-lbl">SLA Uptime cam kết</div>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">0</span>
+              <div class="stat-lbl">Sự cố rò rỉ dữ liệu</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Visual -->
+        <div class="col-visual reveal">
+          <div class="visual-card">
+            <div style="background:linear-gradient(135deg,#0F172A,#1E3A8A);border-radius:16px;height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;margin-bottom:18px;">
+              <div style="font-size:3rem;line-height:1;">🔒</div>
+              <div style="font-size:0.68rem;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:1px;text-transform:uppercase;">Enterprise Security Layer</div>
+              <div style="display:flex;gap:5px;align-items:center;">
+                <div style="width:6px;height:6px;background:#00B341;border-radius:50%;animation:blink 1.5s infinite"></div>
+                <span style="font-size:0.65rem;color:#00B341;font-weight:700;">All systems secure</span>
+              </div>
+            </div>
+
+            <div class="sec-badge-grid">
+              <div class="sec-badge-item">
+                <div class="sec-badge-icon">🏆</div>
+                <div class="sec-badge-name">ISO 27001</div>
+                <div class="sec-badge-sub">Information Security</div>
+              </div>
+              <div class="sec-badge-item">
+                <div class="sec-badge-icon">🇻🇳</div>
+                <div class="sec-badge-name">PDPA Compliant</div>
+                <div class="sec-badge-sub">Nghị định 13/2023</div>
+              </div>
+              <div class="sec-badge-item">
+                <div class="sec-badge-icon">🔐</div>
+                <div class="sec-badge-name">AES-256</div>
+                <div class="sec-badge-sub">End-to-end encrypt</div>
+              </div>
+              <div class="sec-badge-item">
+                <div class="sec-badge-icon">🛡️</div>
+                <div class="sec-badge-name">RBAC Access</div>
+                <div class="sec-badge-sub">Phân quyền chi tiết</div>
+              </div>
+            </div>
+
+            <div style="margin-top:14px;padding:11px 13px;background:#F0FFF4;border-radius:10px;border:1px solid rgba(0,179,65,0.2);">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+                <span style="font-size:0.9rem">🟢</span>
+                <span style="font-size:0.8rem;font-weight:800;color:#00B341;">Security Monitor — All Clear</span>
+              </div>
+              <div style="font-size:0.7rem;color:#6B7280;line-height:1.5;">
+                Không phát hiện xâm nhập trong 365 ngày · Uptime 99.97% · Backup tự động mỗi 6 giờ
+              </div>
+            </div>
+
+            <div class="visual-badge-row">
+              <span class="v-badge vb-blue">🔐 End-to-end</span>
+              <span class="v-badge vb-green">✓ ISO 27001</span>
+              <span class="v-badge vb-yellow">🇻🇳 Data tại VN</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================
+       CTA
+  =================================================== -->
+  <section class="cta-section" style="background:#F8FAFF;padding:72px 20px">
+    <div class="cta-box reveal">
+      <div class="cta-text">
+        <h2>Sẵn sàng để <em>AI làm việc</em> thay bạn?</h2>
+        <p>Dùng thử miễn phí 14 ngày · Không cần thẻ tín dụng · Hỗ trợ cài đặt 1-1 miễn phí</p>
+      </div>
+      <div class="cta-actions">
+        <a href="/dung-thu.html" class="cta-btn-main">🚀 Bắt đầu miễn phí ngay</a>
+        <a href="tel:19008686"   class="cta-btn-out">📞 Tư vấn ngay hôm nay</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================
+       FOOTER
+  =================================================== -->
+  <footer>
+
+    <img src="anhlogo/dung.png"     class="footer-robot fr-left"  aria-hidden="true" alt="" width="300" height="400" />
+    <img src="anhlogo/trinhbay.png" class="footer-robot fr-right" aria-hidden="true" alt="" width="300" height="400" />
+
+    <div class="footer-main">
+      <div class="footer-brand-col">
+        <div class="footer-logo-row">
+          <img src="anhlogo/logo4.png" alt="VIAi" class="footer-logo-img" />
+        </div>
+        <p>AI Agent Platform dành cho doanh nghiệp vừa và nhỏ Việt Nam. Tự động hóa thông minh – hiệu quả – dễ dùng.</p>
+      </div>
+
+      <div class="footer-col-nav">
+        <h5>Phần mềm</h5>
+        <ul>
+          <li><a href="#">Zalo Sales Agent</a></li>
+          <li><a href="#">Order Agent</a></li>
+          <li><a href="#">CRM Agent</a></li>
+          <li><a href="#">Report Agent</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col-nav">
+        <h5>Dịch vụ</h5>
+        <ul>
+          <li><a href="#">Tư vấn AI</a></li>
+          <li><a href="#">Triển khai Custom</a></li>
+          <li><a href="#">Tích hợp hệ thống</a></li>
+          <li><a href="#">Bảo trì & Hỗ trợ</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col-nav">
+        <h5>Khóa học</h5>
+        <ul>
+          <li><a href="#">AI Agent cơ bản</a></li>
+          <li><a href="#">n8n Thực chiến</a></li>
+          <li><a href="#">Lịch khai giảng</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col-nav">
+        <h5>Công ty</h5>
+        <ul>
+          <li><a href="/about.html">Về chúng tôi</a></li>
+          <li><a href="/#blog">Tin tức</a></li>
+          <li><a href="/about.html#team">Tuyển dụng</a></li>
+          <li><a href="/#lien-he">Liên hệ</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SOCIAL CONTACT BAR -->
+    <div style="max-width:1240px;margin:0 auto;padding:0 20px 36px;position:relative;z-index:1;">
+      <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:28px;display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
+
+        <a href="#" style="display:flex;align-items:center;gap:10px;padding:10px 20px;border-radius:12px;background:rgba(0,150,255,0.15);border:1px solid rgba(0,150,255,0.3);text-decoration:none;transition:all 0.25s;" onmouseover="this.style.background='rgba(0,150,255,0.28)'" onmouseout="this.style.background='rgba(0,150,255,0.15)'">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#1877F2"/><path d="M16 8h-2a1 1 0 00-1 1v2h3l-.5 3H13v7h-3v-7H8v-3h2V9a4 4 0 014-4h2v3z" fill="white"/></svg>
+          <div><div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-weight:600;line-height:1;">Facebook</div><div style="font-size:0.82rem;color:white;font-weight:700;">VIAi Official</div></div>
+        </a>
+
+        <a href="#" style="display:flex;align-items:center;gap:10px;padding:10px 20px;border-radius:12px;background:rgba(0,180,100,0.15);border:1px solid rgba(0,180,100,0.3);text-decoration:none;transition:all 0.25s;" onmouseover="this.style.background='rgba(0,180,100,0.28)'" onmouseout="this.style.background='rgba(0,180,100,0.15)'">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#0068FF"/><path d="M12 3C6.5 3 2 7 2 12c0 2.8 1.3 5.3 3.4 7l-.9 3.3L8 21.1C9.3 21.7 10.6 22 12 22c5.5 0 10-4 10-9S17.5 3 12 3zm5.2 11.8c-.2.6-1.2 1.1-1.7 1.2-.4.1-.9.1-1.5-.1-.3-.1-.8-.3-1.4-.5-2.4-1-3.9-3.3-4-3.5-.1-.1-1-1.3-1-2.5s.6-1.8.9-2c.2-.2.5-.3.7-.3h.5c.2 0 .4.1.5.4l.7 1.7c.1.1.1.3 0 .4l-.4.5-.3.3c.1.2.5.8 1.2 1.4.8.7 1.5 1 1.7 1l.4-.5c.2-.2.5-.3.7-.2l1.7.8c.2.1.3.2.3.4v.6z" fill="white"/></svg>
+          <div><div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-weight:600;line-height:1;">Zalo OA</div><div style="font-size:0.82rem;color:white;font-weight:700;">Chat với VIAi</div></div>
+        </a>
+
+        <a href="#" style="display:flex;align-items:center;gap:10px;padding:10px 20px;border-radius:12px;background:rgba(255,0,0,0.12);border:1px solid rgba(255,0,0,0.25);text-decoration:none;transition:all 0.25s;" onmouseover="this.style.background='rgba(255,0,0,0.22)'" onmouseout="this.style.background='rgba(255,0,0,0.12)'">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#FF0000"/><path d="M20.5 7.5s-.2-1.4-.9-2c-.8-.9-1.8-.9-2.2-.9C15 4.5 12 4.5 12 4.5s-3 0-5.4.1c-.4 0-1.4.1-2.2.9-.6.6-.9 2-.9 2S3 9.1 3 10.7v1.5c0 1.6.2 3.2.2 3.2s.2 1.4.9 2c.8.9 1.9.8 2.4.9C8 18.5 12 18.5 12 18.5s3 0 5.4-.1c.4 0 1.4-.1 2.2-.9.6-.6.9-2 .9-2s.2-1.6.2-3.2v-1.5c0-1.6-.2-3.2-.2-3.3zm-9.8 6.5V9.5l5.8 2.3-5.8 2.2z" fill="white"/></svg>
+          <div><div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-weight:600;line-height:1;">YouTube</div><div style="font-size:0.82rem;color:white;font-weight:700;">Kênh VIAi TV</div></div>
+        </a>
+
+        <a href="#" style="display:flex;align-items:center;gap:10px;padding:10px 20px;border-radius:12px;background:rgba(255,184,0,0.12);border:1px solid rgba(255,184,0,0.25);text-decoration:none;transition:all 0.25s;" onmouseover="this.style.background='rgba(255,184,0,0.22)'" onmouseout="this.style.background='rgba(255,184,0,0.12)'">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#FF6640"/><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm4.9 6.8l-1.7 7.9c-.1.5-.5.7-.9.4l-2.5-1.8-1.2 1.1c-.1.1-.3.2-.6.2l.2-2.6 4.9-4.4c.2-.2 0-.3-.3-.1L7.3 13.8 4.9 13c-.5-.2-.5-.5.1-.7l9.1-3.5c.4-.2.8.1.8.5v.5z" fill="white"/></svg>
+          <div><div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-weight:600;line-height:1;">Telegram</div><div style="font-size:0.82rem;color:white;font-weight:700;">Nhóm hỗ trợ</div></div>
+        </a>
+
+        <a href="tel:19008686" style="display:flex;align-items:center;gap:10px;padding:10px 20px;border-radius:12px;background:rgba(0,179,65,0.15);border:1px solid rgba(0,179,65,0.3);text-decoration:none;transition:all 0.25s;" onmouseover="this.style.background='rgba(0,179,65,0.28)'" onmouseout="this.style.background='rgba(0,179,65,0.15)'">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#00B341"/><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" fill="white"/></svg>
+          <div><div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-weight:600;line-height:1;">Hotline</div><div style="font-size:0.82rem;color:white;font-weight:700;">1900 8686 06</div></div>
+        </a>
+
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-bottom-inner" style="flex-direction: column; gap: 12px;">
+        <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:24px;">
+          <div class="footer-contact-item">
+            <span class="icon">📍</span>
+            <div><div class="label">Địa chỉ</div><div class="val">Việt Nam</div></div>
+          </div>
+          <div class="footer-contact-item">
+            <span class="icon">📞</span>
+            <div><div class="label">Hotline Miền Bắc</div><div class="val">1900 8686 06</div></div>
+          </div>
+          <div class="footer-contact-item">
+            <span class="icon">📞</span>
+            <div><div class="label">Hotline Miền Nam</div><div class="val">1900 8686 08</div></div>
+          </div>
+          <div class="footer-contact-item">
+            <span class="icon">✉️</span>
+            <div><div class="label">Email hỗ trợ</div><div class="val">support@viai.vn</div></div>
+          </div>
+          <div class="footer-contact-item">
+            <span class="icon">💬</span>
+            <div><div class="label">Kênh hỗ trợ</div><div class="val">Hỗ trợ 24/7 qua Zalo & Hotline</div></div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between; width:100%; flex-wrap:wrap; gap:8px;">
+          <p>© 2026 VIAi Technology. Bảo lưu mọi quyền. &nbsp;|&nbsp;
+            <a href="/privacy.html">Chính sách bảo mật</a> &nbsp;|&nbsp;
+            <a href="/terms.html">Điều khoản sử dụng</a> &nbsp;|&nbsp;
+            <a href="/cookies.html">Chính sách cookies</a>
+          </p>
+          <div class="footer-social">
+            <a href="#" class="fsocial" title="Facebook" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="#" class="fsocial" title="Zalo OA" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            </a>
+            <a href="#" class="fsocial" title="YouTube" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>
+            </a>
+            <a href="#" class="fsocial" title="LinkedIn" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+            <a href="#" class="fsocial" title="TikTok" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.79 1.53V6.77a4.85 4.85 0 0 1-1.03-.08z"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Mobile Menu ──────────────────────────────────────
+    function toggleMobileMenu() {
+      const btn  = document.getElementById('hamburger-btn');
+      const menu = document.getElementById('mobile-menu');
+      btn.classList.toggle('open');
+      menu.classList.toggle('open');
+      document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+    }
+
+    function closeMobileMenu() {
+      document.getElementById('hamburger-btn').classList.remove('open');
+      document.getElementById('mobile-menu').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function toggleMobileSub(el) {
+      const item = el.parentElement;
+      const wasOpen = item.classList.contains('m-open');
+      document.querySelectorAll('.mobile-nav-item.m-open').forEach(i => i.classList.remove('m-open'));
+      if (!wasOpen) item.classList.add('m-open');
+    }
+
+    document.addEventListener('click', (e) => {
+      const menu = document.getElementById('mobile-menu');
+      const btn  = document.getElementById('hamburger-btn');
+      if (menu && menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
+        closeMobileMenu();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 640) closeMobileMenu();
+    });
+
+    // ── Dropdown hover with delay ────────────────────────
+    let ddTimer = null;
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('mouseenter', () => {
+        clearTimeout(ddTimer);
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('dd-open'));
+        item.classList.add('dd-open');
+      });
+      item.addEventListener('mouseleave', () => {
+        ddTimer = setTimeout(() => {
+          item.classList.remove('dd-open');
+        }, 300);
+      });
+    });
+
+    // ── Scroll Reveal ───────────────────────────────────
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 70);
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // ── Scroll progress bar ──────────────────────────────
+    const bar = document.createElement('div');
+    bar.style.cssText = 'position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#FF6B00,#FFB800,#1A56DB);z-index:9999;width:0%;transition:width 0.1s;pointer-events:none;';
+    document.body.appendChild(bar);
+    window.addEventListener('scroll', () => {
+      const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+      bar.style.width = pct + '%';
+    }, { passive: true });
+
+    // ── Login state ──────────────────────────────────────
+    (function checkUserLogin() {
+      const name = localStorage.getItem('user_name');
+      const token = localStorage.getItem('user_token');
+      const authEl = document.getElementById('header-auth');
+      if (name && token && authEl) {
+        const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+        authEl.innerHTML = `
+          <div style="position:relative;display:inline-block" id="user-dropdown-wrap">
+            <button onclick="toggleUserMenu()" style="display:flex;align-items:center;gap:8px;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:10px;transition:background 0.2s" onmouseover="this.style.background='var(--gray-50)'" onmouseout="this.style.background='none'">
+              <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:white;font-size:0.78rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${initials}</div>
+              <span style="font-size:0.85rem;font-weight:700;color:var(--gray-600)">${name}</span>
+              <span style="font-size:0.6rem;color:var(--gray-300)">▾</span>
+            </button>
+            <div id="user-menu" style="display:none;position:absolute;top:calc(100% + 8px);right:0;background:white;border:1px solid var(--gray-100);border-radius:14px;box-shadow:0 16px 40px rgba(26,86,219,0.12);padding:8px;min-width:180px;z-index:999">
+              <a href="profile.html" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;font-size:0.85rem;font-weight:600;color:var(--gray-600);text-decoration:none;transition:all 0.2s" onmouseover="this.style.background='var(--gray-50)'" onmouseout="this.style.background='none'">👤 Trang cá nhân</a>
+              <a href="dung-thu.html" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;font-size:0.85rem;font-weight:600;color:var(--gray-600);text-decoration:none;transition:all 0.2s" onmouseover="this.style.background='var(--gray-50)'" onmouseout="this.style.background='none'">🚀 Dùng thử</a>
+              <div style="border-top:1px solid var(--gray-100);margin:4px 0"></div>
+              <button onclick="userLogout()" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;font-size:0.85rem;font-weight:600;color:#E52222;background:none;border:none;cursor:pointer;width:100%;transition:all 0.2s" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='none'">🚪 Đăng xuất</button>
+            </div>
+          </div>`;
+      }
+    })();
+
+    function toggleUserMenu() {
+      const m = document.getElementById('user-menu');
+      if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none';
+    }
+    document.addEventListener('click', e => {
+      const wrap = document.getElementById('user-dropdown-wrap');
+      if (wrap && !wrap.contains(e.target)) {
+        const m = document.getElementById('user-menu');
+        if (m) m.style.display = 'none';
+      }
+    });
+    function userLogout() {
+      localStorage.removeItem('user_token');
+      localStorage.removeItem('user_name');
+      window.location.reload();
+    }
+  </script>
+
+</body>
+</html>

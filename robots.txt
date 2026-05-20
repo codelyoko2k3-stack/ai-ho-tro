@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin-api/
+
+Sitemap: https://respectful-courtesy-production-4318.up.railway.app/sitemap.xml
