@@ -1260,6 +1260,7 @@ app.use(helmet({
 // ── CORS — chỉ cho phép domain của mình ──────────────
 const allowedOrigins = [
   'https://respectful-courtesy-production-4318.up.railway.app',
+  'https://ai-ho-tro.onrender.com',
   'http://localhost:3000',
 ];
 app.use(cors({
