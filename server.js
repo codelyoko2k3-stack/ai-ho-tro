@@ -1939,7 +1939,22 @@ function renderSolutionCSS() {
     .faq-item{background:white;border:1px solid #E2E8F0;border-radius:12px;padding:18px}
     .faq-q{font-size:.9rem;font-weight:700;color:var(--gray-900);margin-bottom:8px;display:flex;gap:8px}
     .faq-qn{color:var(--accent);flex-shrink:0}.faq-a{font-size:.85rem;color:#475569;line-height:1.65}
-    @media(max-width:768px){.card-grid,.card-grid-4,.commit-grid{grid-template-columns:repeat(2,1fr)}.step-grid{grid-template-columns:1fr 1fr;row-gap:28px}.step-grid::before{display:none}.faq-grid,.card-grid-2{grid-template-columns:1fr}.cta-band{flex-direction:column;padding:36px 24px;margin:40px 16px}}
+    /* Example flow */
+    .ex-wrap{background:white;border:1px solid #E2E8F0;border-radius:16px;padding:28px;margin-top:28px}
+    .ex-label{font-size:.82rem;font-weight:700;color:#64748b;margin-bottom:18px;padding:9px 14px;background:#F8FAFF;border-radius:8px;border-left:3px solid var(--accent);display:flex;align-items:center;gap:8px}
+    .ex-flow{display:flex;flex-direction:column;gap:14px}
+    .ex-step{display:flex;align-items:flex-start;gap:12px}
+    .ex-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--primary),#4B82F4);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;box-shadow:0 2px 8px rgba(26,86,219,.2)}
+    .ex-bubble{flex:1;background:#F8FAFF;border:1px solid #e2e8f0;border-radius:0 12px 12px 12px;padding:11px 14px}
+    .ex-bubble.ai{background:#EEF3FF;border-color:rgba(26,86,219,.15);border-radius:12px 12px 12px 0}
+    .ex-role{font-size:.72rem;font-weight:800;color:var(--primary);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+    .ex-msg{font-size:.88rem;color:#334155;line-height:1.7}
+    .ex-results{display:flex;gap:0;border:1px solid #E2E8F0;border-radius:12px;overflow:hidden;margin-top:20px}
+    .ex-result-item{flex:1;text-align:center;padding:14px 10px;background:linear-gradient(135deg,#EEF3FF,#F8FAFF)}
+    .ex-result-item:not(:last-child){border-right:1px solid #E2E8F0}
+    .ex-result-num{font-size:1.4rem;font-weight:900;color:var(--primary);display:block}
+    .ex-result-lbl{font-size:.72rem;color:#64748b;font-weight:600;margin-top:2px;display:block}
+    @media(max-width:768px){.card-grid,.card-grid-4,.commit-grid{grid-template-columns:repeat(2,1fr)}.step-grid{grid-template-columns:1fr 1fr;row-gap:28px}.step-grid::before{display:none}.faq-grid,.card-grid-2{grid-template-columns:1fr}.cta-band{flex-direction:column;padding:36px 24px;margin:40px 16px}.ex-results{flex-wrap:wrap}.ex-result-item{flex:1 0 40%}}{.card-grid,.card-grid-4,.commit-grid{grid-template-columns:repeat(2,1fr)}.step-grid{grid-template-columns:1fr 1fr;row-gap:28px}.step-grid::before{display:none}.faq-grid,.card-grid-2{grid-template-columns:1fr}.cta-band{flex-direction:column;padding:36px 24px;margin:40px 16px}}
     @media(max-width:480px){.card-grid,.card-grid-4,.commit-grid{grid-template-columns:1fr}.sol-btns{flex-direction:column}}
   </style>`;
 }
@@ -2021,6 +2036,61 @@ function renderPhanMem() {
             <div class="agent-link">Xem chi tiết <span class="cta-arrow" style="animation-duration:2s">→</span></div>
           </div>
         </a>`).join('')}
+      </div>
+    </div>
+  </section>
+
+  <!-- VÍ DỤ THỰC TẾ - PHAN MEM -->
+  <section class="sec">
+    <div class="sec-inner">
+      <div class="sec-label">Ví dụ thực tế</div>
+      <h2 class="sec-h2">Xem AI Agent hoạt động như thế nào?</h2>
+      <p class="sec-sub">Shop mỹ phẩm online — 11 giờ đêm, nhân viên đã nghỉ</p>
+      <div class="ex-wrap">
+        <div class="ex-label">📍 Shop mỹ phẩm online — khách nhắn Zalo lúc 23:14</div>
+        <div class="ex-flow">
+          <div class="ex-step">
+            <div class="ex-avatar">👤</div>
+            <div class="ex-bubble">
+              <div class="ex-role">Khách hàng</div>
+              <div class="ex-msg">Bạn ơi, Serum Vitamin C 30ml còn hàng không? Giá bao nhiêu vậy? Mình cần gấp</div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-avatar">🤖</div>
+            <div class="ex-bubble ai">
+              <div class="ex-role">Zalo Sales Agent · 3 giây</div>
+              <div class="ex-msg">Dạ còn ạ! Serum Vitamin C 30ml hiện có 24 hộp. 💛 Giá gốc 530.000đ → Đang sale còn <strong>450.000đ</strong> (giảm 15%). Anh/chị muốn đặt ngay không ạ?</div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-avatar">👤</div>
+            <div class="ex-bubble">
+              <div class="ex-role">Khách hàng</div>
+              <div class="ex-msg">Cho mình 2 hộp nhé, giao về Quận 3 TP.HCM</div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-avatar">🤖</div>
+            <div class="ex-bubble ai">
+              <div class="ex-role">Zalo Sales Agent · tự động</div>
+              <div class="ex-msg">✅ Đã tạo đơn <strong>#7823</strong> — 2 Serum Vitamin C = <strong>900.000đ</strong> (freeship đơn từ 500k). Giao Q.3 dự kiến 1-2 ngày. Mình gửi link thanh toán nhé! 🛍️</div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-avatar">📊</div>
+            <div class="ex-bubble ai">
+              <div class="ex-role">Báo cáo sáng 8:00 gửi cho chủ shop</div>
+              <div class="ex-msg">Đêm qua: 12 đơn tự động · Doanh thu 8.4tr · 3 khách mới · Không cần nhân viên trực ✨</div>
+            </div>
+          </div>
+        </div>
+        <div class="ex-results">
+          <div class="ex-result-item"><span class="ex-result-num">3s</span><span class="ex-result-lbl">Phản hồi tức thì</span></div>
+          <div class="ex-result-item"><span class="ex-result-num">24/7</span><span class="ex-result-lbl">Không cần trực</span></div>
+          <div class="ex-result-item"><span class="ex-result-num">100%</span><span class="ex-result-lbl">Tự động tạo đơn</span></div>
+          <div class="ex-result-item"><span class="ex-result-num">0đ</span><span class="ex-result-lbl">Chi phí nhân sự đêm</span></div>
+        </div>
       </div>
     </div>
   </section>
@@ -2128,6 +2198,54 @@ function renderDichVu() {
         <div class="commit-card"><div class="commit-ico">↩️</div><div class="commit-ttl">Hoàn tiền 14 ngày</div><div class="commit-desc">Không hài lòng trong 14 ngày đầu → hoàn 100% không hỏi lý do.</div></div>
         <div class="commit-card"><div class="commit-ico">🎓</div><div class="commit-ttl">Đào tạo 1-1 miễn phí</div><div class="commit-desc">2 buổi onboarding qua Google Meet. Hỗ trợ đến khi team dùng thành thạo.</div></div>
         <div class="commit-card"><div class="commit-ico">💬</div><div class="commit-ttl">SLA 99.9% uptime</div><div class="commit-desc">Cam kết uptime 99.9%, hỗ trợ Zalo + hotline 24/7 cho gói Pro+.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VÍ DỤ THỰC TẾ - DICH VU -->
+  <section class="sec sec-alt">
+    <div class="sec-inner">
+      <div class="sec-label">Ví dụ thực tế</div>
+      <h2 class="sec-h2">Triển khai cho chuỗi spa 5 chi nhánh — 3 tuần</h2>
+      <p class="sec-sub">Từ quy trình thủ công đến AI Agent vận hành hoàn toàn tự động</p>
+      <div class="ex-wrap">
+        <div class="ex-label">📍 Chuỗi spa & thẩm mỹ viện — 5 chi nhánh tại TP.HCM</div>
+        <div class="ex-flow">
+          <div class="ex-step">
+            <div class="ex-avatar">🔍</div>
+            <div class="ex-bubble ai">
+              <div class="ex-role">Tuần 1 — Khảo sát nghiệp vụ</div>
+              <div class="ex-msg">Đội VIAi phân tích quy trình: nhận booking → phân nhân viên → nhắc hẹn → báo cáo. Xác định 4 điểm tắc nghẽn: lễ tân bận xác nhận lịch, khách hay quên hẹn, lịch nhân viên bị chồng, không có báo cáo tập trung.</div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-avatar">⚙️</div>
+            <div class="ex-bubble ai">
+              <div class="ex-role">Tuần 2 — Cấu hình & tích hợp</div>
+              <div class="ex-msg">Kết nối Zalo OA, Google Calendar và phần mềm quản lý spa. Đào tạo Booking Agent trên 2.000 lịch sử đặt lịch thực tế. Kiểm thử toàn bộ luồng nhận lịch → xác nhận → nhắc hẹn.</div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-avatar">🚀</div>
+            <div class="ex-bubble ai">
+              <div class="ex-role">Tuần 3 — Go-live</div>
+              <div class="ex-msg">Agent vận hành chính thức: tự nhận lịch từ Zalo 24/7, phân kỹ thuật viên theo lịch trống, gửi nhắc hẹn trước 24h. Lễ tân chuyển sang chăm sóc khách trực tiếp tại quầy.</div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-avatar">📊</div>
+            <div class="ex-bubble">
+              <div class="ex-role">Tháng 1 — Kết quả thực tế</div>
+              <div class="ex-msg">Tỷ lệ hủy hẹn giảm 62% · Lễ tân tiết kiệm 3 giờ/ngày · 98% khách nhận xác nhận trong 30 giây · Doanh thu tăng 18% do nhận được booking ngoài giờ hành chính</div>
+            </div>
+          </div>
+        </div>
+        <div class="ex-results">
+          <div class="ex-result-item"><span class="ex-result-num">3 tuần</span><span class="ex-result-lbl">Thời gian triển khai</span></div>
+          <div class="ex-result-item"><span class="ex-result-num">-62%</span><span class="ex-result-lbl">Tỷ lệ hủy hẹn</span></div>
+          <div class="ex-result-item"><span class="ex-result-num">3h/ngày</span><span class="ex-result-lbl">Tiết kiệm nhân sự</span></div>
+          <div class="ex-result-item"><span class="ex-result-num">+18%</span><span class="ex-result-lbl">Doanh thu tháng 1</span></div>
+        </div>
       </div>
     </div>
   </section>
@@ -2260,6 +2378,54 @@ function renderDaoTao() {
         <div class="benefit-item"><div class="benefit-ico">🔗</div><div><div class="benefit-title">Tích hợp với hệ thống hiện tại</div><div class="benefit-desc">Kết nối Agent với Zalo, CRM, Google Sheets, phần mềm kế toán và 400+ ứng dụng qua n8n.</div></div></div>
         <div class="benefit-item"><div class="benefit-ico">📊</div><div><div class="benefit-title">Đo lường và tối ưu hiệu suất</div><div class="benefit-desc">Xây dashboard theo dõi KPI của Agent, phân tích dữ liệu và ra quyết định tối ưu dựa trên số liệu.</div></div></div>
         <div class="benefit-item"><div class="benefit-ico">🏢</div><div><div class="benefit-title">Triển khai cho toàn doanh nghiệp</div><div class="benefit-desc">Nhân rộng mô hình từ 1 Agent thành nhiều Agent phối hợp — tự động hóa chuỗi quy trình phức tạp.</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VÍ DỤ THỰC TẾ - DAO TAO -->
+  <section class="sec">
+    <div class="sec-inner">
+      <div class="sec-label">Ví dụ thực tế</div>
+      <h2 class="sec-h2">Hành trình học của chị Hoa — chủ shop thời trang</h2>
+      <p class="sec-sub">Từ người không biết kỹ thuật đến tự vận hành 3 AI Agent sau 3 tháng</p>
+      <div class="ex-wrap">
+        <div class="ex-label">📍 Chị Nguyễn Thu Hoa — chủ shop thời trang online, 200 đơn/ngày</div>
+        <div class="ex-flow">
+          <div class="ex-step">
+            <div class="ex-avatar">😓</div>
+            <div class="ex-bubble">
+              <div class="ex-role">Trước khi học — vấn đề thực tế</div>
+              <div class="ex-msg">"Mình mất 4-5 tiếng/ngày chỉ để trả lời Zalo, tổng hợp đơn từ 3 sàn và làm báo cáo thủ công. Không có thời gian làm chiến lược hay chăm sóc khách hàng VIP."</div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-avatar">📚</div>
+            <div class="ex-bubble ai">
+              <div class="ex-role">Tuần 4 — Sau khóa AI Agent 101</div>
+              <div class="ex-msg">"Mình hiểu AI Agent hoạt động thế nào rồi. Đã tự kết nối Zalo OA với n8n, tự động lấy đơn từ Shopee về một bảng Google Sheets. Tiết kiệm 1 tiếng/ngày ngay từ tuần đầu!"</div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-avatar">⚡</div>
+            <div class="ex-bubble ai">
+              <div class="ex-role">Tháng 2 — Sau khóa n8n Thực chiến</div>
+              <div class="ex-msg">"Tự xây được workflow nhắc khách sau mua hàng, tự động gửi voucher sinh nhật và phân loại khách VIP. Tỷ lệ review 5 sao tăng 3x, khách quay lại mua tăng rõ rệt."</div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-avatar">🏆</div>
+            <div class="ex-bubble">
+              <div class="ex-role">Tháng 3 — Kết quả</div>
+              <div class="ex-msg">"Mình đang tự vận hành 3 AI Agent: Zalo Sales, Order Management và Report. Tiết kiệm gần 4 tiếng/ngày. Doanh thu tháng 3 tăng 38% so với trước khi học vì có thêm thời gian làm marketing."</div>
+            </div>
+          </div>
+        </div>
+        <div class="ex-results">
+          <div class="ex-result-item"><span class="ex-result-num">4h/ngày</span><span class="ex-result-lbl">Tiết kiệm được</span></div>
+          <div class="ex-result-item"><span class="ex-result-num">3 Agent</span><span class="ex-result-lbl">Tự vận hành</span></div>
+          <div class="ex-result-item"><span class="ex-result-num">3x</span><span class="ex-result-lbl">Tỷ lệ review tăng</span></div>
+          <div class="ex-result-item"><span class="ex-result-num">+38%</span><span class="ex-result-lbl">Doanh thu tháng 3</span></div>
+        </div>
       </div>
     </div>
   </section>
