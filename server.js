@@ -1627,6 +1627,7 @@ app.use(helmet({
 
 // ── CORS — chỉ cho phép domain của mình ──────────────
 const allowedOrigins = [
+  'https://ai-ho-tro-production.up.railway.app',
   'https://baitap-truong-01.up.railway.app',
   'https://respectful-courtesy-production-4318.up.railway.app',
   'https://ai-ho-tro.onrender.com',
