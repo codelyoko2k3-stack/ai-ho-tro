@@ -1815,6 +1815,489 @@ app.get('/admin', (_req, res) =>
   res.sendFile(path.join(__dirname, 'admin', 'index.html'))
 );
 
+// ── Footer dùng chung cho 3 trang giải pháp ──────────
+function renderSolutionFooter() {
+  return `
+  <footer style="background:linear-gradient(135deg,#0A1628 0%,#0D2144 100%);color:white;padding:48px 20px 24px;margin-top:0">
+    <div style="max-width:1180px;margin:0 auto">
+      <div style="display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:32px;margin-bottom:40px">
+        <div>
+          <img src="/anhlogo/logo4.png" alt="VIAi" style="height:48px;margin-bottom:14px;filter:brightness(0) invert(1)" onerror="this.style.display='none'" />
+          <p style="font-size:.85rem;color:rgba(255,255,255,.6);line-height:1.7;max-width:300px">AI Agent Platform dành cho doanh nghiệp vừa và nhỏ Việt Nam. Tự động hóa thông minh – hiệu quả – dễ dùng.</p>
+        </div>
+        <div>
+          <h5 style="font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.4);margin-bottom:12px">Phần mềm</h5>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+            <li><a href="/cong-cu/zalo-sales-agent" style="font-size:.84rem;color:rgba(255,255,255,.65);text-decoration:none;transition:color .2s" onmouseover="this.style.color='#FFB800'" onmouseout="this.style.color='rgba(255,255,255,.65)'">Zalo Sales Agent</a></li>
+            <li><a href="/cong-cu/order-management-agent" style="font-size:.84rem;color:rgba(255,255,255,.65);text-decoration:none" onmouseover="this.style.color='#FFB800'" onmouseout="this.style.color='rgba(255,255,255,.65)'">Order Agent</a></li>
+            <li><a href="/cong-cu/crm-automation-agent" style="font-size:.84rem;color:rgba(255,255,255,.65);text-decoration:none" onmouseover="this.style.color='#FFB800'" onmouseout="this.style.color='rgba(255,255,255,.65)'">CRM Agent</a></li>
+            <li><a href="/cong-cu/report-analytics-agent" style="font-size:.84rem;color:rgba(255,255,255,.65);text-decoration:none" onmouseover="this.style.color='#FFB800'" onmouseout="this.style.color='rgba(255,255,255,.65)'">Report Agent</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5 style="font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.4);margin-bottom:12px">Giải pháp</h5>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+            <li><a href="/phan-mem" style="font-size:.84rem;color:rgba(255,255,255,.65);text-decoration:none" onmouseover="this.style.color='#FFB800'" onmouseout="this.style.color='rgba(255,255,255,.65)'">Phần mềm AI Agent</a></li>
+            <li><a href="/dich-vu" style="font-size:.84rem;color:rgba(255,255,255,.65);text-decoration:none" onmouseover="this.style.color='#FFB800'" onmouseout="this.style.color='rgba(255,255,255,.65)'">Dịch vụ triển khai</a></li>
+            <li><a href="/dao-tao" style="font-size:.84rem;color:rgba(255,255,255,.65);text-decoration:none" onmouseover="this.style.color='#FFB800'" onmouseout="this.style.color='rgba(255,255,255,.65)'">Khóa học AI Agent</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5 style="font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.4);margin-bottom:12px">Liên hệ</h5>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+            <li style="font-size:.84rem;color:rgba(255,255,255,.65)">📞 1900 8686 06</li>
+            <li style="font-size:.84rem;color:rgba(255,255,255,.65)">📞 1900 8686 08</li>
+            <li style="font-size:.84rem;color:rgba(255,255,255,.65)">✉️ support@viai.vn</li>
+            <li><a href="/about.html" style="font-size:.84rem;color:rgba(255,255,255,.65);text-decoration:none" onmouseover="this.style.color='#FFB800'" onmouseout="this.style.color='rgba(255,255,255,.65)'">Về chúng tôi</a></li>
+          </ul>
+        </div>
+      </div>
+      <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <p style="font-size:.78rem;color:rgba(255,255,255,.4)">© 2026 VIAi Technology. Bảo lưu mọi quyền.</p>
+        <div style="display:flex;gap:16px">
+          <a href="/privacy.html" style="font-size:.78rem;color:rgba(255,255,255,.4);text-decoration:none" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,.4)'">Chính sách bảo mật</a>
+          <a href="/terms.html" style="font-size:.78rem;color:rgba(255,255,255,.4);text-decoration:none" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,.4)'">Điều khoản</a>
+        </div>
+      </div>
+    </div>
+  </footer>`;
+}
+
+// ── CSS chung cho 3 trang giải pháp ──────────────────
+function renderSolutionCSS() {
+  return `
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#1A56DB;--primary-dark:#1040B0;--accent:#FF6B00;--accent-light:#FF8C38;--gray-50:#EEF3FF;--gray-100:#DBEAFE;--gray-600:#1E3A8A;--gray-900:#0F172A}
+    html{scroll-behavior:smooth}body{font-family:'Be Vietnam Pro',Arial,sans-serif;color:var(--gray-900);background:#F8FAFF;overflow-x:hidden}
+    a{text-decoration:none;color:inherit}
+    /* header */
+    .site-header{position:sticky;top:0;z-index:999;background:white;border-bottom:2px solid var(--primary);box-shadow:0 2px 12px rgba(26,86,219,.08)}
+    .header-inner{max-width:1240px;margin:0 auto;padding:0 24px;height:80px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .site-logo{display:flex;align-items:center;flex-shrink:0}.logo-img{height:150px;width:auto;object-fit:contain;mix-blend-mode:multiply}
+    .main-nav{flex:1;display:flex;align-items:center;justify-content:center;gap:4px}.nav-item{position:relative}
+    .nav-item>a{display:flex;align-items:center;gap:4px;padding:8px 14px;font-size:.9rem;font-weight:600;text-transform:uppercase;color:var(--gray-600);border-radius:8px;transition:all .2s;white-space:nowrap;position:relative}
+    .nav-item>a::after{content:'';position:absolute;bottom:2px;left:14px;right:14px;height:2.5px;background:var(--primary);border-radius:2px;transform:scaleX(0);opacity:0;transition:transform .25s,opacity .25s;transform-origin:left}
+    .nav-item>a:hover,.nav-item.nav-active>a{color:var(--primary);background:var(--gray-50)}.nav-item>a:hover::after,.nav-item.nav-active>a::after{transform:scaleX(1);opacity:1}
+    .nav-item>a .arrow{font-size:.65rem;transition:transform .2s}.nav-item:hover>a .arrow{transform:rotate(180deg)}
+    .dropdown{display:block;position:absolute;top:calc(100% + 4px);left:0;min-width:220px;background:white;border:1px solid rgba(26,86,219,.1);border-radius:12px;box-shadow:0 4px 6px rgba(0,0,0,.04),0 20px 50px rgba(26,86,219,.14);padding:10px;z-index:100;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-8px);transition:opacity .25s,visibility .25s,transform .25s cubic-bezier(.16,1,.3,1)}
+    .nav-item:hover .dropdown,.nav-item:focus-within .dropdown{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
+    .dropdown a{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;font-size:.85rem;font-weight:500;color:var(--gray-600);transition:all .18s}.dropdown a:hover{background:var(--gray-50);color:var(--primary);transform:translateX(3px)}
+    .dropdown a .dd-icon{font-size:1.1rem;flex-shrink:0}.dropdown-mega{min-width:480px;display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:14px}.mega-title{grid-column:1/-1;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#6B93E8;padding:4px 14px 8px;border-bottom:1px solid var(--gray-100);margin-bottom:4px}
+    .header-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}.btn-login{padding:8px 18px;border:2px solid var(--primary);border-radius:8px;font-size:.85rem;font-weight:700;color:var(--primary);transition:all .2s;background:white;display:inline-flex;align-items:center}.btn-login:hover{background:var(--primary);color:white}.btn-register{padding:8px 18px;background:var(--accent);border-radius:8px;font-size:.85rem;font-weight:700;color:white;transition:all .2s;display:inline-flex;align-items:center}.btn-register:hover{background:var(--accent-light);transform:translateY(-1px)}
+    .hamburger-btn{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;padding:6px;border-radius:8px;flex-shrink:0}.hamburger-btn span{display:block;width:22px;height:2.5px;background:var(--gray-600);border-radius:2px;transition:all .3s;transform-origin:center}.hamburger-btn.open span:nth-child(1){transform:translateY(7.5px) rotate(45deg)}.hamburger-btn.open span:nth-child(2){opacity:0;transform:scaleX(0)}.hamburger-btn.open span:nth-child(3){transform:translateY(-7.5px) rotate(-45deg)}
+    .mobile-menu{display:none;position:fixed;top:80px;left:0;right:0;background:white;border-top:2px solid var(--primary);box-shadow:0 8px 32px rgba(0,0,0,.12);z-index:998;padding:16px 20px 24px;max-height:calc(100vh - 80px);overflow-y:auto}.mobile-menu.open{display:block}
+    .mobile-nav-item{border-bottom:1px solid #f1f5f9}.mobile-nav-link{width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 4px;font-size:.95rem;font-weight:700;color:var(--gray-600);cursor:pointer;background:none;border:none;font-family:inherit;text-align:left}.mobile-nav-item.m-open .m-arrow{transform:rotate(180deg)}.mobile-submenu{display:none;padding:0 0 8px 12px}.mobile-nav-item.m-open .mobile-submenu{display:block}.mobile-submenu a{display:flex;align-items:center;gap:10px;padding:10px 8px;font-size:.88rem;font-weight:500;color:var(--gray-600);border-radius:8px}.mobile-plain-link{display:block;padding:14px 4px;font-size:.95rem;font-weight:700;color:var(--gray-600);border-bottom:1px solid #f1f5f9}.mobile-menu-actions{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+    @media(max-width:960px){.main-nav,.header-actions{display:none}.hamburger-btn{display:flex}}
+    /* CTA animations */
+    @keyframes cta-pulse-ring{0%{box-shadow:0 0 0 0 rgba(255,107,0,.55)}70%{box-shadow:0 0 0 14px rgba(255,107,0,0)}100%{box-shadow:0 0 0 0 rgba(255,107,0,0)}}.cta-pulse{animation:cta-pulse-ring 2.2s cubic-bezier(.4,0,.6,1) infinite}.cta-pulse:hover{animation-play-state:paused}
+    .cta-shimmer{position:relative;overflow:hidden;isolation:isolate}.cta-shimmer::after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%);transform:translateX(-100%);transition:transform .8s ease;pointer-events:none}.cta-shimmer:hover::after{transform:translateX(100%)}
+    .cta-glow{box-shadow:0 8px 26px -6px rgba(255,107,0,.58)}.cta-glow:hover{box-shadow:0 12px 32px -6px rgba(255,107,0,.72)}
+    @keyframes arrow-b{0%,100%{transform:translateX(0)}50%{transform:translateX(4px)}}.cta-arrow{display:inline-block;animation:arrow-b 1.4s ease-in-out infinite}
+    /* page sections */
+    .sol-hero{background:linear-gradient(135deg,#0F172A 0%,#1A56DB 60%,#1040B0 100%);padding:72px 20px 60px;position:relative;overflow:hidden;color:white}
+    .sol-hero::before{content:'';position:absolute;width:500px;height:500px;background:rgba(255,255,255,.04);border-radius:50%;top:-200px;right:-100px;pointer-events:none}
+    .sol-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+    .sol-bc{display:flex;align-items:center;gap:6px;font-size:.78rem;color:rgba(255,255,255,.6);margin-bottom:18px}.sol-bc a{color:rgba(255,255,255,.6);transition:color .2s}.sol-bc a:hover{color:#FFB800}.sol-bc .sep{font-size:.6rem;color:rgba(255,255,255,.35)}
+    .sol-tag{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#FFB800;font-size:.78rem;font-weight:700;padding:5px 14px;border-radius:50px;margin-bottom:16px;letter-spacing:.5px}
+    .sol-hero h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:900;line-height:1.18;margin-bottom:14px}
+    .sol-hero p{font-size:1.05rem;color:rgba(255,255,255,.78);max-width:680px;line-height:1.75;margin-bottom:28px}
+    .sol-btns{display:flex;gap:12px;flex-wrap:wrap}
+    .sol-btn-main{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:white;padding:13px 24px;border-radius:10px;font-weight:800;font-size:.95rem;transition:all .2s}
+    .sol-btn-out{display:inline-flex;align-items:center;gap:8px;border:2px solid rgba(255,255,255,.35);color:white;padding:13px 22px;border-radius:10px;font-weight:700;font-size:.95rem;background:rgba(255,255,255,.08);transition:all .2s}.sol-btn-out:hover{background:rgba(255,255,255,.18)}
+    .sec{padding:64px 20px}.sec-alt{background:white}.sec-inner{max-width:1100px;margin:0 auto}
+    .sec-label{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent);margin-bottom:6px}
+    .sec-h2{font-size:clamp(1.5rem,2.5vw,2.2rem);font-weight:900;margin-bottom:10px;color:var(--gray-900)}
+    .sec-sub{font-size:.97rem;color:#64748b;margin-bottom:36px;max-width:680px}
+    .card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .card-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+    .card-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .sol-card{background:white;border:1px solid #E2E8F0;border-radius:14px;padding:22px;transition:box-shadow .2s,transform .2s}.sol-card:hover{box-shadow:0 8px 28px rgba(26,86,219,.1);transform:translateY(-2px)}
+    .sol-card-icon{font-size:2rem;margin-bottom:12px}
+    .sol-card h3{font-size:1rem;font-weight:800;margin-bottom:7px;color:var(--gray-900)}
+    .sol-card p{font-size:.86rem;color:#475569;line-height:1.65}
+    .sol-card-link{display:inline-flex;align-items:center;gap:5px;font-size:.82rem;font-weight:700;color:var(--primary);margin-top:12px}
+    .agent-card{background:white;border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;transition:all .2s}.agent-card:hover{box-shadow:0 8px 24px rgba(26,86,219,.1);transform:translateY(-2px)}
+    .agent-thumb{background:linear-gradient(135deg,#1040B0,#1A56DB);padding:20px 16px;display:flex;align-items:center;gap:10px}
+    .agent-thumb-ico{font-size:2rem}.agent-thumb-badge{font-size:.65rem;font-weight:700;text-transform:uppercase;background:rgba(255,255,255,.18);color:white;padding:3px 9px;border-radius:20px;margin-left:auto}
+    .agent-body{padding:16px}.agent-name{font-size:.95rem;font-weight:800;color:var(--gray-900);margin-bottom:5px}.agent-desc{font-size:.8rem;color:#64748b;line-height:1.55;margin-bottom:10px}
+    .agent-link{font-size:.8rem;font-weight:700;color:var(--primary);display:flex;align-items:center;gap:4px}
+    .step-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+    .step-grid::before{content:'';position:absolute;top:32px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,var(--primary),var(--accent));z-index:0}
+    .step{text-align:center;padding:0 12px;position:relative;z-index:1}
+    .step-num{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;font-size:1.4rem;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 4px 16px rgba(26,86,219,.3)}
+    .step h3{font-size:.92rem;font-weight:800;margin-bottom:6px;color:var(--gray-900)}.step p{font-size:.8rem;color:#64748b;line-height:1.6}
+    .commit-dark{background:#0A2472;color:white;padding:64px 20px}
+    .commit-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:28px}
+    .commit-card{border-radius:12px;padding:18px;background:rgba(255,255,255,.06)}.commit-card.feat{background:rgba(255,107,0,.18);border:1.5px solid rgba(255,107,0,.6)}
+    .commit-ico{font-size:1.3rem;margin-bottom:10px}.commit-ttl{font-size:.87rem;font-weight:800;margin-bottom:5px}.commit-desc{font-size:.74rem;color:rgba(255,255,255,.68);line-height:1.55}
+    .cta-band{background:linear-gradient(135deg,#1040B0,#1A56DB 55%,#FF6B00 100%);border-radius:20px;padding:52px 40px;display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap;margin:60px 20px;max-width:1100px;margin-left:auto;margin-right:auto}
+    .cta-band h2{font-size:clamp(1.5rem,2.4vw,2.2rem);font-weight:900;color:white;line-height:1.2}
+    .cta-band p{color:rgba(255,255,255,.75);margin-top:8px;max-width:560px;font-size:.97rem}
+    .cta-btns{display:flex;gap:12px;flex-wrap:wrap;flex-shrink:0}
+    .faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:28px}
+    .faq-item{background:white;border:1px solid #E2E8F0;border-radius:12px;padding:18px}
+    .faq-q{font-size:.9rem;font-weight:700;color:var(--gray-900);margin-bottom:8px;display:flex;gap:8px}
+    .faq-qn{color:var(--accent);flex-shrink:0}.faq-a{font-size:.85rem;color:#475569;line-height:1.65}
+    @media(max-width:768px){.card-grid,.card-grid-4,.commit-grid{grid-template-columns:repeat(2,1fr)}.step-grid{grid-template-columns:1fr 1fr;row-gap:28px}.step-grid::before{display:none}.faq-grid,.card-grid-2{grid-template-columns:1fr}.cta-band{flex-direction:column;padding:36px 24px;margin:40px 16px}}
+    @media(max-width:480px){.card-grid,.card-grid-4,.commit-grid{grid-template-columns:1fr}.sol-btns{flex-direction:column}}
+  </style>`;
+}
+
+// ── Page 1: /phan-mem ─────────────────────────────────
+function renderPhanMem() {
+  const agents = [
+    { slug:'zalo-sales-agent', icon:'💬', name:'Zalo Sales Agent', desc:'Tư vấn và chốt đơn qua Zalo OA 24/7 — không cần nhân viên trực.', badge:'HOT' },
+    { slug:'order-management-agent', icon:'📦', name:'Order Management Agent', desc:'Gom đơn từ Shopee, Lazada, Website vào một luồng xử lý thống nhất.', badge:'PHỔ BIẾN' },
+    { slug:'crm-automation-agent', icon:'🤝', name:'CRM Automation Agent', desc:'Phân loại khách hàng, nhắc lịch chăm sóc và gửi ưu đãi cá nhân hóa.', badge:'' },
+    { slug:'report-analytics-agent', icon:'📊', name:'Report & Analytics Agent', desc:'Tổng hợp báo cáo từ 20+ nguồn, gửi Zalo lúc 8h sáng mỗi ngày.', badge:'MỚI' },
+    { slug:'email-marketing-agent', icon:'📧', name:'Email Marketing Agent', desc:'Lên lịch và gửi email cá nhân hóa theo hành vi người dùng.', badge:'BETA' },
+    { slug:'facebook-ads-agent', icon:'📢', name:'Facebook Ads Agent', desc:'Theo dõi ROAS, đề xuất tối ưu ngân sách quảng cáo tự động.', badge:'' },
+    { slug:'booking-appointment', icon:'🗓️', name:'Booking & Appointment', desc:'Nhận lịch hẹn, xác nhận và nhắc khách tự động 24/7.', badge:'' },
+    { slug:'custom-enterprise-agent', icon:'🏗️', name:'Custom Enterprise Agent', desc:'Xây dựng AI Agent theo nghiệp vụ đặc thù của doanh nghiệp anh.', badge:'' },
+  ];
+  return `<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Phần mềm AI Agent đóng gói sẵn | VIAi</title>
+  <meta name="description" content="8 AI Agent sẵn sàng triển khai cho doanh nghiệp Việt — Zalo Sales, Order, CRM, Report, Email, Ads, Booking. Triển khai trong 24 giờ, không cần kỹ thuật."/>
+  <link rel="canonical" href="${SITE_URL}/phan-mem"/>
+  <meta property="og:title" content="Phần mềm AI Agent | VIAi"/><meta property="og:description" content="8 AI Agent đóng gói sẵn cho doanh nghiệp Việt."/><meta property="og:url" content="${SITE_URL}/phan-mem"/>
+  <link rel="icon" href="/anhlogo/logo2.png"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  ${renderSolutionCSS()}
+</head>
+<body>
+  ${renderSiteToolbar()}
+  <!-- HERO -->
+  <section class="sol-hero">
+    <div class="sol-inner">
+      <nav class="sol-bc"><a href="/">Trang chủ</a><span class="sep">›</span><span style="color:rgba(255,255,255,.9)">Phần mềm AI Agent</span></nav>
+      <div class="sol-tag">Phần mềm</div>
+      <h1>AI Agent đóng gói sẵn<br>triển khai trong <em style="color:#FFB800;font-style:normal">24 giờ</em></h1>
+      <p>8 AI Agent chuyên biệt, sẵn sàng kết nối với hệ thống của bạn. Không cần đội kỹ thuật, không cần viết code — VIAi lo toàn bộ cài đặt và bàn giao.</p>
+      <div class="sol-btns">
+        <a href="/dung-thu.html" class="sol-btn-main cta-pulse cta-shimmer cta-glow">🚀 Dùng thử miễn phí <span class="cta-arrow">→</span></a>
+        <a href="#agents" class="sol-btn-out">Xem danh sách Agent ↓</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TẠI SAO CHỌN -->
+  <section class="sec sec-alt">
+    <div class="sec-inner">
+      <div class="sec-label">Lợi ích</div>
+      <h2 class="sec-h2">Tại sao chọn phần mềm AI Agent của VIAi?</h2>
+      <p class="sec-sub">Không phải chatbot — là AI Agent thực sự hành động: tạo đơn, cập nhật CRM, gửi báo cáo, chăm sóc khách hàng — hoàn toàn tự động.</p>
+      <div class="card-grid">
+        <div class="sol-card"><div class="sol-card-icon">⚡</div><h3>Triển khai trong 24 giờ</h3><p>Từ lúc ký hợp đồng đến khi Agent chạy thực tế chỉ mất một ngày làm việc. Đội ngũ VIAi hỗ trợ cài đặt toàn bộ.</p></div>
+        <div class="sol-card"><div class="sol-card-icon">🔗</div><h3>Kết nối 100+ ứng dụng</h3><p>Zalo, Facebook, Shopee, Lazada, Google Sheets, MISA, Base.vn và hàng trăm ứng dụng khác — không cần viết code.</p></div>
+        <div class="sol-card"><div class="sol-card-icon">🛡️</div><h3>Bảo mật dữ liệu tuyệt đối</h3><p>Dữ liệu lưu tại máy chủ Việt Nam, mã hóa end-to-end, tuân thủ tiêu chuẩn ISO 27001 và quy định PDPA.</p></div>
+        <div class="sol-card"><div class="sol-card-icon">📞</div><h3>Hỗ trợ 1-1 tiếng Việt</h3><p>Chuyên gia thực sự hỗ trợ qua Zalo và hotline. Cam kết phản hồi trong 30 phút giờ hành chính.</p></div>
+        <div class="sol-card"><div class="sol-card-icon">🔄</div><h3>Tự học và cải thiện</h3><p>Agent sử dụng dữ liệu thực tế của doanh nghiệp để liên tục tối ưu phản hồi và quy trình xử lý.</p></div>
+        <div class="sol-card"><div class="sol-card-icon">💰</div><h3>Hoàn tiền 14 ngày</h3><p>Nếu không hài lòng trong 14 ngày đầu, VIAi hoàn 100% không hỏi lý do. Rủi ro bằng không.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DANH SÁCH AGENT -->
+  <section class="sec" id="agents">
+    <div class="sec-inner">
+      <div class="sec-label">Thư viện Agent</div>
+      <h2 class="sec-h2">8 AI Agent sẵn sàng triển khai</h2>
+      <p class="sec-sub">Chọn Agent phù hợp với nghiệp vụ — hoặc để đội ngũ VIAi tư vấn miễn phí Agent tối ưu nhất cho doanh nghiệp của bạn.</p>
+      <div class="card-grid" style="grid-template-columns:repeat(4,1fr)">
+        ${agents.map(a => `
+        <a href="/san-pham/${escapeHtml(a.slug)}" class="agent-card">
+          <div class="agent-thumb">
+            <span class="agent-thumb-ico">${escapeHtml(a.icon)}</span>
+            ${a.badge ? `<span class="agent-thumb-badge">${escapeHtml(a.badge)}</span>` : ''}
+          </div>
+          <div class="agent-body">
+            <div class="agent-name">${escapeHtml(a.name)}</div>
+            <div class="agent-desc">${escapeHtml(a.desc)}</div>
+            <div class="agent-link">Xem chi tiết <span class="cta-arrow" style="animation-duration:2s">→</span></div>
+          </div>
+        </a>`).join('')}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec sec-alt">
+    <div class="sec-inner">
+      <div class="sec-label">Câu hỏi thường gặp</div>
+      <h2 class="sec-h2">Bạn đang thắc mắc điều gì?</h2>
+      <div class="faq-grid">
+        <div class="faq-item"><div class="faq-q"><span class="faq-qn">Q1.</span>Tôi không biết lập trình, có dùng được không?</div><div class="faq-a">Hoàn toàn không cần kỹ thuật. Giao diện tiếng Việt, đội VIAi hỗ trợ cài đặt 1-1 từ đầu đến cuối trong 24 giờ.</div></div>
+        <div class="faq-item"><div class="faq-q"><span class="faq-qn">Q2.</span>Agent có hoạt động 24/7 không?</div><div class="faq-a">Có. Agent chạy liên tục không cần giám sát — kể cả cuối tuần, ngày lễ và 2 giờ sáng. Uptime cam kết 99.9%.</div></div>
+        <div class="faq-item"><div class="faq-q"><span class="faq-qn">Q3.</span>Tôi có thể dùng nhiều Agent cùng lúc không?</div><div class="faq-a">Có. Nhiều doanh nghiệp dùng 2-3 Agent cùng lúc (ví dụ Zalo Sales + CRM + Report). Giá ưu đãi khi combo.</div></div>
+        <div class="faq-item"><div class="faq-q"><span class="faq-qn">Q4.</span>Dữ liệu khách hàng có an toàn không?</div><div class="faq-a">Mã hóa AES-256, lưu trữ tại Việt Nam, tuân thủ ISO 27001. VIAi không bán hay chia sẻ dữ liệu với bên thứ ba.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-band">
+    <div><h2>Sẵn sàng triển khai AI Agent?</h2><p>Bắt đầu với 7 ngày dùng thử miễn phí — không cần thẻ tín dụng, đội VIAi hỗ trợ cài đặt 1-1.</p></div>
+    <div class="cta-btns">
+      <a href="/dung-thu.html" class="sol-btn-main cta-pulse cta-shimmer cta-glow">🚀 Dùng thử miễn phí</a>
+      <a href="/#pricing" class="sol-btn-out" style="border-color:rgba(255,255,255,.4)">Xem bảng giá</a>
+    </div>
+  </div>
+
+  ${renderSolutionFooter()}
+  ${renderSiteToolbarScript()}
+</body>
+</html>`;
+}
+
+// ── Page 2: /dich-vu ─────────────────────────────────
+function renderDichVu() {
+  return `<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Dịch vụ triển khai AI Agent trọn gói | VIAi</title>
+  <meta name="description" content="VIAi tư vấn, cấu hình, tích hợp và bàn giao AI Agent trọn gói cho doanh nghiệp. Cam kết triển khai trong 30 ngày, SLA 99.9% uptime."/>
+  <link rel="canonical" href="${SITE_URL}/dich-vu"/>
+  <meta property="og:title" content="Dịch vụ triển khai AI Agent | VIAi"/><meta property="og:url" content="${SITE_URL}/dich-vu"/>
+  <link rel="icon" href="/anhlogo/logo2.png"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  ${renderSolutionCSS()}
+</head>
+<body>
+  ${renderSiteToolbar()}
+  <!-- HERO -->
+  <section class="sol-hero" style="background:linear-gradient(135deg,#0F172A 0%,#0D3B8E 55%,#1A56DB 100%)">
+    <div class="sol-inner">
+      <nav class="sol-bc"><a href="/">Trang chủ</a><span class="sep">›</span><span style="color:rgba(255,255,255,.9)">Dịch vụ triển khai</span></nav>
+      <div class="sol-tag">Dịch vụ</div>
+      <h1>Triển khai AI Agent<br><em style="color:#FFB800;font-style:normal">trọn gói</em> — bàn giao tận tay</h1>
+      <p>Đội ngũ VIAi khảo sát quy trình, thiết kế giải pháp, cấu hình tích hợp và đào tạo team của bạn — cho đến khi Agent vận hành trơn tru và sinh ra kết quả thực tế.</p>
+      <div class="sol-btns">
+        <a href="/dung-thu.html" class="sol-btn-main cta-pulse cta-shimmer cta-glow">📞 Đặt lịch tư vấn miễn phí <span class="cta-arrow">→</span></a>
+        <a href="#quy-trinh" class="sol-btn-out">Xem quy trình ↓</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DỊCH VỤ BAO GỒM -->
+  <section class="sec sec-alt">
+    <div class="sec-inner">
+      <div class="sec-label">Gói dịch vụ</div>
+      <h2 class="sec-h2">Chúng tôi làm gì cho bạn?</h2>
+      <p class="sec-sub">Từ khảo sát nghiệp vụ đến vận hành thực tế — VIAi đồng hành toàn bộ hành trình AI của doanh nghiệp.</p>
+      <div class="card-grid">
+        <div class="sol-card"><div class="sol-card-icon">🔍</div><h3>Tư vấn & Khảo sát</h3><p>Phân tích quy trình hiện tại, xác định điểm tắc nghẽn và đề xuất AI Agent phù hợp nhất với mục tiêu kinh doanh của bạn.</p></div>
+        <div class="sol-card"><div class="sol-card-icon">⚙️</div><h3>Cấu hình & Tích hợp</h3><p>Kết nối Agent với Zalo OA, CRM, phần mềm kho, hệ thống kế toán và tất cả nền tảng doanh nghiệp đang sử dụng.</p></div>
+        <div class="sol-card"><div class="sol-card-icon">🧠</div><h3>Đào tạo AI theo dữ liệu</h3><p>Huấn luyện Agent trên dữ liệu thực tế: sản phẩm, giá, chính sách, kịch bản bán hàng và nghiệp vụ đặc thù.</p></div>
+        <div class="sol-card"><div class="sol-card-icon">🚀</div><h3>Triển khai & Bàn giao</h3><p>Chạy thử nghiệm trong môi trường thực, điều chỉnh theo phản hồi và bàn giao khi Agent đạt chuẩn kỳ vọng.</p></div>
+        <div class="sol-card"><div class="sol-card-icon">📊</div><h3>Theo dõi & Báo cáo</h3><p>Dashboard theo dõi hiệu suất Agent theo thời gian thực. Báo cáo định kỳ về ROI và đề xuất tối ưu liên tục.</p></div>
+        <div class="sol-card"><div class="sol-card-icon">🛠️</div><h3>Bảo trì & Hỗ trợ</h3><p>Đội kỹ thuật trực 24/7 cho gói Pro+. Cập nhật Agent theo thay đổi nghiệp vụ không tính phí trong 3 tháng đầu.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUY TRÌNH -->
+  <section class="sec" id="quy-trinh">
+    <div class="sec-inner">
+      <div class="sec-label">Quy trình</div>
+      <h2 class="sec-h2">4 bước từ ký kết đến vận hành</h2>
+      <p class="sec-sub" style="margin-bottom:48px">Minh bạch, đúng tiến độ, có cam kết cụ thể ở từng giai đoạn.</p>
+      <div class="step-grid">
+        <div class="step"><div class="step-num">1</div><h3>Khảo sát nghiệp vụ</h3><p>Phỏng vấn team, phân tích quy trình và xác định 3-5 điểm tắc nghẽn cần tự động hóa ngay.</p></div>
+        <div class="step"><div class="step-num">2</div><h3>Thiết kế giải pháp</h3><p>Đề xuất kiến trúc Agent, kế hoạch tích hợp và timeline triển khai — được duyệt trước khi bắt đầu.</p></div>
+        <div class="step"><div class="step-num">3</div><h3>Tích hợp & Đào tạo</h3><p>Kết nối hệ thống, huấn luyện AI trên dữ liệu thực và kiểm thử trong môi trường staging.</p></div>
+        <div class="step"><div class="step-num">4</div><h3>Go-live & Tối ưu</h3><p>Chạy production, theo dõi 2 tuần đầu, điều chỉnh và bàn giao kèm tài liệu vận hành đầy đủ.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAM KẾT -->
+  <section class="commit-dark">
+    <div style="max-width:1100px;margin:0 auto">
+      <div style="font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:1.2px;color:#FFB800;margin-bottom:6px">Cam kết</div>
+      <h2 style="font-size:clamp(1.5rem,2.5vw,2.2rem);font-weight:900;color:white;margin-bottom:28px">5 cam kết cụ thể — không chung chung</h2>
+      <div class="commit-grid">
+        <div class="commit-card feat"><div class="commit-ico">🏗️</div><div class="commit-ttl">Triển khai trong 30 ngày</div><div class="commit-desc">Agent vận hành production tối đa 30 ngày làm việc — quá hạn → miễn phí toàn bộ phí triển khai.</div></div>
+        <div class="commit-card"><div class="commit-ico">🔒</div><div class="commit-ttl">Bảo mật AES-256</div><div class="commit-desc">Server Viettel IDC tại Việt Nam, đạt chuẩn ISO/IEC 27001.</div></div>
+        <div class="commit-card"><div class="commit-ico">↩️</div><div class="commit-ttl">Hoàn tiền 14 ngày</div><div class="commit-desc">Không hài lòng trong 14 ngày đầu → hoàn 100% không hỏi lý do.</div></div>
+        <div class="commit-card"><div class="commit-ico">🎓</div><div class="commit-ttl">Đào tạo 1-1 miễn phí</div><div class="commit-desc">2 buổi onboarding qua Google Meet. Hỗ trợ đến khi team dùng thành thạo.</div></div>
+        <div class="commit-card"><div class="commit-ico">💬</div><div class="commit-ttl">SLA 99.9% uptime</div><div class="commit-desc">Cam kết uptime 99.9%, hỗ trợ Zalo + hotline 24/7 cho gói Pro+.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec sec-alt">
+    <div class="sec-inner">
+      <div class="sec-label">FAQ</div>
+      <h2 class="sec-h2">Câu hỏi thường gặp về dịch vụ</h2>
+      <div class="faq-grid">
+        <div class="faq-item"><div class="faq-q"><span class="faq-qn">Q1.</span>Dịch vụ này khác gì so với tự mua phần mềm?</div><div class="faq-a">Phần mềm anh tự cài đặt. Dịch vụ trọn gói thì VIAi lo từ A-Z: khảo sát, cấu hình, đào tạo và bảo trì — phù hợp với doanh nghiệp không có đội kỹ thuật nội bộ.</div></div>
+        <div class="faq-item"><div class="faq-q"><span class="faq-qn">Q2.</span>Chi phí triển khai tính như thế nào?</div><div class="faq-a">Phí một lần cho giai đoạn triển khai + phí vận hành hàng tháng. Liên hệ để nhận báo giá chi tiết theo quy mô và số Agent cần triển khai.</div></div>
+        <div class="faq-item"><div class="faq-q"><span class="faq-qn">Q3.</span>Hệ thống cũ của tôi có tích hợp được không?</div><div class="faq-a">Trong hầu hết trường hợp — có. VIAi tích hợp qua API, webhook hoặc RPA. Trường hợp phức tạp hơn sẽ được đánh giá miễn phí trong buổi khảo sát.</div></div>
+        <div class="faq-item"><div class="faq-q"><span class="faq-qn">Q4.</span>Sau khi triển khai nếu cần thay đổi thì sao?</div><div class="faq-a">Thay đổi nhỏ trong 3 tháng đầu miễn phí. Thay đổi lớn tính theo giờ công minh bạch — không có phí ẩn.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-band">
+    <div><h2>Đặt lịch tư vấn miễn phí</h2><p>30 phút khảo sát, VIAi sẽ đề xuất giải pháp phù hợp và báo giá cụ thể cho doanh nghiệp của bạn.</p></div>
+    <div class="cta-btns">
+      <a href="/dung-thu.html" class="sol-btn-main cta-pulse cta-shimmer cta-glow">📞 Đặt lịch tư vấn ngay</a>
+      <a href="/phan-mem" class="sol-btn-out" style="border-color:rgba(255,255,255,.4)">Xem phần mềm AI Agent</a>
+    </div>
+  </div>
+
+  ${renderSolutionFooter()}
+  ${renderSiteToolbarScript()}
+</body>
+</html>`;
+}
+
+// ── Page 3: /dao-tao ─────────────────────────────────
+function renderDaoTao() {
+  const courses = [
+    { icon:'🤖', level:'Cơ bản', name:'AI Agent 101', desc:'Hiểu AI Agent là gì, cách hoạt động và cách chọn Agent phù hợp với nghiệp vụ doanh nghiệp. Dành cho người mới bắt đầu.', duration:'8 buổi', format:'Online + Video ghi lại', price:'3.990.000đ' },
+    { icon:'⚙️', level:'Thực chiến', name:'n8n & Automation Thực chiến', desc:'Xây dựng workflow tự động hóa với n8n — kết nối Zalo, Google Sheets, CRM và hơn 400 ứng dụng. Không cần code.', duration:'12 buổi', format:'Online Live + Project thực tế', price:'6.990.000đ' },
+    { icon:'🏆', level:'Nâng cao', name:'AI Agent for Business', desc:'Thiết kế và triển khai hệ thống AI Agent đa bước cho doanh nghiệp. Bao gồm quản lý prompt, đánh giá hiệu suất và scale.', duration:'16 buổi', format:'Online + 1-1 Mentoring', price:'12.990.000đ' },
+  ];
+  return `<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Khóa học AI Agent thực chiến | VIAi</title>
+  <meta name="description" content="Khóa học AI Agent thực chiến cho doanh nghiệp Việt Nam — từ cơ bản đến nâng cao. Học n8n, automation, và cách triển khai AI Agent cho nghiệp vụ thực tế."/>
+  <link rel="canonical" href="${SITE_URL}/dao-tao"/>
+  <meta property="og:title" content="Khóa học AI Agent | VIAi"/><meta property="og:url" content="${SITE_URL}/dao-tao"/>
+  <link rel="icon" href="/anhlogo/logo2.png"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  ${renderSolutionCSS()}
+  <style>
+    .course-card{background:white;border:1px solid #E2E8F0;border-radius:16px;overflow:hidden;transition:all .2s}.course-card:hover{box-shadow:0 12px 32px rgba(26,86,219,.12);transform:translateY(-3px)}
+    .course-head{background:linear-gradient(135deg,#1040B0,#1A56DB);padding:24px;color:white}
+    .course-level{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;background:rgba(255,255,255,.18);padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px}
+    .course-icon{font-size:2.2rem;margin-bottom:10px;display:block}
+    .course-head h3{font-size:1.2rem;font-weight:900;margin-bottom:6px}.course-head p{font-size:.85rem;color:rgba(255,255,255,.8);line-height:1.6}
+    .course-body{padding:20px}.course-meta{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+    .course-meta-item{display:flex;align-items:center;gap:8px;font-size:.84rem;color:#475569}
+    .course-meta-item span:first-child{font-size:.9rem;width:20px}
+    .course-price{font-size:1.6rem;font-weight:900;color:var(--primary);margin-bottom:16px}
+    .course-btn{display:block;text-align:center;background:var(--accent);color:white;padding:11px;border-radius:8px;font-weight:700;font-size:.9rem;transition:all .2s}.course-btn:hover{background:var(--accent-light);transform:translateY(-1px)}
+    .benefit-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .benefit-item{display:flex;align-items:flex-start;gap:12px;background:white;border-radius:12px;padding:16px;border:1px solid #E2E8F0}
+    .benefit-ico{font-size:1.4rem;flex-shrink:0;margin-top:2px}
+    .benefit-title{font-size:.9rem;font-weight:800;margin-bottom:4px;color:var(--gray-900)}.benefit-desc{font-size:.82rem;color:#475569;line-height:1.6}
+    @media(max-width:768px){.benefit-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  ${renderSiteToolbar()}
+  <!-- HERO -->
+  <section class="sol-hero" style="background:linear-gradient(135deg,#0F172A 0%,#1E3A8A 50%,#0F172A 100%)">
+    <div class="sol-inner">
+      <nav class="sol-bc"><a href="/">Trang chủ</a><span class="sep">›</span><span style="color:rgba(255,255,255,.9)">Khóa học AI Agent</span></nav>
+      <div class="sol-tag">Đào tạo</div>
+      <h1>Khóa học AI Agent<br><em style="color:#FFB800;font-style:normal">thực chiến</em> cho doanh nghiệp</h1>
+      <p>Huấn luyện đội ngũ tự vận hành, đo lường và tối ưu AI Agent theo quy trình thực tế. Từ người mới bắt đầu đến triển khai production thực tế.</p>
+      <div class="sol-btns">
+        <a href="#khoa-hoc" class="sol-btn-main cta-pulse cta-shimmer cta-glow">📚 Xem các khóa học <span class="cta-arrow">→</span></a>
+        <a href="/dung-thu.html" class="sol-btn-out">Đăng ký tư vấn miễn phí</a>
+      </div>
+      <div style="display:flex;gap:24px;margin-top:28px;flex-wrap:wrap">
+        <div style="text-align:center"><div style="font-size:1.8rem;font-weight:900;color:#FFB800">500+</div><div style="font-size:.75rem;color:rgba(255,255,255,.65)">Học viên</div></div>
+        <div style="text-align:center"><div style="font-size:1.8rem;font-weight:900;color:#FFB800">3</div><div style="font-size:.75rem;color:rgba(255,255,255,.65)">Cấp độ khóa học</div></div>
+        <div style="text-align:center"><div style="font-size:1.8rem;font-weight:900;color:#FFB800">4.9★</div><div style="font-size:.75rem;color:rgba(255,255,255,.65)">Đánh giá trung bình</div></div>
+        <div style="text-align:center"><div style="font-size:1.8rem;font-weight:900;color:#FFB800">24/7</div><div style="font-size:.75rem;color:rgba(255,255,255,.65)">Hỗ trợ học viên</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KHÓA HỌC -->
+  <section class="sec sec-alt" id="khoa-hoc">
+    <div class="sec-inner">
+      <div class="sec-label">Chương trình đào tạo</div>
+      <h2 class="sec-h2">Chọn khóa học phù hợp</h2>
+      <p class="sec-sub">Lộ trình học từ cơ bản đến nâng cao — mỗi khóa đều có project thực tế và chứng chỉ hoàn thành.</p>
+      <div class="card-grid">
+        ${courses.map(c => `
+        <div class="course-card">
+          <div class="course-head">
+            <span class="course-level">${escapeHtml(c.level)}</span>
+            <span class="course-icon">${escapeHtml(c.icon)}</span>
+            <h3>${escapeHtml(c.name)}</h3>
+            <p>${escapeHtml(c.desc)}</p>
+          </div>
+          <div class="course-body">
+            <div class="course-meta">
+              <div class="course-meta-item"><span>⏱️</span><span>${escapeHtml(c.duration)}</span></div>
+              <div class="course-meta-item"><span>💻</span><span>${escapeHtml(c.format)}</span></div>
+              <div class="course-meta-item"><span>🎓</span><span>Chứng chỉ hoàn thành</span></div>
+            </div>
+            <div class="course-price">${escapeHtml(c.price)}</div>
+            <a href="/dung-thu.html" class="course-btn">Đăng ký ngay →</a>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+  </section>
+
+  <!-- LỢI ÍCH -->
+  <section class="sec">
+    <div class="sec-inner">
+      <div class="sec-label">Lợi ích</div>
+      <h2 class="sec-h2">Sau khóa học, bạn có thể làm gì?</h2>
+      <p class="sec-sub" style="margin-bottom:28px">Kỹ năng thực tế — không phải lý thuyết suông.</p>
+      <div class="benefit-grid">
+        <div class="benefit-item"><div class="benefit-ico">🤖</div><div><div class="benefit-title">Tự chọn và cấu hình AI Agent</div><div class="benefit-desc">Biết cách đánh giá và chọn Agent phù hợp, cấu hình kịch bản và quy tắc xử lý theo nghiệp vụ.</div></div></div>
+        <div class="benefit-item"><div class="benefit-ico">🔗</div><div><div class="benefit-title">Tích hợp với hệ thống hiện tại</div><div class="benefit-desc">Kết nối Agent với Zalo, CRM, Google Sheets, phần mềm kế toán và 400+ ứng dụng qua n8n.</div></div></div>
+        <div class="benefit-item"><div class="benefit-ico">📊</div><div><div class="benefit-title">Đo lường và tối ưu hiệu suất</div><div class="benefit-desc">Xây dashboard theo dõi KPI của Agent, phân tích dữ liệu và ra quyết định tối ưu dựa trên số liệu.</div></div></div>
+        <div class="benefit-item"><div class="benefit-ico">🏢</div><div><div class="benefit-title">Triển khai cho toàn doanh nghiệp</div><div class="benefit-desc">Nhân rộng mô hình từ 1 Agent thành nhiều Agent phối hợp — tự động hóa chuỗi quy trình phức tạp.</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec sec-alt">
+    <div class="sec-inner">
+      <div class="sec-label">FAQ</div>
+      <h2 class="sec-h2">Câu hỏi về khóa học</h2>
+      <div class="faq-grid">
+        <div class="faq-item"><div class="faq-q"><span class="faq-qn">Q1.</span>Tôi không biết kỹ thuật có học được không?</div><div class="faq-a">Khóa cơ bản AI Agent 101 không yêu cầu kiến thức kỹ thuật. Khóa n8n yêu cầu biết sử dụng máy tính thành thạo. Khóa nâng cao phù hợp người có hiểu biết về hệ thống.</div></div>
+        <div class="faq-item"><div class="faq-q"><span class="faq-qn">Q2.</span>Học xong có được hỗ trợ triển khai thực tế không?</div><div class="faq-a">Có. Học viên được ưu đãi 20% khi dùng dịch vụ triển khai của VIAi và được mentor review project trong 30 ngày sau khi học xong.</div></div>
+        <div class="faq-item"><div class="faq-q"><span class="faq-qn">Q3.</span>Học online hay offline?</div><div class="faq-a">Chủ yếu online live qua Zoom, có ghi lại video để xem lại. Một số khóa có buổi workshop offline tại TP.HCM và Hà Nội.</div></div>
+        <div class="faq-item"><div class="faq-q"><span class="faq-qn">Q4.</span>Có học phần mềm của VIAi trong khóa học không?</div><div class="faq-a">Có. Học viên được dùng thử toàn bộ nền tảng VIAi trong suốt khóa học để thực hành trên dữ liệu thực tế của doanh nghiệp mình.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-band">
+    <div><h2>Bắt đầu hành trình AI của bạn</h2><p>Tư vấn chọn khóa học phù hợp — miễn phí, không áp lực. Khai giảng hàng tháng.</p></div>
+    <div class="cta-btns">
+      <a href="/dung-thu.html" class="sol-btn-main cta-pulse cta-shimmer cta-glow">📚 Đăng ký tư vấn ngay</a>
+      <a href="/dich-vu" class="sol-btn-out" style="border-color:rgba(255,255,255,.4)">Xem dịch vụ triển khai</a>
+    </div>
+  </div>
+
+  ${renderSolutionFooter()}
+  ${renderSiteToolbarScript()}
+</body>
+</html>`;
+}
+
+// ── Routes cho 3 trang giải pháp ─────────────────────
+app.get('/phan-mem', (_req, res) => res.setHeader('Content-Type','text/html;charset=utf-8') && res.send(renderPhanMem()));
+app.get('/dich-vu',  (_req, res) => res.setHeader('Content-Type','text/html;charset=utf-8') && res.send(renderDichVu()));
+app.get('/dao-tao',  (_req, res) => res.setHeader('Content-Type','text/html;charset=utf-8') && res.send(renderDaoTao()));
+
 app.get('/cong-cu', (_req, res) => res.redirect('/#products'));
 
 app.get('/cong-cu/:slug', (req, res) => {
