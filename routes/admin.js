@@ -597,6 +597,48 @@ router.get('/2fa/status', auth, (req, res) => {
   res.json({ enabled: !!user?.totp_enabled });
 });
 
+// ── Site Settings (Homepage Globals) ─────────────────
+router.get('/site-settings', auth, (req, res) => {
+  try {
+    const rows = db.prepare('SELECT key, value FROM site_settings').all();
+    const settings = Object.fromEntries(rows.map(r => [r.key, r.value]));
+    res.json(settings);
+  } catch(e) { res.status(500).json({ error: 'Lỗi lấy cài đặt' }); }
+});
+
+router.put('/site-settings', auth, (req, res) => {
+  try {
+    const upd = db.prepare("INSERT INTO site_settings (key, value, updated_at) VALUES (?, ?, datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=excluded.updated_at");
+    const trx = db.transaction((data) => {
+      Object.entries(data).forEach(([k, v]) => upd.run(k, String(v ?? '')));
+    });
+    trx(req.body);
+    res.json({ success: true });
+  } catch(e) { res.status(500).json({ error: 'Lỗi lưu cài đặt' }); }
+});
+
+// ── Dashboard stats ───────────────────────────────────
+router.get('/stats', auth, (req, res) => {
+  try {
+    const stats = {
+      blog_total:    db.prepare("SELECT COUNT(*) as c FROM blog_posts").get().c,
+      blog_draft:    db.prepare("SELECT COUNT(*) as c FROM blog_posts WHERE active=0").get().c,
+      blog_pub:      db.prepare("SELECT COUNT(*) as c FROM blog_posts WHERE active=1").get().c,
+      products:      db.prepare("SELECT COUNT(*) as c FROM products WHERE active=1").get().c,
+      news:          db.prepare("SELECT COUNT(*) as c FROM news_posts WHERE active=1").get().c,
+      customers:     db.prepare("SELECT COUNT(*) as c FROM customers").get().c,
+      customers_new: db.prepare("SELECT COUNT(*) as c FROM customers WHERE date(created_at)=date('now')").get().c,
+      users:         db.prepare("SELECT COUNT(*) as c FROM users").get().c,
+      gallery:       db.prepare("SELECT COUNT(*) as c FROM gallery_images WHERE active=1").get().c,
+      why:           db.prepare("SELECT COUNT(*) as c FROM why_items WHERE active=1").get().c,
+      // Lượt xem gần đây từ server log (đơn giản)
+      recent_posts: db.prepare("SELECT id,title,slug,published_at FROM blog_posts WHERE active=1 ORDER BY created_at DESC LIMIT 5").all(),
+      recent_customers: db.prepare("SELECT id,name,phone,company,created_at FROM customers ORDER BY created_at DESC LIMIT 5").all(),
+    };
+    res.json(stats);
+  } catch(e) { res.status(500).json({ error: 'Lỗi lấy thống kê' }); }
+});
+
 // ── Products ──────────────────────────────────────────
 router.get('/products', auth, (req, res) => {
   res.json(db.prepare('SELECT * FROM products ORDER BY order_index ASC').all());

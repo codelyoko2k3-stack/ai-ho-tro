@@ -1,11 +1,14 @@
 require('dotenv').config();
-const express   = require('express');
-const cors      = require('cors');
-const helmet    = require('helmet');
-const rateLimit = require('express-rate-limit');
-const path      = require('path');
-const db        = require('./db');
-const tg        = require('./telegram');
+const express      = require('express');
+const cors         = require('cors');
+const helmet       = require('helmet');
+const rateLimit    = require('express-rate-limit');
+const compression  = require('compression');
+const path         = require('path');
+const db           = require('./db');
+const tg           = require('./telegram');
+
+const SITE_URL = (process.env.SITE_URL || 'https://respectful-courtesy-production-4318.up.railway.app').replace(/\/$/, '');
 
 const app = express();
 
@@ -171,12 +174,12 @@ function renderSiteToolbar(active = '') {
           <a href="/#products" class="nav-link">Dịch vụ <span class="arrow">▾</span></a>
           <div class="dropdown dropdown-mega">
             <div class="mega-title">AI Agents cho doanh nghiệp</div>
-            <a href="/#products"><span class="dd-icon">💬</span> Zalo Sales Agent</a>
-            <a href="/#products"><span class="dd-icon">📦</span> Order Agent</a>
-            <a href="/#products"><span class="dd-icon">🤝</span> CRM Agent</a>
-            <a href="/#products"><span class="dd-icon">📊</span> Report Agent</a>
-            <a href="/#products"><span class="dd-icon">📧</span> Email Agent</a>
-            <a href="/#products"><span class="dd-icon">🏭</span> Enterprise Agent</a>
+            <a href="/san-pham/zalo-sales-agent"><span class="dd-icon">💬</span> Zalo Sales Agent</a>
+            <a href="/san-pham/order-management-agent"><span class="dd-icon">📦</span> Order Agent</a>
+            <a href="/san-pham/crm-automation-agent"><span class="dd-icon">🤝</span> CRM Agent</a>
+            <a href="/san-pham/report-analytics-agent"><span class="dd-icon">📊</span> Report Agent</a>
+            <a href="/san-pham/email-marketing-agent"><span class="dd-icon">📧</span> Email Agent</a>
+            <a href="/san-pham/custom-enterprise-agent"><span class="dd-icon">🏭</span> Enterprise Agent</a>
           </div>
         </div>
         <div class="nav-item">
@@ -225,12 +228,12 @@ function renderSiteToolbar(active = '') {
         Dịch vụ <span class="m-arrow">▾</span>
       </button>
       <div class="mobile-submenu">
-        <a href="/#products" onclick="closeMobileMenu()"><span>💬</span> Zalo Sales Agent</a>
-        <a href="/#products" onclick="closeMobileMenu()"><span>📦</span> Order Agent</a>
-        <a href="/#products" onclick="closeMobileMenu()"><span>🤝</span> CRM Agent</a>
-        <a href="/#products" onclick="closeMobileMenu()"><span>📊</span> Report Agent</a>
-        <a href="/#products" onclick="closeMobileMenu()"><span>📧</span> Email Agent</a>
-        <a href="/#products" onclick="closeMobileMenu()"><span>🏭</span> Enterprise Agent</a>
+        <a href="/san-pham/zalo-sales-agent" onclick="closeMobileMenu()"><span>💬</span> Zalo Sales Agent</a>
+        <a href="/san-pham/order-management-agent" onclick="closeMobileMenu()"><span>📦</span> Order Agent</a>
+        <a href="/san-pham/crm-automation-agent" onclick="closeMobileMenu()"><span>🤝</span> CRM Agent</a>
+        <a href="/san-pham/report-analytics-agent" onclick="closeMobileMenu()"><span>📊</span> Report Agent</a>
+        <a href="/san-pham/email-marketing-agent" onclick="closeMobileMenu()"><span>📧</span> Email Agent</a>
+        <a href="/san-pham/custom-enterprise-agent" onclick="closeMobileMenu()"><span>🏭</span> Enterprise Agent</a>
       </div>
     </div>
 
@@ -460,7 +463,7 @@ function renderProductList(items) {
 }
 
 function renderProductDetailPage(product) {
-  const siteUrl = 'https://respectful-courtesy-production-4318.up.railway.app';
+  const siteUrl = SITE_URL;
   const absoluteUrl = `${siteUrl}/cong-cu/${product.slug}`;
   const title = `${product.name} | VIAi`;
   const desc = product.description;
@@ -472,11 +475,16 @@ function renderProductDetailPage(product) {
     operatingSystem: 'Web',
     description: desc,
     url: absoluteUrl,
-    provider: {
-      '@type': 'Organization',
-      name: 'VIAi',
-      url: siteUrl
-    }
+    provider: { '@type': 'Organization', name: 'VIAi', url: siteUrl }
+  };
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: siteUrl },
+      { '@type': 'ListItem', position: 2, name: 'Công cụ', item: `${siteUrl}/cong-cu` },
+      { '@type': 'ListItem', position: 3, name: product.name, item: absoluteUrl },
+    ],
   };
 
   return `<!DOCTYPE html>
@@ -499,6 +507,7 @@ function renderProductDetailPage(product) {
   <meta property="og:url" content="${escapeHtml(absoluteUrl)}" />
   <meta property="og:image" content="${siteUrl}/anhlogo/logo2.png" />
   <script type="application/ld+json">${jsonLd(schema)}</script>
+  <script type="application/ld+json">${jsonLd(breadcrumbSchema)}</script>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     :root{--primary:#1A56DB;--primary-dark:#1040B0;--primary-light:#4B82F4;--accent:#FF6B00;--accent-light:#FF8C38;--green:#00B341;--yellow:#FFB800;--gray-50:#EEF3FF;--gray-100:#DBEAFE;--gray-300:#6B93E8;--gray-600:#1E3A8A;--gray-900:#0F172A}
@@ -527,6 +536,17 @@ function renderProductDetailPage(product) {
     .section{padding:72px 20px}.section.alt{background:#F7FAFF}.inner{max-width:1180px;margin:0 auto}.two-col{display:grid;grid-template-columns:.92fr 1.08fr;gap:56px;align-items:start}.section-tag{font-size:.75rem;font-weight:900;text-transform:uppercase;letter-spacing:1.2px;color:var(--primary);margin-bottom:10px}.section h2{font-size:clamp(1.55rem,2.4vw,2.35rem);line-height:1.18;margin-bottom:16px}.section p{color:#334155;font-size:.98rem}.feature-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.feature-card{border:1px solid var(--gray-100);border-radius:10px;padding:18px;background:white}.feature-card strong{display:block;color:var(--gray-900);font-size:.98rem;margin-bottom:6px}.feature-card p{font-size:.88rem}.list{display:grid;gap:12px;list-style:none}.list li{background:white;border:1px solid var(--gray-100);border-radius:10px;padding:14px 16px;color:#334155;font-weight:600}.workflow{counter-reset:step;display:grid;gap:14px}.workflow li{list-style:none;position:relative;background:white;border:1px solid var(--gray-100);border-radius:10px;padding:16px 16px 16px 56px;color:#334155}.workflow li::before{counter-increment:step;content:counter(step);position:absolute;left:16px;top:16px;width:26px;height:26px;border-radius:50%;background:var(--primary);color:white;font-size:.8rem;font-weight:900;display:flex;align-items:center;justify-content:center}.chips{display:flex;flex-wrap:wrap;gap:10px}.chip{border:1px solid var(--gray-100);background:white;color:var(--gray-600);font-size:.85rem;font-weight:700;padding:8px 12px;border-radius:999px}.cta-band{background:var(--gray-900);color:white;padding:58px 20px}.cta-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:28px}.cta-inner h2{font-size:clamp(1.5rem,2.6vw,2.5rem);line-height:1.2}.cta-inner p{color:rgba(255,255,255,.72);margin-top:8px;max-width:640px}
     @media(max-width:960px){.main-nav,.header-actions{display:none}.hamburger-btn{display:flex}.hero-inner,.two-col{grid-template-columns:1fr}.hero-panel{max-width:520px}.cta-inner{flex-direction:column;align-items:flex-start}}
     @media(max-width:640px){.header-inner{padding:0 18px}.logo-img{height:132px}.product-hero{padding:52px 18px}.section{padding:52px 18px}.feature-grid,.stat-grid{grid-template-columns:1fr}.hero-actions{flex-direction:column}.primary-cta,.secondary-cta{width:100%}}
+    /* CTA animations */
+    @keyframes cta-pulse-ring{0%{box-shadow:0 0 0 0 rgba(255,107,0,.55)}70%{box-shadow:0 0 0 14px rgba(255,107,0,0)}100%{box-shadow:0 0 0 0 rgba(255,107,0,0)}}
+    .cta-pulse{animation:cta-pulse-ring 2.2s cubic-bezier(.4,0,.6,1) infinite}.cta-pulse:hover{animation-play-state:paused}
+    .cta-shimmer{position:relative;overflow:hidden;isolation:isolate}.cta-shimmer::after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%);transform:translateX(-100%);transition:transform .8s ease;pointer-events:none}.cta-shimmer:hover::after{transform:translateX(100%)}
+    .cta-glow{box-shadow:0 8px 26px -6px rgba(255,107,0,.58)}
+    @keyframes arrow-b{0%,100%{transform:translateX(0)}50%{transform:translateX(4px)}}
+    .cta-arrow{display:inline-block;animation:arrow-b 1.4s ease-in-out infinite}
+    /* Sticky bar mobile */
+    .sticky-cu{display:none;position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #e2e8f0;box-shadow:0 -4px 16px rgba(0,0,0,.08);padding:10px 16px;z-index:990;align-items:center;gap:10px}
+    .sticky-cu-name{flex:1;font-size:.88rem;font-weight:800;color:#0F172A}
+    @media(max-width:480px){.sticky-cu{display:flex}.product-hero{padding-bottom:80px}}
   </style>
 </head>
 <body>
@@ -534,12 +554,19 @@ function renderProductDetailPage(product) {
   <section class="product-hero">
     <div class="hero-inner">
       <div>
+        <nav style="display:flex;align-items:center;gap:6px;font-size:.78rem;color:rgba(255,255,255,.6);margin-bottom:16px;flex-wrap:wrap" aria-label="Breadcrumb">
+          <a href="/" style="color:rgba(255,255,255,.6);transition:color .2s" onmouseover="this.style.color='#FFB800'" onmouseout="this.style.color='rgba(255,255,255,.6)'">Trang chủ</a>
+          <span style="color:rgba(255,255,255,.35);font-size:.65rem">›</span>
+          <a href="/san-pham.html" style="color:rgba(255,255,255,.6)">Công cụ</a>
+          <span style="color:rgba(255,255,255,.35);font-size:.65rem">›</span>
+          <span style="color:rgba(255,255,255,.9)">${escapeHtml(product.name)}</span>
+        </nav>
         <div class="eyebrow">${escapeHtml(product.icon)} ${escapeHtml(product.category)}</div>
         <h1>${escapeHtml(product.name)}</h1>
         <p class="lead">${escapeHtml(product.description)}</p>
         <div class="hero-actions">
-          <a class="primary-cta" href="/dung-thu.html">Đăng ký tư vấn</a>
-          <a class="secondary-cta" href="/#products">Xem công cụ khác</a>
+          <a class="primary-cta cta-pulse cta-shimmer cta-glow" href="/dung-thu.html">Đăng ký tư vấn <span class="cta-arrow">→</span></a>
+          <a class="secondary-cta" href="/san-pham.html">← Xem công cụ khác</a>
         </div>
       </div>
       <aside class="hero-panel">
@@ -599,9 +626,16 @@ function renderProductDetailPage(product) {
         <h2>Muốn triển khai ${escapeHtml(product.name)}?</h2>
         <p>VIAi có thể khảo sát quy trình hiện tại và đề xuất cấu hình Agent phù hợp cho doanh nghiệp của bạn.</p>
       </div>
-      <a class="primary-cta" href="/dung-thu.html">Dùng thử FREE</a>
+      <a class="primary-cta cta-pulse cta-shimmer cta-glow" href="/dung-thu.html">Dùng thử FREE <span class="cta-arrow">→</span></a>
     </div>
   </section>
+
+  <!-- Sticky bar mobile -->
+  <div class="sticky-cu" aria-hidden="true">
+    <div class="sticky-cu-name">${escapeHtml(product.name)}</div>
+    <a href="/dung-thu.html" style="border:2px solid #1A56DB;border-radius:8px;padding:8px 14px;font-size:.82rem;font-weight:700;color:#1A56DB">Tư vấn</a>
+    <a href="/dung-thu.html" class="primary-cta cta-glow" style="padding:9px 16px;font-size:.82rem">Dùng thử FREE</a>
+  </div>
   ${renderSiteToolbarScript()}
 </body>
 </html>`;
@@ -802,8 +836,172 @@ const PRODUCT_DETAILS = {
   },
 };
 
-function renderProductPage(product, detail) {
-  const siteUrl = 'https://respectful-courtesy-production-4318.up.railway.app';
+const PRODUCT_ENRICHMENT = {
+  'zalo-sales-agent': {
+    commitmentSpecific: { icon: '⚡', title: 'Cam kết phản hồi < 3 giây', desc: 'Response time trung bình < 3 giây 24/7, kể cả ngày lễ và 2 giờ sáng — không đạt → hoàn phí tháng đó.' },
+    problems: [
+      'Nhân viên phải trực Zalo 24/7, mệt mỏi và hay bỏ sót tin nhắn ngoài giờ làm việc.',
+      'Khách hỏi giá lúc tối khuya, sáng hôm sau mới trả lời — họ đã mua của đối thủ rồi.',
+      'Không có quy trình thu thập thông tin giao hàng nhất quán, đơn hay sai địa chỉ.',
+      'Mỗi nhân viên tư vấn một kiểu, thiếu nhất quán về giá và chính sách.',
+      'Không theo dõi được khách đã hỏi mà chưa mua để chăm sóc lại.',
+      'Chi phí nhân sự CSKH tăng nhưng tỷ lệ chốt đơn không cải thiện.',
+    ],
+    testimonials: [
+      { name: 'Anh Nguyễn Minh Tuấn', role: 'Chủ shop thời trang online 500 đơn/ngày', quote: 'Trước tôi cần 3 bạn trực Zalo chia ca, lương 30M/tháng. Giờ VIAi xử lý 95% tin nhắn tự động, chỉ giữ 1 bạn cho ca đặc biệt. Doanh thu tăng 38% vì không bỏ sót khách đêm khuya nữa.' },
+      { name: 'Chị Lê Thu Hằng', role: 'Founder chuỗi mỹ phẩm 8 cửa hàng', quote: 'Bot trả lời đúng giá, đúng chính sách, đúng tone thương hiệu — khách còn không biết đang chat với AI. Tỷ lệ chốt đơn từ Zalo tăng từ 22% lên 41% sau 3 tháng.' },
+    ],
+    faq: [
+      { q: 'VIAi Zalo Sales Agent có cần tôi viết kịch bản không?', a: 'Không. Bạn chỉ cần cung cấp danh sách sản phẩm, giá và chính sách. VIAi tự học và tạo kịch bản tư vấn phù hợp trong vòng 24 giờ.' },
+      { q: 'Khách hỏi những câu hóc búa thì Agent xử lý thế nào?', a: 'Agent nhận ra câu hỏi phức tạp và tự động chuyển sang nhân viên thực, kèm toàn bộ lịch sử hội thoại. Khách không phải kể lại từ đầu.' },
+      { q: 'Tích hợp vào Zalo OA của tôi mất bao lâu?', a: 'Thường 2-4 giờ. Đội ngũ VIAi hỗ trợ toàn bộ quá trình kết nối — bạn không cần biết kỹ thuật.' },
+      { q: 'Dữ liệu khách hàng có được bảo mật không?', a: 'Có. Toàn bộ dữ liệu được mã hóa AES-256, lưu trên server tại Việt Nam. VIAi không bán hay chia sẻ dữ liệu của bạn với bên thứ ba.' },
+    ],
+  },
+  'order-management-agent': {
+    commitmentSpecific: { icon: '🎯', title: 'Cam kết giảm 80% lỗi đơn', desc: 'Sau 30 ngày dùng, tỷ lệ đơn xử lý sai giảm tối thiểu 80% — không đạt → hoàn phí hoặc gia hạn miễn phí 2 tháng.' },
+    problems: [
+      'Tổng hợp đơn từ Shopee, Lazada, Website, Zalo vào một file Excel tốn cả buổi sáng.',
+      'Đơn nhập sai thông tin giao hàng vì copy-paste qua nhiều bước thủ công.',
+      'Kho không biết đơn nào cần xuất trước, giao hàng hay bị delay không rõ lý do.',
+      'Khách hỏi trạng thái đơn nhưng nhân viên phải mò trên nhiều hệ thống khác nhau.',
+      'Hết hàng chỉ biết khi khách đã đặt và xác nhận — phải hủy đơn rất xấu hổ.',
+    ],
+    testimonials: [
+      { name: 'Anh Trần Duy Khoa', role: 'Quản lý vận hành shop đa kênh 300 đơn/ngày', quote: 'Trước mỗi sáng 2 bạn ngồi tổng hợp đơn từ 5 kênh mất 3 tiếng. Giờ Agent xử lý tự động trong 5 phút, cả team tập trung vào đóng gói và CSKH. Lỗi đơn giảm từ 8% xuống còn 0.3%.' },
+      { name: 'Chị Phạm Ngọc Mai', role: 'Chủ warehouse mỹ phẩm 150 SKU', quote: 'Lần đầu tiên kho tôi có thể xuất đơn theo đúng thứ tự ưu tiên. Agent tự tạo phiếu xuất kho, không cần ai nhập tay nữa. Giao hàng đúng hẹn tăng từ 78% lên 96%.' },
+    ],
+    faq: [
+      { q: 'Agent kết nối được với những sàn và kênh nào?', a: 'Shopee, Lazada, TikTok Shop, Website (WooCommerce/Haravan/Shopify), Zalo OA, Facebook. Có thể mở rộng thêm qua API theo yêu cầu.' },
+      { q: 'Nếu tôi đang dùng phần mềm quản lý kho riêng thì sao?', a: 'VIAi tích hợp với hầu hết phần mềm kho phổ biến tại Việt Nam (Base, KiotViet, MISA). Trường hợp hệ thống riêng, đội kỹ thuật sẽ kết nối qua API.' },
+      { q: 'Đơn bất thường (địa chỉ sai, COD nghi ngờ) thì Agent xử lý thế nào?', a: 'Agent gắn cờ cảnh báo và giữ đơn ở trạng thái chờ duyệt thay vì xử lý tự động. Bạn được thông báo ngay để quyết định.' },
+      { q: 'Thời gian triển khai mất bao lâu?', a: 'Kết nối cơ bản 1-2 ngày. Tích hợp đầy đủ với phần mềm kho và quy tắc nghiệp vụ riêng thường 3-5 ngày làm việc.' },
+    ],
+  },
+  'crm-automation-agent': {
+    commitmentSpecific: { icon: '📈', title: 'Cam kết tăng 30% tỷ lệ tái mua', desc: 'Sau 90 ngày dùng CRM Agent, tỷ lệ khách mua lần 2 tăng tối thiểu 30% — không đạt → gia hạn miễn phí 3 tháng.' },
+    problems: [
+      'Dữ liệu khách hàng nằm rải rác trong Excel, Zalo, chat — không có cái nhìn tổng thể.',
+      'Nhân viên sales quên follow-up khách tiềm năng, deal nguội dần mà không biết.',
+      'Không phân biệt được khách VIP với khách bình thường để ưu tiên chăm sóc.',
+      'Gửi cùng một chương trình khuyến mãi cho tất cả khách — hiệu quả thấp, chi phí cao.',
+      'Không có hệ thống nhắc tái mua tự động theo chu kỳ mua hàng của từng khách.',
+    ],
+    testimonials: [
+      { name: 'Anh Đỗ Quốc Bảo', role: 'Sales Manager chuỗi nội thất 12 chi nhánh', quote: 'Team tôi trước bỏ sót 40% khách tiềm năng vì không có hệ thống nhắc. Sau khi dùng CRM Agent, tỷ lệ chuyển đổi lead tăng 55%, doanh số tháng 3 đạt kỷ lục công ty.' },
+      { name: 'Chị Nguyễn Thị Lan', role: 'Chủ spa chuỗi 4 cơ sở tại HCM', quote: 'Agent tự nhắc khách tái booking đúng lúc, đúng dịch vụ họ hay dùng. Tỷ lệ khách quay lại tăng từ 34% lên 61% chỉ sau 2 tháng triển khai.' },
+    ],
+    faq: [
+      { q: 'CRM Agent có thay thế được phần mềm CRM hiện tại của tôi không?', a: 'Không thay thế mà bổ trợ. Agent kết nối với CRM bạn đang dùng (Hubspot, Base, MISA CRM...) và tự động hóa các tác vụ lặp lại thay vì nhập liệu thủ công.' },
+      { q: 'Mô hình phân nhóm khách hàng RFM là gì?', a: 'RFM phân khách theo 3 tiêu chí: Recency (mua gần đây chưa), Frequency (mua bao nhiêu lần), Monetary (chi tiêu bao nhiêu). Agent tự động tính điểm và nhóm khách mỗi ngày.' },
+      { q: 'Tôi có thể tùy chỉnh quy tắc chăm sóc không?', a: 'Có. Bạn tự thiết lập: sau bao nhiêu ngày nhắc, nội dung tin nhắn như thế nào, ưu đãi gì cho từng nhóm. Đội VIAi hỗ trợ cấu hình theo nghiệp vụ.' },
+      { q: 'Dữ liệu nhập vào có được backup không?', a: 'Có. Dữ liệu được backup tự động mỗi ngày, lưu trữ 90 ngày. Bạn có thể export bất kỳ lúc nào dưới dạng CSV/Excel.' },
+    ],
+  },
+  'report-analytics-agent': {
+    commitmentSpecific: { icon: '⏰', title: 'Cam kết gửi báo cáo đúng 8:00', desc: 'Báo cáo sáng gửi đúng 8:00 mỗi ngày — trễ quá 15 phút → hoàn phí ngày đó. Đã đúng giờ 99.7% trong 6 tháng qua.' },
+    problems: [
+      'Mỗi sáng mất 45-90 phút tổng hợp số liệu từ nhiều nguồn vào một báo cáo.',
+      'Số liệu hay sai vì copy-paste thủ công từ nhiều file, phát hiện ra thì đã gửi cho sếp.',
+      'Không biết ngay khi doanh thu giảm đột ngột hoặc chi phí tăng bất thường.',
+      'Báo cáo không đồng nhất, mỗi người làm một kiểu, khó so sánh qua các kỳ.',
+      'Dữ liệu từ quảng cáo, kho, nhân sự, bán hàng nằm ở 5-7 hệ thống khác nhau.',
+    ],
+    testimonials: [
+      { name: 'Anh Lê Hoàng Nam', role: 'CEO chuỗi F&B 8 chi nhánh tại HN', quote: 'Mỗi sáng lúc 8h tôi đã có báo cáo đầy đủ trong Zalo trước khi uống xong ly cà phê. Phát hiện chi nhánh Q.Đống Đa đang lỗ nhờ báo cáo Agent — cứu được 80 triệu/tháng.' },
+      { name: 'Chị Võ Thị Kim Anh', role: 'CFO công ty phân phối 200 nhân viên', quote: 'Trước tôi cần kế toán viên tổng hợp 2-3 ngày mới có báo cáo tháng. Giờ Report Agent làm xong trong 3 phút, chính xác hơn, và gửi tự động. Kế toán team tập trung vào phân tích thay vì nhập liệu.' },
+    ],
+    faq: [
+      { q: 'Agent kết nối với nguồn dữ liệu nào?', a: 'Google Sheets, MISA, KiotViet, Shopee/Lazada seller center, Facebook Ads, Google Ads, các phần mềm bán hàng, và API tùy chỉnh. Hỗ trợ tối đa 20+ nguồn đồng thời.' },
+      { q: 'Báo cáo gửi qua kênh nào?', a: 'Zalo cá nhân, Zalo nhóm, Email, hoặc cả hai cùng lúc. Bạn chọn người nhận và lịch gửi tùy ý.' },
+      { q: 'Tôi có thể tự thiết kế mẫu báo cáo không?', a: 'Có. Đội VIAi làm việc với bạn để tùy chỉnh mẫu báo cáo theo nhu cầu thực tế trong buổi onboarding.' },
+      { q: 'Khi dữ liệu nguồn bị lỗi hoặc mất kết nối, Agent xử lý thế nào?', a: 'Agent gửi cảnh báo ngay và bỏ qua nguồn lỗi, vẫn tổng hợp từ các nguồn còn lại. Bạn nhận được báo cáo kèm ghi chú rõ ràng về nguồn không lấy được.' },
+    ],
+  },
+  'facebook-ads-agent': {
+    commitmentSpecific: { icon: '📊', title: 'Cam kết ROAS tăng tối thiểu 25%', desc: 'Sau 60 ngày dùng, ROAS trung bình tăng ít nhất 25% — không đạt → miễn phí phí VIAi tháng tiếp theo.' },
+    problems: [
+      'Không đủ thời gian theo dõi hàng chục chiến dịch chạy song song mỗi ngày.',
+      'Ngân sách đổ vào nhóm quảng cáo kém, chỉ biết khi cuối ngày xem báo cáo.',
+      'A/B test thủ công chậm, test được 2-3 mẫu/tuần trong khi đối thủ test hàng chục.',
+      'Báo cáo ROAS cho khách hàng mất cả ngày tổng hợp từ nhiều tài khoản.',
+      'Không có cảnh báo khi CPA vượt ngưỡng hoặc budget sắp hết giữa chừng.',
+    ],
+    testimonials: [
+      { name: 'Anh Phạm Quốc Cường', role: 'Media buyer quản 1.5 tỷ ngân sách/tháng', quote: 'Trước tôi cần ngồi màn hình từ sáng đến tối mới bắt kịp biến động. Giờ Agent cảnh báo ngay khi có nhóm nào lệch ngưỡng, tôi chỉ cần duyệt quyết định. ROAS tăng 31% tháng đầu.' },
+      { name: 'Chị Bùi Minh Châu', role: 'Trưởng phòng Marketing hệ thống thời trang', quote: 'Báo cáo ROAS tự động mỗi sáng giúp sếp tôi theo dõi được mà không cần hỏi team. CPL giảm 28%, tôi có thêm thời gian làm chiến lược thay vì ngồi kéo số liệu.' },
+    ],
+    faq: [
+      { q: 'Agent có thể tự điều chỉnh ngân sách không hay chỉ đề xuất?', a: 'Mặc định Agent đề xuất và bạn duyệt. Gói Pro+ có thể cấu hình auto-adjust trong biên độ bạn cho phép (ví dụ ±20% ngân sách/ngày).' },
+      { q: 'Hỗ trợ những loại chiến dịch nào?', a: 'Tất cả loại chiến dịch Facebook: Conversion, Traffic, Reach, Lead, Catalog, Video Views. Tối ưu theo mục tiêu bạn chọn.' },
+      { q: 'Tôi quản lý nhiều tài khoản ads cho nhiều khách thì sao?', a: 'Agent quản lý được nhiều tài khoản Business Manager cùng lúc. Báo cáo tổng hợp hoặc riêng lẻ theo từng khách tùy cấu hình.' },
+      { q: 'Agent có truy cập vào tài khoản ads của tôi không?', a: 'Kết nối qua Facebook Marketing API với quyền đọc và tùy chọn ghi ngân sách. Bạn kiểm soát hoàn toàn quyền truy cập và có thể thu hồi bất kỳ lúc nào.' },
+    ],
+  },
+  'booking-appointment': {
+    commitmentSpecific: { icon: '📅', title: 'Cam kết giảm 50% hủy hẹn', desc: 'Sau 60 ngày nhắc hẹn tự động, tỷ lệ khách hủy hẹn giảm tối thiểu 50% — không đạt → hoàn phí 1 tháng.' },
+    problems: [
+      'Lễ tân mất 2-3 giờ/ngày chỉ để xác nhận, nhắc hẹn và đổi lịch cho khách.',
+      'Khách đặt lịch lúc tối muộn, sáng hôm sau mới xác nhận — họ đã book chỗ khác rồi.',
+      'Nhân viên xem lịch ở nhiều chỗ khác nhau, hay bị chồng lịch hoặc bỏ trống vô lý.',
+      'Không có hệ thống nhắc khách trước giờ hẹn, tỷ lệ no-show rất cao.',
+      'Khó tổng hợp doanh thu theo dịch vụ, nhân viên và chi nhánh để tối ưu.',
+    ],
+    testimonials: [
+      { name: 'Chị Trần Thị Thúy', role: 'Chủ chuỗi spa 5 cơ sở tại HCM & HN', quote: 'Tỷ lệ no-show từ 22% xuống 4% sau khi bật nhắc tự động trước 24h. Lễ tân từ 3 người xuống 1 người, 2 bạn còn lại chuyển sang chăm sóc khách trực tiếp.' },
+      { name: 'Bác sĩ Nguyễn Trung Hiếu', role: 'Phòng khám nha khoa 4 ghế', quote: 'Bệnh nhân đặt lịch 11 giờ đêm và nhận xác nhận ngay. Ngày hôm sau tôi có lịch sạch và đầy đủ thông tin khám trước. Agent thay được cả lễ tân buổi tối.' },
+    ],
+    faq: [
+      { q: 'Agent tích hợp được với Google Calendar không?', a: 'Có. Đồng bộ 2 chiều với Google Calendar, Outlook và hầu hết app lịch phổ biến. Kỹ thuật viên và bác sĩ xem lịch ngay trên điện thoại cá nhân.' },
+      { q: 'Khách đặt lịch qua kênh nào?', a: 'Zalo OA, Facebook Messenger, Website chatbot, và form đặt lịch nhúng trên trang web. Agent nhận và xử lý đồng nhất từ tất cả kênh.' },
+      { q: 'Nếu nhân viên nghỉ đột xuất thì lịch hẹn xử lý thế nào?', a: 'Agent tự động đề xuất chuyển lịch sang nhân viên khác có khung giờ trống và thông báo cho khách. Bạn duyệt trong 1 click.' },
+      { q: 'Tôi có thể xem báo cáo doanh thu theo từng kỹ thuật viên không?', a: 'Có. Dashboard hiển thị doanh thu, số lịch, tỷ lệ no-show và hiệu suất theo từng nhân viên, dịch vụ và chi nhánh.' },
+    ],
+  },
+  'email-marketing-agent': {
+    commitmentSpecific: { icon: '📧', title: 'Cam kết open rate > 35%', desc: 'Email chiến dịch đầu tiên đạt open rate > 35% — không đạt → VIAi tối ưu lại miễn phí đến khi đạt.' },
+    problems: [
+      'Gửi cùng một email cho toàn bộ danh sách, tỷ lệ mở thấp và hủy đăng ký nhiều.',
+      'Không có automation nhắc giỏ hàng bỏ quên — mất hàng trăm triệu doanh thu tiềm năng.',
+      'Tự viết email marketing tốn thời gian, không biết tiêu đề nào hiệu quả nhất.',
+      'Không theo dõi được khách nào mở, click và mua hàng từ email nào.',
+      'Danh sách email không được làm sạch, tỷ lệ bounce cao ảnh hưởng uy tín domain.',
+    ],
+    testimonials: [
+      { name: 'Anh Lý Văn Khoa', role: 'CMO startup thương mại điện tử', quote: 'Chuỗi email giỏ hàng bỏ quên thu hồi được 18% doanh thu từ khách rời đi. Mỗi tháng 120 triệu chỉ từ automation email — trước đây bỏ đi hết.' },
+      { name: 'Chị Ngô Thị Hương', role: 'Marketing Manager nền tảng giáo dục online', quote: 'A/B test tự động 50 tiêu đề cùng lúc giúp tìm ra winner nhanh gấp 8 lần. Open rate tăng từ 18% lên 47%, chi phí email marketing giảm 60%.' },
+    ],
+    faq: [
+      { q: 'Agent hỗ trợ gửi email qua server nào?', a: 'Tích hợp với SendGrid, Mailchimp, Amazon SES, SMTP riêng của bạn. Bạn dùng domain email riêng, không chia sẻ IP với người khác.' },
+      { q: 'Tôi có thể thiết kế template email đẹp không?', a: 'Có. VIAi cung cấp sẵn 20+ template tiếng Việt responsive. Bạn cũng có thể upload template HTML riêng hoặc dùng drag-and-drop editor.' },
+      { q: 'GDPR và unsubscribe có được xử lý tự động không?', a: 'Có. Link unsubscribe tự động thêm vào mỗi email. Người dùng hủy đăng ký được xóa khỏi danh sách ngay lập tức và không bao giờ nhận lại.' },
+      { q: 'Tôi có thể xem ai đã mở email và click vào link nào không?', a: 'Có. Dashboard theo dõi từng người: ai mở, ai click, ai mua hàng từ email. Dùng để phân nhóm và gửi follow-up chính xác hơn.' },
+    ],
+  },
+  'custom-enterprise-agent': {
+    commitmentSpecific: { icon: '🏗️', title: 'Cam kết triển khai trong 30 ngày', desc: 'Agent tùy chỉnh hoạt động trong production tối đa 30 ngày làm việc — quá hạn → miễn phí toàn bộ phí triển khai.' },
+    problems: [
+      'Quy trình nghiệp vụ quá đặc thù, không có phần mềm nào trên thị trường đáp ứng được.',
+      'Nhiều hệ thống nội bộ (ERP, CRM, kho, kế toán) không nói chuyện được với nhau.',
+      'Nhân viên phải nhập liệu thủ công vào nhiều hệ thống — mất thời gian và hay sai.',
+      'Không kiểm soát được quy trình phê duyệt, dữ liệu thất lạc giữa các bộ phận.',
+      'Muốn ứng dụng AI nhưng không biết bắt đầu từ đâu và e ngại rủi ro dữ liệu.',
+    ],
+    testimonials: [
+      { name: 'Anh Đinh Văn Hải', role: 'CTO tập đoàn logistics 500 nhân viên', quote: 'VIAi khảo sát 3 tuần, hiểu nghiệp vụ phân công xe tải của chúng tôi sâu hơn cả vendor ERP đã làm việc 2 năm. Agent tự động phân công 400 đơn vận chuyển/ngày, tiết kiệm 8 giờ nhân công.' },
+      { name: 'Bà Nguyễn Thị Lan', role: 'GĐ vận hành chuỗi bán lẻ 80 cửa hàng', quote: 'Chúng tôi có phần mềm riêng từ 2018 không kết nối được với gì. VIAi xây Agent bridge toàn bộ hệ thống trong 3 tuần. Giờ dữ liệu chạy thông suốt từ POS đến kế toán không cần người nhập tay.' },
+    ],
+    faq: [
+      { q: 'Qui trình khảo sát và thiết kế mất bao lâu?', a: 'Thường 1-2 tuần cho nghiệp vụ tiêu chuẩn, 3-4 tuần cho hệ thống phức tạp nhiều bộ phận. Bạn sẽ nhận được tài liệu thiết kế trước khi bắt đầu code.' },
+      { q: 'Hệ thống cũ của tôi không có API thì có kết nối được không?', a: 'Vẫn được trong hầu hết trường hợp. Đội VIAi có thể xây RPA (robotic process automation) để tương tác với giao diện cũ, hoặc kết nối trực tiếp database với quyền phù hợp.' },
+      { q: 'Tôi có nhận được code nguồn không?', a: 'Tùy gói. Gói Enterprise Full bàn giao toàn bộ code nguồn, tài liệu và quyền tự vận hành. Gói SaaS thì VIAi vận hành và bảo trì, bạn trả phí hàng tháng.' },
+      { q: 'Nếu cần thay đổi sau khi triển khai thì tính như thế nào?', a: 'Thay đổi nhỏ trong 3 tháng đầu miễn phí. Thay đổi lớn hoặc tính năng mới tính theo giờ công minh bạch. Không có phí ẩn.' },
+    ],
+  },
+};
+
+function renderProductPage(product, detail, related = []) {
+  const siteUrl = SITE_URL;
   const title = `${product.name} – VIAi AI Agent`;
   const desc = detail.heroDesc;
   const canonicalUrl = `${siteUrl}/san-pham/${product.slug}`;
@@ -953,24 +1151,117 @@ function renderProductPage(product, detail) {
     .p-footer a{color:rgba(255,255,255,.4)}
     .p-footer a:hover{color:white}
     @media(max-width:640px){.p-hero{padding:52px 18px 44px}.p-wrap{padding:32px 18px 56px}.p-card{padding:22px}.p-stats{grid-template-columns:1fr 1fr}.p-cta-box{padding:32px 24px}}
+    /* ── Breadcrumb ── */
+    .p-breadcrumb{display:flex;align-items:center;gap:6px;font-size:.78rem;color:rgba(255,255,255,.65);margin-bottom:20px;flex-wrap:wrap}
+    .p-breadcrumb a{color:rgba(255,255,255,.65);transition:color .2s}.p-breadcrumb a:hover{color:#FFB800}
+    .p-breadcrumb .sep{color:rgba(255,255,255,.35);font-size:.65rem}.p-breadcrumb .cur{color:rgba(255,255,255,.92)}
+    /* ── CTA animations ── */
+    @keyframes cta-pulse-ring{0%{box-shadow:0 0 0 0 rgba(255,107,0,.55)}70%{box-shadow:0 0 0 14px rgba(255,107,0,0)}100%{box-shadow:0 0 0 0 rgba(255,107,0,0)}}
+    .cta-pulse{animation:cta-pulse-ring 2.2s cubic-bezier(.4,0,.6,1) infinite}.cta-pulse:hover{animation-play-state:paused}
+    .cta-shimmer{position:relative;overflow:hidden;isolation:isolate}.cta-shimmer::after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%);transform:translateX(-100%);transition:transform .8s ease;pointer-events:none}.cta-shimmer:hover::after{transform:translateX(100%)}
+    .cta-glow{box-shadow:0 8px 26px -6px rgba(255,107,0,.58)}.cta-glow:hover{box-shadow:0 12px 32px -6px rgba(255,107,0,.72)}
+    @keyframes arrow-b{0%,100%{transform:translateX(0)}50%{transform:translateX(4px)}}
+    .cta-arrow{display:inline-block;animation:arrow-b 1.4s ease-in-out infinite}
+    /* ── Sections chung ── */
+    .sec{padding:56px 20px}.sec-alt{background:#F8FAFF}.sec-dark{background:#0A2472;color:white}
+    .sec-inner{max-width:960px;margin:0 auto}
+    .sec-label{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent);margin-bottom:6px}
+    .sec-h2{font-size:clamp(1.4rem,2.2vw,2rem);font-weight:900;margin-bottom:8px;color:var(--gray-900)}
+    .sec-dark .sec-h2{color:white}
+    .sec-sub{font-size:.95rem;color:#64748b;margin-bottom:28px}
+    .sec-dark .sec-sub{color:rgba(255,255,255,.65)}
+    /* ── Pain points ── */
+    .pain-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .pain-card{display:flex;align-items:flex-start;gap:12px;background:white;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+    .pain-ico{width:34px;height:34px;border-radius:50%;background:#FFF0E6;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.95rem}
+    .pain-num{font-size:.65rem;font-weight:700;text-transform:uppercase;color:#bbb;margin-bottom:2px}
+    .pain-txt{font-size:.87rem;color:#334155;line-height:1.55}
+    /* ── Commitments ── */
+    .commit-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:28px}
+    .commit-card{border-radius:12px;padding:18px;background:rgba(255,255,255,.06)}
+    .commit-card.featured{background:rgba(255,107,0,.18);border:1.5px solid rgba(255,107,0,.6)}
+    .commit-ico{font-size:1.3rem;margin-bottom:10px}
+    .commit-ttl{font-size:.87rem;font-weight:800;margin-bottom:5px}
+    .commit-desc{font-size:.74rem;color:rgba(255,255,255,.68);line-height:1.55}
+    .commit-tag{font-size:.64rem;font-weight:700;text-transform:uppercase;color:var(--accent);margin-top:8px}
+    /* ── Testimonials ── */
+    .testi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:28px}
+    .testi-card{background:#F8FAFF;border:1px solid #E2E8F0;border-radius:14px;padding:22px}
+    .testi-q{font-size:.88rem;color:#334155;line-height:1.7;font-style:italic;margin-bottom:14px}
+    .testi-author{display:flex;align-items:center;gap:10px}
+    .testi-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:white;font-size:.78rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .testi-name{font-size:.84rem;font-weight:800;color:var(--gray-900)}
+    .testi-role{font-size:.74rem;color:#64748b}
+    /* ── FAQ ── */
+    .faq-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:28px}
+    .faq-item{background:white;border:1px solid #E2E8F0;border-radius:12px;padding:18px}
+    .faq-q{font-size:.88rem;font-weight:700;color:var(--gray-900);margin-bottom:8px;display:flex;gap:8px}
+    .faq-qn{color:var(--accent);flex-shrink:0}
+    .faq-a{font-size:.84rem;color:#475569;line-height:1.65}
+    /* ── Related products ── */
+    .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
+    .related-card{border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;background:white;transition:transform .2s,box-shadow .2s}
+    .related-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(26,86,219,.11)}
+    .related-thumb{background:linear-gradient(135deg,#1040B0,#1A56DB);padding:20px 16px;display:flex;align-items:center;gap:10px}
+    .related-ico{font-size:1.8rem}
+    .related-badge{font-size:.66rem;font-weight:700;text-transform:uppercase;background:rgba(255,255,255,.18);color:white;padding:3px 10px;border-radius:20px}
+    .related-body{padding:14px 16px}
+    .related-name{font-size:.9rem;font-weight:800;color:var(--gray-900);margin-bottom:4px}
+    .related-tagline{font-size:.76rem;color:#64748b;line-height:1.5}
+    /* ── Sticky bottom bar ── */
+    .sticky-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #e2e8f0;box-shadow:0 -4px 16px rgba(0,0,0,.08);padding:10px 16px;z-index:990;align-items:center;gap:10px}
+    .sb-info{flex:1}.sb-lbl{font-size:.65rem;text-transform:uppercase;color:#94a3b8;letter-spacing:.4px}
+    .sb-name{font-size:.88rem;font-weight:800;color:var(--gray-900)}
+    /* ── Responsive new sections ── */
+    @media(max-width:768px){.pain-grid,.testi-grid,.faq-grid,.related-grid{grid-template-columns:1fr}.commit-grid{grid-template-columns:repeat(2,1fr)}.sec{padding:44px 18px}}
+    @media(max-width:480px){.commit-grid{grid-template-columns:1fr}.sticky-bar{display:flex}.p-wrap{padding-bottom:80px}}
   </style>
 </head>
 <body>
   ${renderSiteToolbar('products')}
+
+  <!-- 1. HERO -->
   <section class="p-hero">
     <div class="p-hero-inner">
+      <nav class="p-breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Trang chủ</a>
+        <span class="sep">›</span>
+        <a href="/san-pham.html">Sản phẩm</a>
+        <span class="sep">›</span>
+        <span class="cur">${escapeHtml(product.name)}</span>
+      </nav>
       <div class="p-eyebrow">${escapeHtml(detail.eyebrow)}</div>
       <h1>${escapeHtml(product.name)}${detail.badge ? `<span class="p-badge" style="background:${detail.badgeColor};color:white">${escapeHtml(detail.badge)}</span>` : ''}</h1>
       <p class="p-hero-desc">${escapeHtml(detail.heroDesc)}</p>
       <div class="p-hero-actions">
-        <a href="/dung-thu.html" class="p-cta-main">🚀 Dùng thử miễn phí</a>
+        <a href="/dung-thu.html" class="p-cta-main cta-pulse cta-shimmer cta-glow">🚀 Dùng thử miễn phí <span class="cta-arrow">→</span></a>
         <a href="/san-pham.html" class="p-cta-out">← Xem tất cả Agent</a>
       </div>
     </div>
   </section>
 
+  <!-- 2. PAIN POINTS -->
+  ${detail.problems && detail.problems.length ? `
+  <section class="sec sec-alt">
+    <div class="sec-inner">
+      <div class="sec-label">Vấn đề thực tế</div>
+      <h2 class="sec-h2">Doanh nghiệp bạn đang gặp những vấn đề này?</h2>
+      <div class="pain-grid">
+        ${detail.problems.map((p, i) => `
+        <div class="pain-card">
+          <div class="pain-ico">⚠️</div>
+          <div>
+            <div class="pain-num">Vấn đề ${i + 1}</div>
+            <div class="pain-txt">${escapeHtml(p)}</div>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+  </section>` : ''}
+
+  <!-- 3. INTRO + FEATURES -->
   <div class="p-wrap">
-    <img class="p-thumb" src="${escapeHtml(detail.image)}" alt="${escapeHtml(product.name)}" width="960" height="440" />
+    <img class="p-thumb" src="${escapeHtml(detail.image)}" alt="${escapeHtml(product.name)}" width="960" height="440" loading="lazy" />
 
     <div class="p-card">
       <div class="p-section-title">Giới thiệu</div>
@@ -988,12 +1279,98 @@ function renderProductPage(product, detail) {
       <div class="p-section-title">Hiệu quả thực tế</div>
       <div class="p-stats">${statsHtml}</div>
     </div>
+  </div>
 
+  <!-- 4. COMMITMENTS (dark) -->
+  <section class="sec sec-dark">
+    <div class="sec-inner">
+      <div class="sec-label" style="color:#FFB800">Cam kết rõ ràng</div>
+      <h2 class="sec-h2">5 cam kết cụ thể — không chung chung</h2>
+      <div class="commit-grid">
+        ${detail.commitmentSpecific ? `
+        <div class="commit-card featured">
+          <div class="commit-ico">${escapeHtml(detail.commitmentSpecific.icon)}</div>
+          <div class="commit-ttl">${escapeHtml(detail.commitmentSpecific.title)}</div>
+          <div class="commit-desc">${escapeHtml(detail.commitmentSpecific.desc)}</div>
+          <div class="commit-tag">★ Riêng cho sản phẩm này</div>
+        </div>` : ''}
+        <div class="commit-card"><div class="commit-ico">🔒</div><div class="commit-ttl">Bảo mật AES-256</div><div class="commit-desc">Server Viettel IDC tại Việt Nam, đạt chuẩn ISO/IEC 27001. Dữ liệu của bạn không bao giờ rời khỏi lãnh thổ Việt Nam.</div></div>
+        <div class="commit-card"><div class="commit-ico">↩️</div><div class="commit-ttl">Hoàn tiền 14 ngày</div><div class="commit-desc">Không hài lòng trong 14 ngày đầu — hoàn 100% không hỏi lý do. Đã hoàn tiền cho 23 khách hàng năm 2026.</div></div>
+        <div class="commit-card"><div class="commit-ico">🎓</div><div class="commit-ttl">Đào tạo 1-1 miễn phí</div><div class="commit-desc">2 buổi onboarding qua Google Meet. Đội ngũ hỗ trợ đến khi anh dùng được thành thạo.</div></div>
+        <div class="commit-card"><div class="commit-ico">💬</div><div class="commit-ttl">Hỗ trợ tiếng Việt 24/7</div><div class="commit-desc">Zalo + hotline 0914.888.678. Gói Pro+ trực 24/7, gói Starter trong giờ hành chính.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. TESTIMONIALS -->
+  ${detail.testimonials && detail.testimonials.length ? `
+  <section class="sec">
+    <div class="sec-inner">
+      <div class="sec-label">Khách hàng nói gì</div>
+      <h2 class="sec-h2">${escapeHtml(String(product.users_count || ''))}+ doanh nghiệp đã chọn ${escapeHtml(product.name)}</h2>
+      <div class="testi-grid">
+        ${detail.testimonials.map(t => {
+          const initials = t.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+          return `
+        <div class="testi-card">
+          <p class="testi-q">"${escapeHtml(t.quote)}"</p>
+          <div class="testi-author">
+            <div class="testi-av">${escapeHtml(initials)}</div>
+            <div>
+              <div class="testi-name">${escapeHtml(t.name)}</div>
+              <div class="testi-role">${escapeHtml(t.role)}</div>
+            </div>
+          </div>
+        </div>`}).join('')}
+      </div>
+    </div>
+  </section>` : ''}
+
+  <!-- 6. FAQ -->
+  ${detail.faq && detail.faq.length ? `
+  <section class="sec sec-alt">
+    <div class="sec-inner">
+      <div class="sec-label">Câu hỏi thường gặp</div>
+      <h2 class="sec-h2">Bạn đang thắc mắc điều gì?</h2>
+      <div class="faq-grid">
+        ${detail.faq.map((item, i) => `
+        <div class="faq-item">
+          <div class="faq-q"><span class="faq-qn">Q${i + 1}.</span>${escapeHtml(item.q)}</div>
+          <div class="faq-a">${escapeHtml(item.a)}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+  </section>` : ''}
+
+  <!-- 7. RELATED PRODUCTS -->
+  ${related.length ? `
+  <section class="sec">
+    <div class="sec-inner">
+      <div class="sec-label">Khám phá thêm</div>
+      <h2 class="sec-h2">Các AI Agent khác của VIAi</h2>
+      <div class="related-grid">
+        ${related.map(r => `
+        <a href="/san-pham/${escapeHtml(r.slug)}" class="related-card">
+          <div class="related-thumb">
+            <span style="font-size:2rem">${escapeHtml(r.icon || '🤖')}</span>
+            ${r.badge ? `<span class="related-badge">${escapeHtml(r.badge)}</span>` : ''}
+          </div>
+          <div class="related-body">
+            <div class="related-name">${escapeHtml(r.name)}</div>
+            <div class="related-tagline">${escapeHtml(r.description || r.detail?.heroDesc || '')}</div>
+          </div>
+        </a>`).join('')}
+      </div>
+    </div>
+  </section>` : ''}
+
+  <!-- 8. CTA -->
+  <div class="p-wrap" style="padding-top:0">
     <div class="p-cta-box">
       <h2>Sẵn sàng triển khai <em>${escapeHtml(product.name)}</em>?</h2>
       <div class="p-cta-btns">
-        <a href="/dung-thu.html" class="p-cta-main">🚀 Dùng thử miễn phí 14 ngày</a>
-        <a href="/#products" class="p-cta-out">Xem các Agent khác</a>
+        <a href="/dung-thu.html" class="p-cta-main cta-pulse cta-shimmer cta-glow">🚀 Dùng thử miễn phí 14 ngày</a>
+        <a href="/san-pham.html" class="p-cta-out">Xem các Agent khác</a>
       </div>
     </div>
   </div>
@@ -1002,33 +1379,14 @@ function renderProductPage(product, detail) {
     <p>© 2026 VIAi Technology. <a href="/privacy.html">Chính sách bảo mật</a> · <a href="/terms.html">Điều khoản</a></p>
   </footer>
 
-  <div class="mobile-menu" id="mobile-menu">
-    <div class="mobile-nav-item">
-      <button class="mobile-nav-link" onclick="toggleMobileSub(this)" type="button">Phần mềm <span class="m-arrow" style="font-size:.65rem;transition:transform .2s;color:#6B93E8">▾</span></button>
-      <div class="mobile-submenu">
-        <a href="/#services-intro" onclick="closeMobileMenu()"><span>🔍</span> Giới thiệu VIAi</a>
-        <a href="/#services" onclick="closeMobileMenu()"><span>💡</span> Tại sao chọn VIAi</a>
-        <a href="/cong-nghe.html" onclick="closeMobileMenu()"><span>🔗</span> Công nghệ</a>
-        <a href="/#gallery" onclick="closeMobileMenu()"><span>⭐</span> Điểm nổi bật</a>
-      </div>
+  <!-- Sticky bottom bar (mobile only) -->
+  <div class="sticky-bar" aria-hidden="true">
+    <div class="sb-info">
+      <div class="sb-lbl">${escapeHtml(product.name)}</div>
+      <div class="sb-name">Dùng thử miễn phí 7 ngày</div>
     </div>
-    <div class="mobile-nav-item">
-      <button class="mobile-nav-link" onclick="toggleMobileSub(this)" type="button">Dịch vụ <span class="m-arrow" style="font-size:.65rem;transition:transform .2s;color:#6B93E8">▾</span></button>
-      <div class="mobile-submenu">
-        <a href="/san-pham/zalo-sales-agent" onclick="closeMobileMenu()"><span>💬</span> Zalo Sales Agent</a>
-        <a href="/san-pham/order-management-agent" onclick="closeMobileMenu()"><span>📦</span> Order Agent</a>
-        <a href="/san-pham/crm-automation-agent" onclick="closeMobileMenu()"><span>🤝</span> CRM Agent</a>
-        <a href="/san-pham/report-analytics-agent" onclick="closeMobileMenu()"><span>📊</span> Report Agent</a>
-        <a href="/san-pham/facebook-ads-agent" onclick="closeMobileMenu()"><span>🏭</span> Facebook Ads Agent</a>
-        <a href="/san-pham/booking-appointment" onclick="closeMobileMenu()"><span>🗓️</span> Booking Agent</a>
-      </div>
-    </div>
-    <a href="/#pricing" class="mobile-plain-link" onclick="closeMobileMenu()">Bảng giá</a>
-    <a href="/#blog" class="mobile-plain-link" onclick="closeMobileMenu()">Blog</a>
-    <div class="mobile-menu-actions">
-      <a href="/login.html" class="btn-login">Đăng nhập</a>
-      <a href="/dung-thu.html" class="btn-register">🚀 Dùng thử FREE</a>
-    </div>
+    <a href="/dung-thu.html" style="border:2px solid var(--primary);border-radius:8px;padding:8px 14px;font-size:.82rem;font-weight:700;color:var(--primary)">Dùng thử</a>
+    <a href="/dung-thu.html" class="p-cta-main cta-glow" style="padding:9px 16px;font-size:.82rem">Đăng ký ngay</a>
   </div>
 
   <script>
@@ -1068,7 +1426,7 @@ function renderProductPage(product, detail) {
 function renderBlogPage(post) {
   let faq = [];
   try { faq = JSON.parse(post.faq_json || '[]'); } catch {}
-  const siteUrl = 'https://respectful-courtesy-production-4318.up.railway.app';
+  const siteUrl = SITE_URL;
   const displayTitle = cleanSeoText(post.title);
   const title = cleanSeoText(post.seo_title || displayTitle);
   const pageTitle = /\bVIAi\b/i.test(title) ? title : `${title} | VIAi`;
@@ -1092,6 +1450,15 @@ function renderBlogPage(post) {
       logo: { '@type': 'ImageObject', url: `${siteUrl}/anhlogo/logo2.png` }
     },
     mainEntityOfPage: { '@type': 'WebPage', '@id': absoluteUrl }
+  };
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: siteUrl },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${siteUrl}/#blog` },
+      { '@type': 'ListItem', position: 3, name: displayTitle, item: absoluteUrl },
+    ],
   };
   const faqSchema = Array.isArray(faq) && faq.length ? {
     '@context': 'https://schema.org',
@@ -1134,6 +1501,7 @@ function renderBlogPage(post) {
   <meta name="twitter:description" content="${escapeHtml(desc)}" />
   <meta name="twitter:image" content="${escapeHtml(imageUrl)}" />
   <script type="application/ld+json">${jsonLd(articleSchema)}</script>
+  <script type="application/ld+json">${jsonLd(breadcrumbSchema)}</script>
   ${faqSchema ? `<script type="application/ld+json">${jsonLd(faqSchema)}</script>` : ''}
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
@@ -1304,8 +1672,139 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json({ limit: '2mb' }));
-app.use(express.static(__dirname, { index: 'home.html' }));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// ── Gzip compression ──────────────────────────────────
+app.use(compression({ threshold: 1024 }));
+
+// ── Dynamic sitemap.xml ───────────────────────────────
+app.get('/sitemap.xml', (_req, res) => {
+  const now = new Date().toISOString().slice(0, 10);
+  const staticPages = [
+    { loc: '/', changefreq: 'weekly',  priority: '1.0' },
+    { loc: '/san-pham.html', changefreq: 'weekly',  priority: '0.9' },
+    { loc: '/cong-nghe.html',changefreq: 'monthly', priority: '0.7' },
+    { loc: '/about.html',    changefreq: 'monthly', priority: '0.7' },
+    { loc: '/dung-thu.html', changefreq: 'monthly', priority: '0.8' },
+    { loc: '/privacy.html',  changefreq: 'yearly',  priority: '0.3' },
+    { loc: '/terms.html',    changefreq: 'yearly',  priority: '0.3' },
+    { loc: '/cookies.html',  changefreq: 'yearly',  priority: '0.3' },
+  ];
+  const blogs    = db.prepare("SELECT slug, published_at FROM blog_posts WHERE active=1 ORDER BY published_at DESC").all();
+  const products = db.prepare("SELECT slug FROM products WHERE active=1 AND slug IS NOT NULL ORDER BY order_index ASC").all();
+  const congcus  = Object.keys(PRODUCT_DETAIL_BY_SLUG);
+
+  const urlTag = ({ loc, lastmod, changefreq, priority }) =>
+    `  <url>\n    <loc>${SITE_URL}${loc}</loc>\n` +
+    (lastmod ? `    <lastmod>${lastmod}</lastmod>\n` : '') +
+    `    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
+
+  const entries = [
+    ...staticPages.map(p => urlTag({ ...p, lastmod: now })),
+    ...products.map(p => urlTag({ loc: `/san-pham/${p.slug}`, lastmod: now, changefreq: 'weekly', priority: '0.85' })),
+    ...congcus.map(s  => urlTag({ loc: `/cong-cu/${s}`,       lastmod: now, changefreq: 'monthly', priority: '0.75' })),
+    ...blogs.map(b    => urlTag({ loc: `/blog/${b.slug}`,     lastmod: b.published_at || now, changefreq: 'monthly', priority: '0.7' })),
+  ];
+
+  res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=3600');
+  res.send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.join('\n')}\n</urlset>`);
+});
+
+// ── Dynamic robots.txt ────────────────────────────────
+app.get('/robots.txt', (_req, res) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.send(
+    `User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /admin-api/\nDisallow: /api/\nDisallow: /uploads/\n\nSitemap: ${SITE_URL}/sitemap.xml`
+  );
+});
+
+// ── Homepage động — inject settings từ DB ────────────
+// Phải đặt TRƯỚC express.static để override index file
+const fs = require('fs');
+function getHomeTemplate() {
+  return fs.readFileSync(path.join(__dirname, 'home.html'), 'utf8');
+}
+function getSiteSettings() {
+  const rows = db.prepare('SELECT key, value FROM site_settings').all();
+  return Object.fromEntries(rows.map(r => [r.key, r.value]));
+}
+app.get('/', (_req, res) => {
+  try {
+    const s = getSiteSettings();
+    let html = getHomeTemplate();
+    // SEO
+    html = html.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(s.seo_title || '')}</title>`);
+    html = html.replace(/(<meta name="description" content=")[^"]*/, `$1${escapeHtml(s.seo_description || '')}`);
+    html = html.replace(/(<meta name="keywords" content=")[^"]*/, `$1${escapeHtml(s.seo_keywords || '')}`);
+    html = html.replace(/(<meta property="og:title" content=")[^"]*/, `$1${escapeHtml(s.og_title || s.seo_title || '')}`);
+    html = html.replace(/(<meta property="og:description" content=")[^"]*/, `$1${escapeHtml(s.og_description || s.seo_description || '')}`);
+    html = html.replace(/(<meta name="twitter:title" content=")[^"]*/, `$1${escapeHtml(s.og_title || s.seo_title || '')}`);
+    html = html.replace(/(<meta name="twitter:description" content=")[^"]*/, `$1${escapeHtml(s.og_description || s.seo_description || '')}`);
+    // Hero badge
+    if (s.hero_badge) html = html.replace(
+      /(<div class="hero-tag">[\s\S]*?<div class="dot"><\/div>\s*)([^<]+)/,
+      `$1${escapeHtml(s.hero_badge)}\n        `
+    );
+    // Hero description
+    if (s.hero_desc) html = html.replace(
+      /(<p class="hero-desc">)([\s\S]*?)(<\/p>)/,
+      `$1\n          ${escapeHtml(s.hero_desc)}\n        $3`
+    );
+    // Trust stats
+    const trustReplace = (num, pattern, suffix) => {
+      if (!num) return;
+      const bare = num.replace(/[+x%]/g, '');
+      html = html.replace(new RegExp(`(<div class="trust-num">)${pattern}(<span>${suffix}<\\/span>)`), `$1${bare}$2`);
+    };
+    trustReplace(s.trust1_num, '500', '\\+');
+    if (s.trust1_label) html = html.replace('Doanh nghiệp tin dùng', escapeHtml(s.trust1_label));
+    trustReplace(s.trust2_num, '10', 'x');
+    if (s.trust2_label) html = html.replace('Tăng năng suất làm việc', escapeHtml(s.trust2_label));
+    trustReplace(s.trust3_num, '98', '%');
+    if (s.trust3_label) html = html.replace('Khách hàng hài lòng', escapeHtml(s.trust3_label));
+
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-cache'); // không cache để settings có hiệu lực ngay
+    res.send(html);
+  } catch(e) {
+    res.sendFile(path.join(__dirname, 'home.html'));
+  }
+});
+
+// ── Block sensitive files trước khi static serve ─────
+// Ngăn express.static tiết lộ source code, DB và config
+const BLOCKED_EXTENSIONS = /\.(db|db-shm|db-wal|js|mjs|cjs|json|sql|log|md|txt|npmrc|gitignore|env|lock)$/i;
+const ALLOWED_PATHS = [
+  '/robots.txt', '/sitemap.xml',           // dynamic routes (đã xử lý trước)
+  '/google4e6ef32eed8f2a43.html',          // Google Search Console verification
+];
+app.use((req, res, next) => {
+  const p = req.path.toLowerCase();
+  if (BLOCKED_EXTENSIONS.test(p) && !ALLOWED_PATHS.includes(p)) {
+    return res.status(404).end();
+  }
+  next();
+});
+
+// ── Static files với cache headers ───────────────────
+const staticOpts = {
+  index: false,
+  setHeaders(res, filePath) {
+    const ext = path.extname(filePath).toLowerCase();
+    if (['.jpg','.jpeg','.png','.gif','.webp','.svg','.ico'].includes(ext)) {
+      res.setHeader('Cache-Control', 'public, max-age=2592000, immutable'); // 30 ngày
+    } else if (['.js','.css'].includes(ext)) {
+      res.setHeader('Cache-Control', 'public, max-age=604800'); // 7 ngày
+    } else if (['.html'].includes(ext)) {
+      res.setHeader('Cache-Control', 'public, max-age=300'); // 5 phút
+    }
+  },
+};
+app.use(express.static(__dirname, staticOpts));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+  setHeaders(res) { res.setHeader('Cache-Control', 'public, max-age=2592000'); }
+}));
 
 app.use('/api',       require('./routes/api'));
 app.use('/admin-api', require('./routes/admin'));
@@ -1313,6 +1812,75 @@ app.use('/admin-api', require('./routes/admin'));
 app.get('/admin', (_req, res) =>
   res.sendFile(path.join(__dirname, 'admin', 'index.html'))
 );
+
+app.get('/__old_homepage_removed', (_req, res) => {
+  try {
+    const s   = getSiteSettings();
+    const esc = escapeHtml;
+    let html  = getHomeTemplate();
+
+    // SEO meta tags
+    html = html.replace(
+      /<title>[^<]*<\/title>/,
+      `<title>${esc(s.seo_title || '')}</title>`
+    );
+    html = html.replace(
+      /(<meta name="description" content=")[^"]*/,
+      `$1${esc(s.seo_description || '')}`
+    );
+    html = html.replace(
+      /(<meta name="keywords" content=")[^"]*/,
+      `$1${esc(s.seo_keywords || '')}`
+    );
+    html = html.replace(
+      /(<meta property="og:title" content=")[^"]*/,
+      `$1${esc(s.og_title || s.seo_title || '')}`
+    );
+    html = html.replace(
+      /(<meta property="og:description" content=")[^"]*/,
+      `$1${esc(s.og_description || s.seo_description || '')}`
+    );
+    html = html.replace(
+      /(<meta name="twitter:title" content=")[^"]*/,
+      `$1${esc(s.og_title || s.seo_title || '')}`
+    );
+    html = html.replace(
+      /(<meta name="twitter:description" content=")[^"]*/,
+      `$1${esc(s.og_description || s.seo_description || '')}`
+    );
+
+    // Hero badge
+    if (s.hero_badge) {
+      html = html.replace(
+        /(<div class="hero-tag">[\s\S]*?<div class="dot"><\/div>\s*)([^<]+)/,
+        `$1${esc(s.hero_badge)}\n        `
+      );
+    }
+
+    // Hero description
+    if (s.hero_desc) {
+      html = html.replace(
+        /(<p class="hero-desc">)([\s\S]*?)(<\/p>)/,
+        `$1\n          ${esc(s.hero_desc)}\n        $3`
+      );
+    }
+
+    // Trust stats
+    if (s.trust1_num) html = html.replace(/(<div class="trust-num">)500(<span>\+<\/span>)/, `$1${esc(s.trust1_num.replace(/[+x%]/,''))}$2`);
+    if (s.trust1_label) html = html.replace('Doanh nghiệp tin dùng', esc(s.trust1_label));
+    if (s.trust2_num) html = html.replace(/(<div class="trust-num">)10(<span>x<\/span>)/, `$1${esc(s.trust2_num.replace(/[+x%]/,''))}$2`);
+    if (s.trust2_label) html = html.replace('Tăng năng suất làm việc', esc(s.trust2_label));
+    if (s.trust3_num) html = html.replace(/(<div class="trust-num">)98(<span>%<\/span>)/, `$1${esc(s.trust3_num.replace(/[+x%]/,''))}$2`);
+    if (s.trust3_label) html = html.replace('Khách hàng hài lòng', esc(s.trust3_label));
+
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, max-age=60'); // cache 1 phút
+    res.send(html);
+  } catch(e) {
+    // Fallback: serve static file
+    res.sendFile(path.join(__dirname, 'home.html'));
+  }
+});
 
 app.get('/cong-cu', (_req, res) => res.redirect('/#products'));
 
@@ -1331,9 +1899,18 @@ app.get('/blog/:slug', (req, res) => {
 app.get('/san-pham/:slug', (req, res) => {
   const product = db.prepare('SELECT * FROM products WHERE slug = ? AND active = 1').get(req.params.slug);
   if (!product) return res.status(404).sendFile(path.join(__dirname, '404.html'));
-  const detail = PRODUCT_DETAILS[product.slug];
-  if (!detail) return res.status(404).sendFile(path.join(__dirname, '404.html'));
-  res.send(renderProductPage(product, detail));
+  const base = PRODUCT_DETAILS[product.slug];
+  if (!base) return res.status(404).sendFile(path.join(__dirname, '404.html'));
+  const detail = Object.assign({}, base, PRODUCT_ENRICHMENT[product.slug] || {});
+  // Lấy tối đa 3 sản phẩm liên quan (khác slug hiện tại, có data trong PRODUCT_DETAILS)
+  const relatedRaw = db.prepare(
+    'SELECT * FROM products WHERE slug != ? AND active = 1 AND slug IS NOT NULL ORDER BY order_index ASC LIMIT 6'
+  ).all(product.slug);
+  const related = relatedRaw
+    .filter(p => PRODUCT_DETAILS[p.slug])
+    .slice(0, 3)
+    .map(p => ({ ...p, detail: PRODUCT_DETAILS[p.slug] }));
+  res.send(renderProductPage(product, detail, related));
 });
 
 // 404 — bắt tất cả route không khớp

@@ -6,3 +6,6 @@ uploads/
 
 .vercel
 package-lock.json
+viai.db-shm
+viai.db-wal
+.claude/

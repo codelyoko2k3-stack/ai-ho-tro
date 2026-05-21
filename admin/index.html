@@ -97,21 +97,21 @@
     /* ── SIDEBAR ───────────────────────────────────────── */
     .sidebar {
       width: var(--sidebar-w); flex-shrink: 0;
-      background: linear-gradient(180deg, var(--dark) 0%, #1a3358 100%);
+      background: white;
       position: fixed; top: var(--header-h); left: 0; bottom: 0;
       overflow-y: auto; display: flex; flex-direction: column;
-      border-right: 1px solid rgba(255,255,255,0.06);
+      border-right: 1px solid #E2E8F0;
       transition: transform 0.25s ease;
       z-index: 200;
     }
     .sidebar.collapsed { transform: translateX(calc(-1 * var(--sidebar-w))); }
     .sidebar::-webkit-scrollbar { width: 4px; }
-    .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+    .sidebar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 2px; }
 
     .sidebar-user {
-      padding: 14px 12px; display: flex; align-items: center; gap: 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,107,0,0.1);
+      padding: 12px; display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid #E2E8F0;
+      background: linear-gradient(135deg, #0F172A 0%, #1A56DB 100%);
     }
     .sidebar-avatar {
       width: 36px; height: 36px;
@@ -120,47 +120,60 @@
       color: white; font-weight: 800; font-size: 14px; flex-shrink: 0;
     }
     .sidebar-username { color: white; font-weight: 700; font-size: 13px; }
-    .sidebar-status { font-size: 10px; color: #2ecc71; display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+    .sidebar-status { font-size: 10px; color: #4ade80; display: flex; align-items: center; gap: 4px; margin-top: 2px; }
     .sidebar-status::before { content: '●'; font-size: 7px; }
 
     .nav-section-label {
-      padding: 12px 12px 4px;
-      font-size: 9.5px; color: rgba(255,255,255,0.3);
+      padding: 10px 10px 4px;
+      font-size: 9px; color: #94a3b8;
       text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700;
     }
 
+    /* Group header — blue pill như banhc */
     .nav-group-header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 9px 12px; cursor: pointer;
-      color: rgba(255,255,255,0.55);
-      border-left: 3px solid transparent;
+      padding: 7px 10px; cursor: pointer;
+      background: var(--primary); color: white;
+      border-radius: 8px; margin: 3px 8px;
       user-select: none; transition: background 0.15s;
       font-size: 11px; font-weight: 700;
     }
-    .nav-group-header:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85); }
-    .nav-group-header.open { background: rgba(26,86,219,0.15); color: rgba(255,255,255,0.9); border-left-color: var(--primary); }
-    .nav-group-header-left { display: flex; align-items: center; gap: 8px; }
-    .nav-group-header-left i { font-size: 12px; width: 16px; }
-    .nav-chevron { font-size: 9px; transition: transform 0.2s; color: rgba(255,255,255,0.3); }
+    .nav-group-header:hover { background: var(--primary-dark); }
+    .nav-group-header-left { display: flex; align-items: center; gap: 7px; }
+    .nav-group-header-left i { font-size: 11px; }
+    .nav-chevron { font-size: 8px; transition: transform 0.2s; opacity: .75; }
     .nav-chevron.rotated { transform: rotate(180deg); }
 
-    .nav-submenu { display: none; background: rgba(0,0,0,0.12); }
+    .nav-submenu { display: none; }
     .nav-submenu.open { display: block; }
+
+    /* Dash item (trang chủ) */
+    .nav-dash-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; color: #475569; cursor: pointer;
+      font-size: 12px; font-weight: 600;
+      border-radius: 6px; margin: 2px 8px;
+      transition: background 0.15s;
+    }
+    .nav-dash-item:hover { background: #EEF3FF; color: var(--primary); }
+    .nav-dash-item.active { background: #EEF3FF; color: var(--primary); font-weight: 700; }
+    .nav-dash-item i { font-size: 13px; width: 16px; color: var(--primary); }
 
     .nav-sub-item {
       display: flex; align-items: center; gap: 8px;
-      padding: 8px 12px 8px 26px;
-      color: rgba(255,255,255,0.5); cursor: pointer;
+      padding: 7px 12px 7px 24px;
+      color: #475569; cursor: pointer;
       font-size: 12px; font-weight: 500;
-      border-left: 3px solid transparent;
+      border-radius: 6px; margin: 1px 8px;
       transition: background 0.15s;
     }
-    .nav-sub-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85); }
+    .nav-sub-item:hover { background: #F8FAFF; color: var(--primary); }
     .nav-sub-item.active {
-      background: rgba(26,86,219,0.25); color: white;
-      border-left-color: var(--accent); font-weight: 700;
+      background: #EEF3FF; color: var(--primary); font-weight: 700;
     }
-    .nav-sub-item i { font-size: 11px; width: 14px; }
+    .nav-sub-item i { font-size: 11px; width: 14px; color: #94a3b8; }
+    .nav-sub-item.active i { color: var(--primary); }
+    .nav-sidebar-footer { padding: 10px 8px; border-top: 1px solid #E2E8F0; margin-top: auto; }
 
     /* ── MAIN ──────────────────────────────────────────── */
     .main {
@@ -256,6 +269,22 @@
     .btn-del:hover  { background: var(--red); color: white; }
 
     .empty-row td { text-align: center; color: #94a3b8; padding: 36px; font-size: 13px; }
+
+    /* ── DASHBOARD ─────────────────────────────────────── */
+    .dash-stat-card {
+      background: white; border: 1px solid #E2E8F0; border-radius: 10px;
+      padding: 14px; cursor: pointer; transition: box-shadow .2s, transform .2s;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+    }
+    .dash-stat-card:hover { box-shadow: 0 4px 16px rgba(26,86,219,.1); transform: translateY(-2px); }
+    .dsc-icon { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+    .dsc-num { font-size: 1.8rem; font-weight: 900; color: var(--gray-900); line-height: 1; }
+    .dsc-lbl { font-size: 11px; color: #64748b; font-weight: 600; }
+    .dash-panel { background: white; border: 1px solid #E2E8F0; border-radius: 10px; overflow: hidden; }
+    .dash-panel-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid #E2E8F0; font-size: 12px; font-weight: 700; color: #334155; }
+    .dash-panel tbody tr { border-bottom: 1px solid #F1F5F9; }
+    .dash-panel tbody tr:last-child { border-bottom: none; }
+    .dash-panel td { padding: 9px 10px; color: #334155; }
 
     /* ── CUSTOMER TABS ─────────────────────────────────── */
     .ctab-row {
@@ -537,67 +566,169 @@
         </div>
       </div>
 
+      <!-- Dashboard -->
+      <a class="nav-dash-item active" id="nav-dashboard" onclick="showPage('dashboard',this,'Dashboard')">
+        <i class="fas fa-home"></i> Trang chủ
+      </a>
+
       <!-- GROUP: NỘI DUNG -->
-      <div class="nav-section-label">Quản lý</div>
       <div class="nav-group-header open" onclick="toggleNav(this)">
-        <div class="nav-group-header-left"><i class="fas fa-edit"></i> NỘI DUNG TRANG</div>
+        <div class="nav-group-header-left"><i class="fas fa-file-alt"></i> 📝 NỘI DUNG</div>
         <i class="fas fa-chevron-down nav-chevron rotated"></i>
       </div>
       <div class="nav-submenu open">
-        <a class="nav-sub-item active" onclick="showPage('products',this,'Sản phẩm / Agent')">
-          <i class="fas fa-robot"></i> Sản phẩm / Agent
-        </a>
-        <a class="nav-sub-item" onclick="showPage('news',this,'Tin tức / Blog')">
-          <i class="fas fa-newspaper"></i> Tin tức / Blog
+        <a class="nav-sub-item" onclick="showPage('blog-posts',this,'Bài viết Blog')">
+          <i class="fas fa-file-alt"></i> Bài viết
         </a>
         <a class="nav-sub-item" onclick="showPage('seo',this,'AI SEO Đăng bài')">
           <i class="fas fa-wand-magic-sparkles"></i> AI SEO Đăng bài
         </a>
-        <a class="nav-sub-item" onclick="showPage('blog-posts',this,'Bài viết Blog')">
-          <i class="fas fa-file-alt"></i> Bài viết Blog
+        <a class="nav-sub-item" onclick="showPage('products',this,'Sản phẩm / Agent')">
+          <i class="fas fa-robot"></i> Sản phẩm
         </a>
+        <a class="nav-sub-item" onclick="showPage('news',this,'Tin tức')">
+          <i class="fas fa-newspaper"></i> Tin tức
+        </a>
+        <a class="nav-sub-item" onclick="showPage('gallery',this,'Thư viện ảnh')">
+          <i class="fas fa-images"></i> Media
+        </a>
+      </div>
+
+      <!-- GROUP: CÀI ĐẶT TRANG CHỦ -->
+      <div class="nav-group-header" onclick="toggleNav(this)">
+        <div class="nav-group-header-left"><i class="fas fa-home"></i> 🏠 CÀI ĐẶT TRANG CHỦ</div>
+        <i class="fas fa-chevron-right nav-chevron"></i>
+      </div>
+      <div class="nav-submenu">
         <a class="nav-sub-item" onclick="showPage('why',this,'Lý do chọn VIAi')">
-          <i class="fas fa-check-circle"></i> Lý do chọn VIAi
+          <i class="fas fa-check-circle"></i> Tại sao chọn VIAi
         </a>
         <a class="nav-sub-item" onclick="showPage('how',this,'Các bước triển khai')">
-          <i class="fas fa-list-ol"></i> Các bước triển khai
+          <i class="fas fa-list-ol"></i> Cách hoạt động
         </a>
         <a class="nav-sub-item" onclick="showPage('tech',this,'Công nghệ')">
           <i class="fas fa-microchip"></i> Công nghệ
         </a>
-        <a class="nav-sub-item" onclick="showPage('gallery',this,'Thư viện ảnh')">
-          <i class="fas fa-images"></i> Thư viện ảnh
-        </a>
       </div>
 
-      <!-- GROUP: KHÁCH HÀNG -->
+      <!-- GROUP: NGƯỜI DÙNG -->
       <div class="nav-group-header" onclick="toggleNav(this)">
-        <div class="nav-group-header-left"><i class="fas fa-users"></i> KHÁCH HÀNG</div>
+        <div class="nav-group-header-left"><i class="fas fa-users"></i> 👥 NGƯỜI DÙNG</div>
         <i class="fas fa-chevron-right nav-chevron"></i>
       </div>
       <div class="nav-submenu">
         <a class="nav-sub-item" onclick="showPage('customers',this,'Khách hàng & Liên hệ')">
-          <i class="fas fa-user-friends"></i> Khách hàng & Liên hệ
+          <i class="fas fa-user-friends"></i> Khách hàng
         </a>
       </div>
 
-      <!-- GROUP: HỆ THỐNG -->
+      <!-- GROUP: CẤU HÌNH -->
       <div class="nav-group-header" onclick="toggleNav(this)">
-        <div class="nav-group-header-left"><i class="fas fa-tools"></i> HỆ THỐNG</div>
+        <div class="nav-group-header-left"><i class="fas fa-cog"></i> ⚙ CẤU HÌNH</div>
         <i class="fas fa-chevron-right nav-chevron"></i>
       </div>
       <div class="nav-submenu">
-        <a href="/home.html" target="_blank" class="nav-sub-item">
-          <i class="fas fa-external-link-alt"></i> Xem trang chủ
+        <a class="nav-sub-item" onclick="showPage('site-settings',this,'Cài đặt trang chủ')">
+          <i class="fas fa-home"></i> Cài đặt trang chủ
         </a>
         <a class="nav-sub-item" onclick="showPage('security',this,'Bảo mật')">
           <i class="fas fa-shield-alt"></i> Bảo mật 2FA
+        </a>
+        <a href="/" target="_blank" class="nav-sub-item">
+          <i class="fas fa-external-link-alt"></i> Xem website
+        </a>
+      </div>
+
+      <div class="nav-sidebar-footer">
+        <a class="nav-sub-item" style="margin:0;border-radius:6px" href="/home.html" target="_blank">
+          <i class="fas fa-globe" style="color:#10b981"></i> Xem website →
         </a>
       </div>
     </aside>
 
     <!-- MAIN CONTENT -->
     <main class="main" id="main-content">
+
+      <!-- ── DASHBOARD PAGE ── -->
+      <div id="page-dashboard">
+        <div class="content-topbar">
+          <div class="content-title" id="dash-greeting">Chào buổi sáng!</div>
+          <div class="breadcrumb-inner"><i class="fas fa-home"></i> › <span>Dashboard</span></div>
+        </div>
+        <div class="content-body">
+          <p class="page-subtitle" id="dash-time" style="margin-bottom:16px"></p>
+          <p style="font-size:12px;color:#64748b;margin-bottom:16px">
+            VIAi CMS — Hệ thống quản trị nội dung website. Mọi thay đổi tự đồng bộ ra ngoài trong 60 giây.
+          </p>
+
+          <!-- Stats cards -->
+          <div id="dash-stats" style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px">
+            <div class="dash-stat-card" onclick="showPage('blog-posts',document.getElementById('nav-dashboard'),'Bài viết Blog')">
+              <div class="dsc-icon" style="background:#EEF3FF;color:#1A56DB"><i class="fas fa-file-alt"></i></div>
+              <div class="dsc-num" id="ds-blog">—</div>
+              <div class="dsc-lbl">Bài viết</div>
+            </div>
+            <div class="dash-stat-card" onclick="showPage('blog-posts',document.getElementById('nav-dashboard'),'Bài viết Blog')">
+              <div class="dsc-icon" style="background:#FFF7ED;color:#F97316"><i class="fas fa-clock"></i></div>
+              <div class="dsc-num" id="ds-draft">—</div>
+              <div class="dsc-lbl">Chờ duyệt</div>
+            </div>
+            <div class="dash-stat-card" onclick="showPage('products',document.getElementById('nav-dashboard'),'Sản phẩm')">
+              <div class="dsc-icon" style="background:#F0FDF4;color:#16a34a"><i class="fas fa-robot"></i></div>
+              <div class="dsc-num" id="ds-products">—</div>
+              <div class="dsc-lbl">Sản phẩm</div>
+            </div>
+            <div class="dash-stat-card" onclick="showPage('customers',document.getElementById('nav-dashboard'),'Khách hàng')">
+              <div class="dsc-icon" style="background:#FFF0E6;color:#FF6B00"><i class="fas fa-users"></i></div>
+              <div class="dsc-num" id="ds-customers">—</div>
+              <div class="dsc-lbl">Khách hàng</div>
+            </div>
+            <div class="dash-stat-card" style="border-color:#10b981">
+              <div class="dsc-icon" style="background:#ECFDF5;color:#10b981"><i class="fas fa-user-plus"></i></div>
+              <div class="dsc-num" id="ds-new" style="color:#10b981">—</div>
+              <div class="dsc-lbl">Mới hôm nay</div>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:14px">
+            <!-- Recent posts -->
+            <div class="dash-panel">
+              <div class="dash-panel-header">
+                <span><i class="fas fa-file-alt"></i> Bài viết mới nhất</span>
+                <a onclick="showPage('blog-posts',document.getElementById('nav-dashboard'),'Bài viết')" style="font-size:11px;color:var(--primary);cursor:pointer">Xem tất cả →</a>
+              </div>
+              <table style="width:100%;font-size:12px;border-collapse:collapse">
+                <thead><tr><th style="text-align:left;padding:8px 10px;background:#F8FAFF;color:#64748b;font-size:10px;text-transform:uppercase;font-weight:700">#</th><th style="text-align:left;padding:8px 10px;background:#F8FAFF;color:#64748b;font-size:10px;text-transform:uppercase;font-weight:700">Tiêu đề</th><th style="text-align:left;padding:8px 10px;background:#F8FAFF;color:#64748b;font-size:10px;text-transform:uppercase;font-weight:700">Ngày đăng</th></tr></thead>
+                <tbody id="dash-posts-tbody"><tr><td colspan="3" style="text-align:center;padding:20px;color:#94a3b8">Đang tải...</td></tr></tbody>
+              </table>
+            </div>
+
+            <!-- Recent customers -->
+            <div class="dash-panel">
+              <div class="dash-panel-header">
+                <span><i class="fas fa-user-friends"></i> Khách hàng gần đây</span>
+                <a onclick="showPage('customers',document.getElementById('nav-dashboard'),'Khách hàng')" style="font-size:11px;color:var(--primary);cursor:pointer">Xem tất cả →</a>
+              </div>
+              <table style="width:100%;font-size:12px;border-collapse:collapse">
+                <thead><tr><th style="text-align:left;padding:8px 10px;background:#F8FAFF;color:#64748b;font-size:10px;text-transform:uppercase;font-weight:700">Tên</th><th style="text-align:left;padding:8px 10px;background:#F8FAFF;color:#64748b;font-size:10px;text-transform:uppercase;font-weight:700">SĐT</th><th style="text-align:left;padding:8px 10px;background:#F8FAFF;color:#64748b;font-size:10px;text-transform:uppercase;font-weight:700">Ngày</th></tr></thead>
+                <tbody id="dash-customers-tbody"><tr><td colspan="3" style="text-align:center;padding:20px;color:#94a3b8">Đang tải...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Quick actions -->
+          <div style="margin-top:14px;background:white;border:1px solid #E2E8F0;border-radius:10px;padding:16px">
+            <div style="font-size:12px;font-weight:700;color:#334155;margin-bottom:12px"><i class="fas fa-bolt" style="color:var(--accent)"></i> Thao tác nhanh</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <button class="btn" style="background:#EEF3FF;color:var(--primary);height:32px" onclick="showPage('seo',document.getElementById('nav-dashboard'),'AI SEO')"><i class="fas fa-wand-magic-sparkles"></i> Viết bài AI</button>
+              <button class="btn" style="background:#EEF3FF;color:var(--primary);height:32px" onclick="showPage('blog-posts',document.getElementById('nav-dashboard'),'Bài viết')"><i class="fas fa-plus"></i> Bài viết mới</button>
+              <button class="btn" style="background:#FFF0E6;color:var(--accent);height:32px" onclick="showPage('products',document.getElementById('nav-dashboard'),'Sản phẩm')"><i class="fas fa-robot"></i> Quản lý Agent</button>
+              <button class="btn" style="background:#F0FDF4;color:#16a34a;height:32px" onclick="showPage('customers',document.getElementById('nav-dashboard'),'Khách hàng')"><i class="fas fa-users"></i> Xem khách hàng</button>
+              <a href="/home.html" target="_blank" class="btn" style="background:#F8FAFF;color:#64748b;height:32px"><i class="fas fa-globe"></i> Xem website</a>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- ── PRODUCTS PAGE ── -->
       <div id="page-products">
@@ -927,6 +1058,113 @@
               <thead><tr><th>Tiêu đề</th><th>Slug / Link</th><th>Danh mục</th><th>Ngày đăng</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
               <tbody id="blog-tbody"></tbody>
             </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SITE SETTINGS PAGE ── -->
+      <div id="page-site-settings" style="display:none">
+        <div class="content-topbar">
+          <div class="content-title">Cài đặt trang chủ</div>
+          <div class="breadcrumb-inner"><i class="fas fa-home"></i> › Cấu hình › <span>Trang chủ</span></div>
+        </div>
+        <div class="content-body">
+          <p class="page-subtitle">Chỉnh sửa nội dung Hero, Trust Stats và SEO trang chủ. Thay đổi có hiệu lực ngay sau khi lưu.</p>
+
+          <!-- TABS -->
+          <div style="display:flex;gap:0;border-bottom:2px solid #e2e8f0;margin-bottom:20px">
+            <button class="ss-tab active" onclick="switchSettingsTab('hero',this)" style="padding:9px 18px;border:none;background:none;font-family:inherit;font-size:12px;font-weight:700;color:var(--primary);border-bottom:2px solid var(--primary);cursor:pointer;margin-bottom:-2px">🏠 Hero</button>
+            <button class="ss-tab" onclick="switchSettingsTab('trust',this)" style="padding:9px 18px;border:none;background:none;font-family:inherit;font-size:12px;font-weight:700;color:#64748b;cursor:pointer">📊 Trust Stats</button>
+            <button class="ss-tab" onclick="switchSettingsTab('seo',this)" style="padding:9px 18px;border:none;background:none;font-family:inherit;font-size:12px;font-weight:700;color:#64748b;cursor:pointer">🔍 SEO</button>
+          </div>
+
+          <!-- TAB: HERO -->
+          <div id="ss-hero" class="ss-panel">
+            <div style="background:white;border:1px solid #e2e8f0;border-radius:12px;padding:22px;display:grid;gap:16px">
+              <div class="field">
+                <label style="display:block;font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px">Badge text <span style="color:#94a3b8;font-weight:400">(dòng nhỏ trên heading)</span></label>
+                <input id="ss-hero_badge" type="text" placeholder="AI Agent Platform • Đang hoạt động" style="width:100%;padding:8px 11px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='#e2e8f0'" />
+                <p style="font-size:11px;color:#94a3b8;margin-top:4px">Hiển thị trong ô nhỏ màu xanh nhạt phía trên tiêu đề chính.</p>
+              </div>
+              <div class="field">
+                <label style="display:block;font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px">Mô tả ngắn <span style="color:#94a3b8;font-weight:400">(đoạn văn dưới heading)</span></label>
+                <textarea id="ss-hero_desc" rows="3" placeholder="VIAi cung cấp các AI Agent sẵn sàng triển khai..." style="width:100%;padding:8px 11px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none;resize:vertical" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='#e2e8f0'"></textarea>
+                <p style="font-size:11px;color:#94a3b8;margin-top:4px">Đoạn mô tả bên dưới tiêu đề Hero. Nên 1-2 câu ngắn gọn.</p>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div class="field">
+                  <label style="display:block;font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px">Nút CTA chính — Text</label>
+                  <input id="ss-hero_cta1_text" type="text" placeholder="🚀 Dùng thử miễn phí 14 ngày" style="width:100%;padding:8px 11px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='#e2e8f0'" />
+                </div>
+                <div class="field">
+                  <label style="display:block;font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px">Nút CTA chính — URL</label>
+                  <input id="ss-hero_cta1_url" type="text" placeholder="dung-thu.html" style="width:100%;padding:8px 11px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='#e2e8f0'" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB: TRUST STATS -->
+          <div id="ss-trust" class="ss-panel" style="display:none">
+            <div style="background:white;border:1px solid #e2e8f0;border-radius:12px;padding:22px">
+              <p style="font-size:12px;color:#64748b;margin-bottom:16px">3 số liệu hiển thị ở cuối Hero section (ví dụ: 500+, 10x, 98%).</p>
+              ${[1,2,3].map(i => `
+              <div style="display:grid;grid-template-columns:120px 1fr;gap:10px;margin-bottom:14px;align-items:end">
+                <div>
+                  <label style="display:block;font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px">Stat ${i} — Số</label>
+                  <input id="ss-trust${i}_num" type="text" placeholder="${i===1?'500+':i===2?'10x':'98%'}" style="width:100%;padding:8px 11px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='#e2e8f0'" />
+                </div>
+                <div>
+                  <label style="display:block;font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px">Stat ${i} — Nhãn</label>
+                  <input id="ss-trust${i}_label" type="text" placeholder="${i===1?'Doanh nghiệp tin dùng':i===2?'Tăng năng suất làm việc':'Khách hàng hài lòng'}" style="width:100%;padding:8px 11px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='#e2e8f0'" />
+                </div>
+              </div>`).join('')}
+            </div>
+          </div>
+
+          <!-- TAB: SEO -->
+          <div id="ss-seo" class="ss-panel" style="display:none">
+            <div style="background:white;border:1px solid #e2e8f0;border-radius:12px;padding:22px;display:grid;gap:16px">
+              <div class="field">
+                <label style="display:block;font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px">Tiêu đề Google (SEO Title) <span id="ss-title-count" style="color:#94a3b8;font-weight:400"></span></label>
+                <input id="ss-seo_title" type="text" maxlength="60" placeholder="VIAi – AI Agent cho Doanh nghiệp Việt" oninput="document.getElementById('ss-title-count').textContent='('+this.value.length+'/60 ký tự)'" style="width:100%;padding:8px 11px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='#e2e8f0'" />
+                <p style="font-size:11px;color:#94a3b8;margin-top:4px">Tiêu đề hiển thị trên Google. 50–60 ký tự là tối ưu.</p>
+              </div>
+              <div class="field">
+                <label style="display:block;font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px">Mô tả Google (SEO Description) <span id="ss-desc-count" style="color:#94a3b8;font-weight:400"></span></label>
+                <textarea id="ss-seo_description" rows="3" maxlength="160" oninput="document.getElementById('ss-desc-count').textContent='('+this.value.length+'/160 ký tự)'" style="width:100%;padding:8px 11px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none;resize:vertical" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='#e2e8f0'"></textarea>
+                <p style="font-size:11px;color:#94a3b8;margin-top:4px">120–160 ký tự. Phải chứa từ khóa chính và call-to-action.</p>
+              </div>
+              <div class="field">
+                <label style="display:block;font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px">Keywords <span style="color:#94a3b8;font-weight:400">(tham khảo nội bộ, Google không đọc)</span></label>
+                <input id="ss-seo_keywords" type="text" placeholder="AI Agent, tự động hóa doanh nghiệp, Zalo Agent..." style="width:100%;padding:8px 11px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='#e2e8f0'" />
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div class="field">
+                  <label style="display:block;font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px">OG Title (Facebook/Zalo share)</label>
+                  <input id="ss-og_title" type="text" maxlength="60" style="width:100%;padding:8px 11px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='#e2e8f0'" />
+                </div>
+                <div class="field">
+                  <label style="display:block;font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px">OG Description</label>
+                  <input id="ss-og_description" type="text" maxlength="160" style="width:100%;padding:8px 11px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='#e2e8f0'" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action buttons -->
+          <div style="display:flex;align-items:center;gap:10px;margin-top:20px">
+            <button class="btn" style="background:var(--accent);color:white;height:34px;padding:0 20px;font-size:13px" onclick="saveSettings()">
+              <i class="fas fa-save"></i> Lưu & xuất bản
+            </button>
+            <button class="btn btn-refresh" onclick="loadSettings()"><i class="fas fa-undo"></i> Hủy thay đổi</button>
+            <span id="ss-status" style="font-size:12px;color:#64748b"></span>
+          </div>
+
+          <!-- Preview note -->
+          <div style="margin-top:14px;background:#EEF3FF;border-radius:8px;padding:12px 14px;font-size:12px;color:#1E3A8A">
+            <i class="fas fa-info-circle" style="margin-right:6px"></i>
+            Sau khi lưu, trang chủ sẽ cập nhật ngay. Nhấn <a href="/" target="_blank" style="color:var(--primary);font-weight:700">xem trang chủ →</a> để kiểm tra.
           </div>
         </div>
       </div>
@@ -1401,7 +1639,10 @@
   function showApp() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
-    loadProducts();
+    // Lưu username để hiển thị trên dashboard
+    const payload = token ? JSON.parse(atob(token.split('.')[1])) : {};
+    if (payload.username) localStorage.setItem('admin_username', payload.username);
+    showPage('dashboard', document.getElementById('nav-dashboard'), 'Dashboard');
   }
 
   function doLogout() {
@@ -1449,21 +1690,117 @@
   }
 
   function showPage(p, el, title) {
-    ['products','news','seo','blog-posts','why','how','tech','gallery','customers','security'].forEach(n => {
-      document.getElementById(`page-${n}`).style.display = n === p ? '' : 'none';
+    ['dashboard','products','news','seo','blog-posts','why','how','tech','gallery','customers','site-settings','security'].forEach(n => {
+      const pg = document.getElementById(`page-${n}`);
+      if (pg) pg.style.display = n === p ? '' : 'none';
     });
-    document.querySelectorAll('.nav-sub-item').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.nav-sub-item, .nav-dash-item').forEach(x => x.classList.remove('active'));
     if (el) el.classList.add('active');
     document.getElementById('bc-current').textContent = title || p;
+    if (p === 'dashboard')   loadDashboard();
     if (p === 'products')    loadProducts();
     if (p === 'news')        loadNews();
     if (p === 'blog-posts')  loadBlogPosts();
     if (p === 'why')         loadWhy();
-    if (p === 'how')       loadHow();
-    if (p === 'tech')      loadTech();
-    if (p === 'gallery')   loadGallery();
-    if (p === 'security')  load2FAStatus();
-    if (p === 'customers') loadCustomers();
+    if (p === 'how')         loadHow();
+    if (p === 'tech')        loadTech();
+    if (p === 'gallery')     loadGallery();
+    if (p === 'site-settings') loadSettings();
+    if (p === 'security')    load2FAStatus();
+    if (p === 'customers')   loadCustomers();
+  }
+
+  async function loadDashboard() {
+    // Greeting theo giờ
+    const h = new Date().getHours();
+    const greet = h < 12 ? 'Chào buổi sáng' : h < 18 ? 'Chào buổi chiều' : 'Chào buổi tối';
+    const user = localStorage.getItem('admin_username') || 'Admin';
+    document.getElementById('dash-greeting').textContent = `${greet}, ${user}!`;
+    const now = new Date();
+    document.getElementById('dash-time').textContent =
+      `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}, ${['Chủ Nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'][now.getDay()]} ${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+    // Load stats
+    try {
+      const r = await apiFetch('/admin-api/stats');
+      document.getElementById('ds-blog').textContent      = r.blog_pub ?? '—';
+      document.getElementById('ds-draft').textContent     = r.blog_draft ?? '—';
+      document.getElementById('ds-products').textContent  = r.products ?? '—';
+      document.getElementById('ds-customers').textContent = r.customers ?? '—';
+      document.getElementById('ds-new').textContent       = r.customers_new ?? '—';
+      // Recent posts
+      const ptbody = document.getElementById('dash-posts-tbody');
+      ptbody.innerHTML = r.recent_posts?.length
+        ? r.recent_posts.map((p,i) => `<tr><td style="color:#94a3b8;width:28px">${i+1}</td><td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escH(p.title)}</td><td style="color:#94a3b8;white-space:nowrap">${p.published_at||''}</td></tr>`).join('')
+        : '<tr><td colspan="3" style="text-align:center;padding:16px;color:#94a3b8">Chưa có bài viết</td></tr>';
+      // Recent customers
+      const ctbody = document.getElementById('dash-customers-tbody');
+      ctbody.innerHTML = r.recent_customers?.length
+        ? r.recent_customers.map(c => `<tr><td style="font-weight:600">${escH(c.name)}</td><td style="color:#64748b">${escH(c.phone||'—')}</td><td style="color:#94a3b8;white-space:nowrap;font-size:11px">${(c.created_at||'').slice(0,10)}</td></tr>`).join('')
+        : '<tr><td colspan="3" style="text-align:center;padding:16px;color:#94a3b8">Chưa có khách hàng</td></tr>';
+    } catch(e) { console.error('Dashboard stats error', e); }
+  }
+
+  function escH(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── SITE SETTINGS ─────────────────────────────────────
+  const SS_FIELDS = [
+    'hero_badge','hero_desc','hero_cta1_text','hero_cta1_url',
+    'trust1_num','trust1_label','trust2_num','trust2_label','trust3_num','trust3_label',
+    'seo_title','seo_description','seo_keywords','og_title','og_description',
+  ];
+
+  function switchSettingsTab(tab, el) {
+    document.querySelectorAll('.ss-panel').forEach(p => p.style.display = 'none');
+    document.querySelectorAll('.ss-tab').forEach(t => {
+      t.style.color = '#64748b';
+      t.style.borderBottom = 'none';
+    });
+    const panel = document.getElementById('ss-' + tab);
+    if (panel) panel.style.display = '';
+    el.style.color = 'var(--primary)';
+    el.style.borderBottom = '2px solid var(--primary)';
+  }
+
+  async function loadSettings() {
+    const r = await safeFetch(`${API}/site-settings`, { headers: hdr() });
+    if (!r) return;
+    const data = await r.json();
+    SS_FIELDS.forEach(key => {
+      const el = document.getElementById('ss-' + key);
+      if (el) {
+        el.value = data[key] || '';
+        // Trigger char count update
+        el.dispatchEvent(new Event('input'));
+      }
+    });
+    document.getElementById('ss-status').textContent = '';
+  }
+
+  async function saveSettings() {
+    const payload = {};
+    SS_FIELDS.forEach(key => {
+      const el = document.getElementById('ss-' + key);
+      if (el) payload[key] = el.value;
+    });
+    const statusEl = document.getElementById('ss-status');
+    statusEl.textContent = 'Đang lưu...';
+    statusEl.style.color = '#64748b';
+    const r = await safeFetch(`${API}/site-settings`, {
+      method: 'PUT', headers: { ...hdr(), 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!r) return;
+    const data = await r.json();
+    if (data.success) {
+      statusEl.textContent = '✅ Đã lưu và xuất bản thành công!';
+      statusEl.style.color = 'var(--green)';
+      setTimeout(() => { statusEl.textContent = ''; }, 4000);
+    } else {
+      statusEl.textContent = '❌ ' + (data.error || 'Lỗi không xác định');
+      statusEl.style.color = 'var(--red)';
+    }
   }
 
   // ── FILTER ────────────────────────────────────────────

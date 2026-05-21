@@ -129,6 +129,40 @@ db.exec(`
   );
 `);
 
+// ── Site settings (homepage globals) ─────────────────
+db.exec(`
+  CREATE TABLE IF NOT EXISTS site_settings (
+    key        TEXT PRIMARY KEY,
+    value      TEXT,
+    updated_at TEXT DEFAULT (datetime('now'))
+  );
+`);
+
+// Seed default settings nếu bảng trống
+const settingsDefaults = {
+  // SEO
+  seo_title:       'VIAi – Phần mềm AI Agent cho doanh nghiệp Việt Nam',
+  seo_description: 'VIAi cung cấp AI Agent tự động hóa bán hàng, vận hành và chăm sóc khách hàng 24/7. Triển khai trong 24 giờ, kết nối 100+ ứng dụng, không cần lập trình.',
+  seo_keywords:    'AI Agent, tự động hóa doanh nghiệp, Zalo Agent, chatbot doanh nghiệp Việt Nam',
+  og_title:        'VIAi – Phần mềm AI Agent cho doanh nghiệp Việt Nam',
+  og_description:  'Tự động hóa toàn bộ quy trình bán hàng, vận hành và chăm sóc khách hàng bằng AI Agent. Triển khai trong 24 giờ, không cần lập trình.',
+  // Hero
+  hero_badge:      'AI Agent Platform • Đang hoạt động',
+  hero_title:      'Tự động hóa toàn bộ quy trình bằng AI Agent thông minh',
+  hero_desc:       'VIAi cung cấp các AI Agent sẵn sàng triển khai – kết nối đa nền tảng, xử lý tự động 24/7. Bạn chỉ cần quan tâm đến đầu vào và kết quả đầu ra, phần còn lại AI lo.',
+  hero_cta1_text:  '🚀 Dùng thử miễn phí 14 ngày',
+  hero_cta1_url:   'dung-thu.html',
+  hero_cta2_text:  '▶ Xem demo thực tế',
+  // Trust stats (hero bottom)
+  trust1_num:   '500+',  trust1_label: 'Doanh nghiệp tin dùng',
+  trust2_num:   '10x',   trust2_label: 'Tăng năng suất làm việc',
+  trust3_num:   '98%',   trust3_label: 'Khách hàng hài lòng',
+};
+{
+  const ins = db.prepare("INSERT OR IGNORE INTO site_settings (key, value) VALUES (?, ?)");
+  Object.entries(settingsDefaults).forEach(([k, v]) => ins.run(k, v));
+}
+
 // Migration: thêm cột 2FA nếu chưa có
 try { db.exec("ALTER TABLE admin_users ADD COLUMN totp_secret TEXT DEFAULT NULL"); } catch {}
 try { db.exec("ALTER TABLE admin_users ADD COLUMN totp_enabled INTEGER DEFAULT 0"); } catch {}
