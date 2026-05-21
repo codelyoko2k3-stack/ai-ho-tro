@@ -617,6 +617,32 @@ router.put('/site-settings', auth, (req, res) => {
   } catch(e) { res.status(500).json({ error: 'Lỗi lưu cài đặt' }); }
 });
 
+// ── Pricing Plans ─────────────────────────────────────
+router.get('/pricing', auth, (req, res) => {
+  const rows = db.prepare('SELECT * FROM pricing_plans ORDER BY order_index ASC').all();
+  rows.forEach(r => { try { r.features = JSON.parse(r.features || '[]'); } catch { r.features = []; } });
+  res.json(rows);
+});
+
+router.post('/pricing', auth, (req, res) => {
+  const { name, icon, subtitle, price_month, price_year, highlight, badge, cta_text, features, order_index } = req.body;
+  const r = db.prepare(`INSERT INTO pricing_plans (name,icon,subtitle,price_month,price_year,highlight,badge,cta_text,features,order_index)
+    VALUES (?,?,?,?,?,?,?,?,?,?)`).run(name, icon||'🌱', subtitle||'', price_month, price_year||'', highlight?1:0, badge||null, cta_text||'Dùng thử miễn phí', JSON.stringify(features||[]), order_index||0);
+  res.json({ id: r.lastInsertRowid });
+});
+
+router.put('/pricing/:id', auth, (req, res) => {
+  const { name, icon, subtitle, price_month, price_year, highlight, badge, cta_text, features, order_index, active } = req.body;
+  db.prepare(`UPDATE pricing_plans SET name=?,icon=?,subtitle=?,price_month=?,price_year=?,highlight=?,badge=?,cta_text=?,features=?,order_index=?,active=? WHERE id=?`)
+    .run(name, icon||'🌱', subtitle||'', price_month, price_year||'', highlight?1:0, badge||null, cta_text||'Dùng thử miễn phí', JSON.stringify(features||[]), order_index||0, active?1:0, req.params.id);
+  res.json({ success: true });
+});
+
+router.delete('/pricing/:id', auth, (req, res) => {
+  db.prepare('DELETE FROM pricing_plans WHERE id=?').run(req.params.id);
+  res.json({ success: true });
+});
+
 // ── Dashboard stats ───────────────────────────────────
 router.get('/stats', auth, (req, res) => {
   try {

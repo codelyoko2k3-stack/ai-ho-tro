@@ -615,6 +615,53 @@ if (db.prepare('SELECT COUNT(*) as c FROM gallery_images').get().c === 0) {
   ].forEach(r => ins.run(...r));
 }
 
+// ── Pricing plans ────────────────────────────────────
+db.exec(`
+  CREATE TABLE IF NOT EXISTS pricing_plans (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    name        TEXT NOT NULL,
+    icon        TEXT DEFAULT '🌱',
+    subtitle    TEXT,
+    price_month TEXT NOT NULL,
+    price_year  TEXT,
+    highlight   INTEGER DEFAULT 0,
+    badge       TEXT,
+    cta_text    TEXT DEFAULT 'Dùng thử miễn phí',
+    features    TEXT DEFAULT '[]',
+    order_index INTEGER DEFAULT 0,
+    active      INTEGER DEFAULT 1,
+    created_at  TEXT DEFAULT (datetime('now'))
+  );
+`);
+if (db.prepare('SELECT COUNT(*) as c FROM pricing_plans').get().c === 0) {
+  const ins = db.prepare(`INSERT INTO pricing_plans (name,icon,subtitle,price_month,price_year,highlight,badge,cta_text,features,order_index) VALUES (?,?,?,?,?,?,?,?,?,?)`);
+  [
+    ['Starter','🌱','Cho doanh nghiệp mới bắt đầu tự động hóa','990.000đ','792.000đ',0,null,'Dùng thử miễn phí',JSON.stringify(['2 AI Agent','1.000 tin nhắn/tháng','Kết nối Zalo + Facebook','Dashboard cơ bản','Hỗ trợ email']),1],
+    ['Pro','🚀','Tự động hóa toàn diện cho SME đang tăng trưởng','2.490.000đ','1.992.000đ',1,'PHỔ BIẾN NHẤT','Bắt đầu dùng Pro',JSON.stringify(['10 AI Agent','10.000 tin nhắn/tháng','Kết nối 20+ nền tảng','Tích hợp CRM/ERP','Báo cáo nâng cao','Hỗ trợ Zalo + Hotline','API tùy chỉnh']),2],
+    ['Enterprise','🏢','Cho doanh nghiệp lớn, nhu cầu đặc thù','Liên hệ',null,0,null,'Liên hệ tư vấn',JSON.stringify(['Agent không giới hạn','Tin nhắn không giới hạn','Kết nối 50+ nền tảng','API tùy chỉnh','SLA 99.9% uptime','Dedicated support','On-premise tuỳ chọn']),3],
+  ].forEach(r => ins.run(...r));
+}
+
+// ── Homepage FAQ & CTA vào site_settings ─────────────
+{
+  const faqDefault = JSON.stringify([
+    { q: 'VIAi khác gì so với chatbot thông thường?', a: 'Chatbot chỉ trả lời theo kịch bản cố định. AI Agent của VIAi hiểu ngữ cảnh, tự ra quyết định và thực hiện hành động — tạo đơn, cập nhật CRM, gửi báo cáo — hoàn toàn tự động 24/7.' },
+    { q: 'Tôi không biết lập trình, có dùng được không?', a: 'Hoàn toàn không cần kỹ năng kỹ thuật. Giao diện tiếng Việt, đội ngũ VIAi hỗ trợ 1-1 từ đầu đến cuối trong 24 giờ.' },
+    { q: 'Dữ liệu khách hàng của tôi có an toàn không?', a: 'Dữ liệu mã hóa end-to-end, lưu tại máy chủ Việt Nam, tuân thủ ISO 27001. VIAi không chia sẻ dữ liệu với bên thứ ba.' },
+    { q: 'Triển khai mất bao lâu?', a: 'Trong vòng 24 giờ làm việc kể từ khi ký hợp đồng. Đội ngũ VIAi cài đặt, kết nối và chạy thử nghiệm — bạn chỉ cần cấp quyền truy cập.' },
+    { q: 'VIAi kết nối được với những nền tảng nào?', a: 'Zalo OA, Facebook Messenger, Shopee, Lazada, Google Sheets, MISA, Base.vn, WordPress và 50+ nền tảng khác. Nếu chưa có sẵn, chúng tôi hỗ trợ tích hợp qua API.' },
+    { q: 'Nếu không hài lòng thì sao?', a: 'Hoàn tiền 100% trong 14 ngày, không hỏi lý do. Ngoài ra có 14 ngày dùng thử miễn phí trước khi quyết định.' },
+  ]);
+  const insS = db.prepare("INSERT OR IGNORE INTO site_settings (key, value) VALUES (?, ?)");
+  [
+    ['cta_title',    'Sẵn sàng để AI làm việc thay bạn?'],
+    ['cta_subtitle', 'Dùng thử miễn phí 14 ngày · Không cần thẻ tín dụng · Hỗ trợ cài đặt 1-1 miễn phí'],
+    ['cta_btn1_text','🚀 Bắt đầu miễn phí ngay'],
+    ['cta_btn2_text','📞 Tư vấn ngay hôm nay'],
+    ['homepage_faq', faqDefault],
+  ].forEach(([k, v]) => insS.run(k, v));
+}
+
 // Migration: thêm cột slug cho products
 try { db.exec("ALTER TABLE products ADD COLUMN slug TEXT DEFAULT NULL"); } catch {}
 // Hardcode slug + link cho từng sản phẩm theo tên (không dùng regex Unicode)

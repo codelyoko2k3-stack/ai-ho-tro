@@ -1766,8 +1766,67 @@ app.get('/', (_req, res) => {
     trustReplace(s.trust3_num, '98', '%');
     if (s.trust3_label) html = html.replace('Khách hàng hài lòng', escapeHtml(s.trust3_label));
 
+    // CTA section
+    if (s.cta_title) html = html.replace(
+      /(<h2>Sẵn sàng để <em>)AI làm việc(<\/em> thay bạn\?<\/h2>)/,
+      `$1${escapeHtml(s.cta_title).replace('Sẵn sàng để ','').replace(' thay bạn?','')}$2`
+    ).replace('Sẵn sàng để <em>AI làm việc</em> thay bạn?', `${escapeHtml(s.cta_title)}`);
+    if (s.cta_subtitle) html = html.replace(
+      'Dùng thử miễn phí 14 ngày · Không cần thẻ tín dụng · Hỗ trợ cài đặt 1-1 miễn phí',
+      escapeHtml(s.cta_subtitle)
+    );
+    if (s.cta_btn1_text) html = html.replace('🚀 Bắt đầu miễn phí ngay', escapeHtml(s.cta_btn1_text));
+    if (s.cta_btn2_text) html = html.replace('📞 Tư vấn ngay hôm nay', escapeHtml(s.cta_btn2_text));
+
+    // FAQ — inject vào FAQ_DATA constant trong JS
+    if (s.homepage_faq) {
+      try {
+        const faqArr = JSON.parse(s.homepage_faq);
+        const faqJs = JSON.stringify(faqArr);
+        html = html.replace(/const FAQ_DATA = \[[\s\S]*?\];/, `const FAQ_DATA = ${faqJs};`);
+      } catch {}
+    }
+
+    // Pricing — inject pricing cards từ DB
+    const plans = db.prepare('SELECT * FROM pricing_plans WHERE active=1 ORDER BY order_index ASC').all();
+    if (plans.length > 0) {
+      const pricingHtml = plans.map(plan => {
+        let features = [];
+        try { features = JSON.parse(plan.features || '[]'); } catch {}
+        const isHighlight = !!plan.highlight;
+        const bgStyle = isHighlight
+          ? 'background:linear-gradient(160deg,#1040B0,#1A56DB);color:white;position:relative;transform:scale(1.03);box-shadow:0 20px 50px rgba(26,86,219,0.35)'
+          : 'background:white;border:1.5px solid #e8eef8';
+        const priceColor = isHighlight ? 'color:white' : 'color:var(--gray-900)';
+        const featureColor = isHighlight ? 'color:rgba(255,255,255,0.85)' : 'color:#374151';
+        const checkColor = isHighlight ? 'color:rgba(255,255,255,0.9)' : 'color:var(--green)';
+        const ctaStyle = isHighlight
+          ? 'background:white;color:var(--primary);font-weight:800'
+          : 'border:2px solid var(--primary);color:var(--primary)';
+        const badge = plan.badge ? `<div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--accent);color:white;font-size:0.72rem;font-weight:800;padding:4px 18px;border-radius:20px;white-space:nowrap">${escapeHtml(plan.badge)}</div>` : '';
+        return `<div style="${bgStyle};border-radius:20px;padding:36px 28px;transition:all 0.25s" class="reveal">${badge}
+          <div style="font-size:1.6rem;margin-bottom:12px">${escapeHtml(plan.icon||'🌱')}</div>
+          <div style="font-size:0.8rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;${isHighlight?'color:rgba(255,255,255,0.6)':'color:#64748b'};margin-bottom:8px">${escapeHtml(plan.name)}</div>
+          <div style="font-size:0.85rem;${isHighlight?'color:rgba(255,255,255,0.7)':'color:#94a3b8'};margin-bottom:20px">${escapeHtml(plan.subtitle||'')}</div>
+          <div style="margin-bottom:24px">
+            <span class="price-month" style="font-size:2.2rem;font-weight:900;${priceColor}">${escapeHtml(plan.price_month)}</span>
+            ${plan.price_year ? `<span class="price-year" style="font-size:2.2rem;font-weight:900;${priceColor};display:none">${escapeHtml(plan.price_year)}</span>` : ''}
+            <span style="font-size:0.85rem;${isHighlight?'color:rgba(255,255,255,0.5)':'color:#94a3b8'}">/tháng</span>
+          </div>
+          <a href="/dung-thu.html" style="display:block;text-align:center;padding:12px;border-radius:10px;font-weight:700;font-size:0.9rem;margin-bottom:28px;transition:all 0.2s;${ctaStyle}">${escapeHtml(plan.cta_text||'Dùng thử miễn phí')}</a>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:10px">
+            ${features.map(f => `<li style="font-size:0.85rem;${featureColor};display:flex;gap:8px"><span style="${checkColor}">✓</span> ${escapeHtml(f)}</li>`).join('')}
+          </ul>
+        </div>`;
+      }).join('');
+      html = html.replace(
+        /<div style="display:grid;grid-template-columns:repeat\(3,1fr\);gap:24px" id="pricing-grid">[\s\S]*?<\/div>\s*\n\s*\n\s*<\/div>\s*\n\s*<\/section>\s*\n\s*<!-- CTA/,
+        `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px" id="pricing-grid">${pricingHtml}</div>\n\n</div>\n</section>\n<!-- CTA`
+      );
+    }
+
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.setHeader('Cache-Control', 'no-cache'); // không cache để settings có hiệu lực ngay
+    res.setHeader('Cache-Control', 'no-cache');
     res.send(html);
   } catch(e) {
     res.sendFile(path.join(__dirname, 'home.html'));
