@@ -2,3 +2,4 @@ node_modules
 viai.db
 .env
 *.log
+package-lock.json
