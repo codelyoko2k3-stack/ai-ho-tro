@@ -904,8 +904,36 @@ router.delete('/gallery/:id', auth, (req, res) => { db.prepare('DELETE FROM gall
 
 // ── Registered Users ─────────────────────────────────
 router.get('/users', auth, (req, res) => {
-  const rows = db.prepare('SELECT id, name, email, phone, created_at FROM users ORDER BY created_at DESC').all();
-  res.json(rows);
+  const { status, q } = req.query;
+  let sql = 'SELECT id, name, email, phone, status, source_page, last_login, created_at FROM users';
+  const params = [];
+  const where = [];
+  if (status && status !== 'all') { where.push('status=?'); params.push(status); }
+  if (q) { where.push('(name LIKE ? OR email LIKE ? OR phone LIKE ?)'); params.push(`%${q}%`,`%${q}%`,`%${q}%`); }
+  if (where.length) sql += ' WHERE ' + where.join(' AND ');
+  sql += ' ORDER BY created_at DESC';
+  const rows = db.prepare(sql).all(...params);
+
+  const total      = db.prepare("SELECT COUNT(*) as c FROM users").get().c;
+  const newToday   = db.prepare("SELECT COUNT(*) as c FROM users WHERE date(created_at)=date('now')").get().c;
+  const newWeek    = db.prepare("SELECT COUNT(*) as c FROM users WHERE created_at>=datetime('now','-7 days')").get().c;
+  const blocked    = db.prepare("SELECT COUNT(*) as c FROM users WHERE status='blocked'").get().c;
+  const byPage     = db.prepare("SELECT COALESCE(source_page,'(Không rõ)') as page, COUNT(*) as cnt FROM users GROUP BY source_page ORDER BY cnt DESC").all();
+  res.json({ rows, stats: { total, newToday, newWeek, blocked }, byPage });
+});
+
+router.put('/users/:id/status', auth, (req, res) => {
+  const { status } = req.body;
+  if (!['active','blocked'].includes(status)) return res.status(400).json({ error: 'Trạng thái không hợp lệ' });
+  db.prepare('UPDATE users SET status=? WHERE id=?').run(status, req.params.id);
+  res.json({ success: true });
+});
+
+router.put('/users/:id/reset-password', auth, (req, res) => {
+  const { new_password } = req.body;
+  if (!new_password || new_password.length < 6) return res.status(400).json({ error: 'Mật khẩu tối thiểu 6 ký tự' });
+  db.prepare('UPDATE users SET password_hash=? WHERE id=?').run(bcrypt.hashSync(new_password, 10), req.params.id);
+  res.json({ success: true });
 });
 
 router.delete('/users/:id', auth, (req, res) => {

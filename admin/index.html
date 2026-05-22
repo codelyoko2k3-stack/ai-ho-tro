@@ -658,6 +658,9 @@
         <a class="nav-sub-item" onclick="showPage('customers',this,'Khách hàng & Liên hệ')">
           <i class="fas fa-user-friends"></i> Khách hàng
         </a>
+        <a class="nav-sub-item" onclick="showPage('web-users',this,'Tài khoản Web')">
+          <i class="fas fa-users"></i> Tài khoản Web
+        </a>
       </div>
 
       <!-- GROUP: PHÂN TÍCH -->
@@ -1141,6 +1144,83 @@
               <thead><tr><th>Tiêu đề</th><th>Slug / Link</th><th>Danh mục</th><th>Ngày đăng</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
               <tbody id="blog-tbody"></tbody>
             </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── WEB USERS PAGE ── -->
+      <div id="page-web-users" style="display:none">
+        <div class="content-topbar">
+          <div class="content-title">Tài khoản Web</div>
+          <div class="breadcrumb-inner"><i class="fas fa-home"></i> › Người dùng › <span>Tài khoản Web</span></div>
+        </div>
+        <div class="content-body">
+          <p class="page-subtitle" style="margin-bottom:14px">Quản lý tài khoản người dùng đã đăng ký trên website VIAi.</p>
+
+          <!-- Stat cards -->
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
+            <div class="dash-stat-card">
+              <div class="dsc-icon" style="background:#EEF3FF;color:#1A56DB"><i class="fas fa-users"></i></div>
+              <div class="dsc-num" id="wu-total">—</div>
+              <div class="dsc-lbl">Tổng tài khoản</div>
+            </div>
+            <div class="dash-stat-card">
+              <div class="dsc-icon" style="background:#ECFDF5;color:#10b981"><i class="fas fa-user-plus"></i></div>
+              <div class="dsc-num" id="wu-today" style="color:#10b981">—</div>
+              <div class="dsc-lbl">Mới hôm nay</div>
+            </div>
+            <div class="dash-stat-card">
+              <div class="dsc-icon" style="background:#FFF0E6;color:#FF6B00"><i class="fas fa-calendar-week"></i></div>
+              <div class="dsc-num" id="wu-week" style="color:#FF6B00">—</div>
+              <div class="dsc-lbl">7 ngày qua</div>
+            </div>
+            <div class="dash-stat-card" style="border-color:#E52222">
+              <div class="dsc-icon" style="background:#FEF2F2;color:#E52222"><i class="fas fa-user-slash"></i></div>
+              <div class="dsc-num" id="wu-blocked" style="color:#E52222">—</div>
+              <div class="dsc-lbl">Đã block</div>
+            </div>
+          </div>
+
+          <!-- Layout 2 cột: bảng chính + thống kê theo trang -->
+          <div style="display:grid;grid-template-columns:1fr 240px;gap:14px;align-items:start">
+
+            <!-- Bảng danh sách users -->
+            <div class="dash-panel">
+              <div class="dash-panel-header" style="flex-wrap:wrap;gap:8px">
+                <span><i class="fas fa-list" style="color:var(--primary)"></i> Danh sách tài khoản</span>
+                <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                  <input type="text" id="wu-search" placeholder="Tìm tên, email, SĐT..." oninput="loadWebUsers()"
+                    style="height:28px;padding:0 10px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:11px;font-family:inherit;outline:none;width:180px" />
+                  <select id="wu-status-filter" onchange="loadWebUsers()"
+                    style="height:28px;padding:0 8px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:11px;font-family:inherit;outline:none">
+                    <option value="all">Tất cả</option>
+                    <option value="active">Đang active</option>
+                    <option value="blocked">Đã block</option>
+                  </select>
+                  <button onclick="loadWebUsers()" class="btn" style="height:28px;font-size:11px;background:#EEF3FF;color:var(--primary)"><i class="fas fa-sync-alt"></i></button>
+                  <span id="wu-count" style="font-size:11px;color:#94a3b8"></span>
+                </div>
+              </div>
+              <table style="width:100%;font-size:12px;border-collapse:collapse">
+                <thead><tr style="background:#F8FAFF">
+                  <th style="text-align:left;padding:8px 12px;color:#64748b;font-size:10px;font-weight:700;text-transform:uppercase;border-bottom:1px solid #e2e8f0">Người dùng</th>
+                  <th style="text-align:left;padding:8px 12px;color:#64748b;font-size:10px;font-weight:700;text-transform:uppercase;border-bottom:1px solid #e2e8f0">Liên hệ</th>
+                  <th style="text-align:left;padding:8px 12px;color:#64748b;font-size:10px;font-weight:700;text-transform:uppercase;border-bottom:1px solid #e2e8f0">Trang đăng ký</th>
+                  <th style="text-align:left;padding:8px 12px;color:#64748b;font-size:10px;font-weight:700;text-transform:uppercase;border-bottom:1px solid #e2e8f0">Đăng nhập cuối</th>
+                  <th style="text-align:center;padding:8px 12px;color:#64748b;font-size:10px;font-weight:700;text-transform:uppercase;border-bottom:1px solid #e2e8f0">Trạng thái</th>
+                  <th style="text-align:center;padding:8px 12px;color:#64748b;font-size:10px;font-weight:700;text-transform:uppercase;border-bottom:1px solid #e2e8f0">Thao tác</th>
+                </tr></thead>
+                <tbody id="wu-tbody"><tr><td colspan="6" style="text-align:center;padding:28px;color:#94a3b8">Đang tải...</td></tr></tbody>
+              </table>
+            </div>
+
+            <!-- Thống kê theo trang đăng ký -->
+            <div class="dash-panel">
+              <div class="dash-panel-header"><span><i class="fas fa-map-marker-alt"></i> Theo trang đăng ký</span></div>
+              <div id="wu-bypage" style="padding:12px;display:flex;flex-direction:column;gap:6px">
+                <div style="text-align:center;padding:16px;color:#94a3b8;font-size:11px">Đang tải...</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1647,6 +1727,47 @@
   </div>
 </div>
 
+<!-- USER DETAIL MODAL -->
+<div class="modal-overlay" id="user-modal" style="display:none">
+  <div class="modal-box" style="width:420px;padding:28px 32px">
+    <div class="modal-title" id="user-modal-title">Chi tiết tài khoản</div>
+    <input type="hidden" id="um-id" />
+    <div style="background:#F8FAFF;border-radius:10px;padding:14px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <div id="um-avatar" style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1A56DB,#4B82F4);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:16px;flex-shrink:0">U</div>
+        <div>
+          <div id="um-name" style="font-weight:700;font-size:14px"></div>
+          <div id="um-email" style="font-size:11px;color:#64748b"></div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px">
+        <div><span style="color:#94a3b8">SĐT:</span> <span id="um-phone" style="font-weight:600">—</span></div>
+        <div><span style="color:#94a3b8">Trạng thái:</span> <span id="um-status-lbl" style="font-weight:600"></span></div>
+        <div><span style="color:#94a3b8">Đăng ký từ:</span> <span id="um-source" style="font-weight:600">—</span></div>
+        <div><span style="color:#94a3b8">Đăng nhập cuối:</span> <span id="um-lastlogin" style="font-weight:600">—</span></div>
+        <div style="grid-column:1/-1"><span style="color:#94a3b8">Ngày tạo:</span> <span id="um-created" style="font-weight:600">—</span></div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;color:#64748b;margin-bottom:6px">Reset mật khẩu</div>
+      <div style="display:flex;gap:8px">
+        <input id="um-new-pass" type="text" placeholder="Mật khẩu mới (≥6 ký tự)" class="pf-input" style="flex:1;font-size:12px" />
+        <button onclick="resetUserPass()" class="btn btn-add-bar" style="height:36px;white-space:nowrap">Đặt lại</button>
+      </div>
+      <div id="um-pass-msg" class="pf-msg" style="margin-top:6px"></div>
+    </div>
+
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button id="um-block-btn" onclick="toggleUserBlock()" class="btn" style="height:32px;font-size:12px"></button>
+      <button onclick="if(confirm('Xóa tài khoản này?'))deleteUser(document.getElementById(\'um-id\').value)" class="btn" style="height:32px;font-size:12px;background:#FEF2F2;color:#E52222">
+        <i class="fas fa-trash"></i> Xóa
+      </button>
+      <button onclick="closeModal('user-modal')" class="btn" style="height:32px;font-size:12px">Đóng</button>
+    </div>
+  </div>
+</div>
+
 <!-- BLOG POST MODAL -->
 <div class="modal-overlay" id="blog-modal">
   <div class="modal-box" style="width:900px;max-width:98vw;padding:32px 36px">
@@ -1997,7 +2118,7 @@
   }
 
   function showPage(p, el, title) {
-    ['dashboard','products','news','seo','blog-posts','why','how','tech','gallery','customers','analytics','pricing','site-settings','security'].forEach(n => {
+    ['dashboard','products','news','seo','blog-posts','why','how','tech','gallery','customers','web-users','analytics','pricing','site-settings','security'].forEach(n => {
       const pg = document.getElementById(`page-${n}`);
       if (pg) pg.style.display = n === p ? '' : 'none';
     });
@@ -2017,6 +2138,7 @@
     if (p === 'security')    load2FAStatus();
     if (p === 'customers')   loadCustomers();
     if (p === 'analytics')   loadAnalytics();
+    if (p === 'web-users')   loadWebUsers();
   }
 
   async function loadDashboard() {
@@ -2196,6 +2318,136 @@
           </tr>`).join('')
         : '<tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8">Chưa có dữ liệu đăng nhập</td></tr>';
     } catch(e) { console.error('Analytics error', e); }
+  }
+
+  // ── WEB USERS ──────────────────────────────────────────
+  let _wuData = [];
+
+  async function loadWebUsers() {
+    const q      = document.getElementById('wu-search')?.value.trim() || '';
+    const status = document.getElementById('wu-status-filter')?.value || 'all';
+    const params = new URLSearchParams();
+    if (q) params.set('q', q);
+    if (status !== 'all') params.set('status', status);
+    try {
+      const r = await apiFetch(`/admin-api/users?${params.toString()}`);
+      if (!r) return;
+      _wuData = r.rows || [];
+
+      // Stats
+      document.getElementById('wu-total').textContent   = r.stats?.total   ?? '—';
+      document.getElementById('wu-today').textContent   = r.stats?.newToday ?? '—';
+      document.getElementById('wu-week').textContent    = r.stats?.newWeek  ?? '—';
+      document.getElementById('wu-blocked').textContent = r.stats?.blocked  ?? '—';
+      document.getElementById('wu-count').textContent   = `${_wuData.length} kết quả`;
+
+      // Bảng users
+      const tbody = document.getElementById('wu-tbody');
+      tbody.innerHTML = _wuData.length
+        ? _wuData.map(u => {
+            const initials = (u.name||'U').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+            const isBlocked = u.status === 'blocked';
+            const statusBadge = isBlocked
+              ? '<span style="background:#FEF2F2;color:#E52222;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700">Blocked</span>'
+              : '<span style="background:#ECFDF5;color:#16a34a;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700">Active</span>';
+            const srcPage = u.source_page || '—';
+            const lastLogin = u.last_login ? u.last_login.slice(0,10) : '—';
+            const createdDate = (u.created_at||'').slice(0,10);
+            return `<tr style="border-bottom:1px solid #f1f5f9;transition:background .15s" onmouseover="this.style.background='#F8FAFF'" onmouseout="this.style.background=''">
+              <td style="padding:10px 12px">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,${isBlocked?'#E52222':'#1A56DB'},${isBlocked?'#FF8080':'#4B82F4'});display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:11px;flex-shrink:0">${escH(initials)}</div>
+                  <div>
+                    <div style="font-weight:700;font-size:12px">${escH(u.name||'—')}</div>
+                    <div style="font-size:10px;color:#94a3b8">#${u.id} · ${createdDate}</div>
+                  </div>
+                </div>
+              </td>
+              <td style="padding:10px 12px">
+                <div style="font-size:11px">${escH(u.email||'—')}</div>
+                <div style="font-size:11px;color:#64748b">${escH(u.phone||'—')}</div>
+              </td>
+              <td style="padding:10px 12px;font-size:11px;color:#64748b;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escH(srcPage)}">${escH(srcPage)}</td>
+              <td style="padding:10px 12px;font-size:11px;color:#94a3b8">${lastLogin}</td>
+              <td style="padding:10px 12px;text-align:center">${statusBadge}</td>
+              <td style="padding:10px 12px;text-align:center">
+                <button onclick='openUserModal(${JSON.stringify(u)})' class="btn" style="height:26px;font-size:11px;background:#EEF3FF;color:var(--primary)"><i class="fas fa-eye"></i></button>
+              </td>
+            </tr>`;
+          }).join('')
+        : '<tr><td colspan="6" style="text-align:center;padding:28px;color:#94a3b8">Không có tài khoản nào</td></tr>';
+
+      // Thống kê theo trang đăng ký
+      const byPageEl = document.getElementById('wu-bypage');
+      const maxCnt = Math.max(...(r.byPage||[]).map(p=>p.cnt), 1);
+      byPageEl.innerHTML = r.byPage?.length
+        ? r.byPage.map(p => {
+            const pct = Math.round((p.cnt / maxCnt) * 100);
+            return `<div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
+                <span style="color:#334155;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px" title="${escH(p.page)}">${escH(p.page)}</span>
+                <span style="font-weight:700;color:var(--primary);flex-shrink:0">${p.cnt}</span>
+              </div>
+              <div style="height:4px;background:#EEF3FF;border-radius:2px"><div style="height:4px;background:var(--primary);border-radius:2px;width:${pct}%"></div></div>
+            </div>`;
+          }).join('')
+        : '<div style="text-align:center;padding:16px;color:#94a3b8;font-size:11px">Chưa có dữ liệu</div>';
+
+    } catch(e) { console.error('loadWebUsers', e); }
+  }
+
+  function openUserModal(u) {
+    document.getElementById('um-id').value     = u.id;
+    document.getElementById('um-name').textContent = u.name || '—';
+    document.getElementById('um-email').textContent = u.email || '—';
+    document.getElementById('um-phone').textContent = u.phone || '—';
+    document.getElementById('um-source').textContent = u.source_page || '—';
+    document.getElementById('um-lastlogin').textContent = (u.last_login||'—').slice(0,16);
+    document.getElementById('um-created').textContent = (u.created_at||'—').slice(0,10);
+    const initials = (u.name||'U').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('um-avatar').textContent = initials;
+    const isBlocked = u.status === 'blocked';
+    document.getElementById('um-status-lbl').innerHTML = isBlocked
+      ? '<span style="color:#E52222;font-weight:700">Đã block</span>'
+      : '<span style="color:#16a34a;font-weight:700">Active</span>';
+    const blockBtn = document.getElementById('um-block-btn');
+    blockBtn.innerHTML = isBlocked
+      ? '<i class="fas fa-unlock"></i> Unblock'
+      : '<i class="fas fa-ban"></i> Block';
+    blockBtn.style.background = isBlocked ? '#ECFDF5' : '#FFF0E6';
+    blockBtn.style.color = isBlocked ? '#16a34a' : '#FF6B00';
+    blockBtn.dataset.currentStatus = u.status;
+    document.getElementById('um-new-pass').value = '';
+    const msg = document.getElementById('um-pass-msg');
+    msg.className = 'pf-msg'; msg.textContent = '';
+    document.getElementById('user-modal').style.display = 'flex';
+  }
+
+  async function toggleUserBlock() {
+    const id = document.getElementById('um-id').value;
+    const btn = document.getElementById('um-block-btn');
+    const newStatus = btn.dataset.currentStatus === 'blocked' ? 'active' : 'blocked';
+    const r = await apiFetch(`/admin-api/users/${id}/status`, {
+      method: 'PUT', headers: hdr(), body: JSON.stringify({ status: newStatus })
+    });
+    if (r?.success) { document.getElementById('user-modal').style.display = 'none'; loadWebUsers(); toast(newStatus==='blocked' ? 'Đã block tài khoản' : 'Đã unblock tài khoản'); }
+  }
+
+  async function resetUserPass() {
+    const id = document.getElementById('um-id').value;
+    const new_password = document.getElementById('um-new-pass').value.trim();
+    if (!new_password) return;
+    const r = await apiFetch(`/admin-api/users/${id}/reset-password`, {
+      method: 'PUT', headers: hdr(), body: JSON.stringify({ new_password })
+    });
+    const msg = document.getElementById('um-pass-msg');
+    msg.textContent = r?.success ? '✓ Đã reset mật khẩu thành công!' : (r?.error || 'Lỗi');
+    msg.className = `pf-msg ${r?.success ? 'ok' : 'err'}`;
+  }
+
+  async function deleteUser(id) {
+    const r = await apiFetch(`/admin-api/users/${id}`, { method: 'DELETE', headers: hdr() });
+    if (r?.success) { document.getElementById('user-modal').style.display = 'none'; loadWebUsers(); toast('Đã xóa tài khoản'); }
   }
 
   // ── PROFILE ────────────────────────────────────────────

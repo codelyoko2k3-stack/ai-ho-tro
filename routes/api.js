@@ -33,7 +33,8 @@ router.post('/auth/register', (req, res) => {
     const exists = db.prepare('SELECT id FROM users WHERE email=? OR phone=?').get(email||'', phone||'');
     if (exists) return res.status(400).json({ error: 'Email hoặc số điện thoại đã được đăng ký' });
     const hash = bcrypt.hashSync(password, 10);
-    const r = db.prepare('INSERT INTO users (name,email,phone,password_hash) VALUES (?,?,?,?)').run(name, email||null, phone||null, hash);
+    const sourcePage = req.headers['referer'] ? new URL(req.headers['referer']).pathname : null;
+    const r = db.prepare('INSERT INTO users (name,email,phone,password_hash,source_page) VALUES (?,?,?,?,?)').run(name, email||null, phone||null, hash, sourcePage);
     const token = jwt.sign({ id: r.lastInsertRowid, name }, SECRET, { expiresIn: '30d' });
     res.json({ token, name });
   } catch (err) { res.status(500).json({ error: "Lỗi máy chủ, vui lòng thử lại." }); }
@@ -76,6 +77,7 @@ router.post('/auth/login', (req, res) => {
     if (!user || !bcrypt.compareSync(password, user.password_hash))
       return res.status(401).json({ error: 'Sai thông tin đăng nhập' });
     const token = jwt.sign({ id: user.id, name: user.name }, SECRET, { expiresIn: '30d' });
+    try { db.prepare("UPDATE users SET last_login=datetime('now') WHERE id=?").run(user.id); } catch {}
     res.json({ token, name: user.name });
   } catch (err) { res.status(500).json({ error: "Lỗi máy chủ, vui lòng thử lại." }); }
 });
