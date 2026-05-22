@@ -156,8 +156,7 @@ async function renderSiteToolbar(active = '') {
   // Load 3 tin tức + 4 blog mới nhất để inject vào dropdown
   let latestNews = [], latestBlogs = [];
   try {
-    latestNews  = await db.prepare("SELECT title, source_name, source_url, published_at FROM news_posts WHERE active=1 ORDER BY published_at DESC LIMIT 2").all();
-    latestBlogs = await db.prepare("SELECT title, category, slug, published_at FROM blog_posts WHERE active=1 ORDER BY published_at DESC LIMIT 3").all();
+    latestBlogs = await db.prepare("SELECT title, category, slug, published_at FROM blog_posts WHERE active=1 ORDER BY published_at DESC LIMIT 5").all();
   } catch {}
 
   const newsItems = latestNews.map(n => `
@@ -194,7 +193,7 @@ async function renderSiteToolbar(active = '') {
         <div class="nav-item${active === 'blog' ? ' nav-active' : ''}">
           <a href="/blog" class="nav-link">Tin tức <span class="arrow">▾</span></a>
           <div class="dropdown dropdown-mega news-dropdown">
-            ${newsItems}${blogItems}
+            ${blogItems}
             <a href="/blog" class="service-dropdown-all"><span class="dd-icon">↗</span><span><strong>Xem tất cả tin tức</strong></span></a>
           </div>
         </div>
