@@ -5,7 +5,7 @@ const helmet       = require('helmet');
 const rateLimit    = require('express-rate-limit');
 const compression  = require('compression');
 const path         = require('path');
-const db           = require('./db');
+const { db, initDb } = require('./db');
 const tg           = require('./telegram');
 
 const SITE_URL = (process.env.SITE_URL || 'https://phanmemaiagent.net').replace(/\/$/, '');
@@ -2564,9 +2564,14 @@ app.use((_req, res) =>
 
 const PORT = process.env.PORT || 3000;
 if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`VIAi CMS running → http://localhost:${PORT}`);
-    try { tg.sendMessage('🚀 <b>VIAi Server đã khởi động!</b>'); } catch {}
+  initDb().then(() => {
+    app.listen(PORT, () => {
+      console.log(`VIAi CMS running → http://localhost:${PORT}`);
+      try { tg.sendMessage('🚀 <b>VIAi Server đã khởi động!</b>'); } catch {}
+    });
+  }).catch(err => {
+    console.error('❌ DB init failed:', err.message);
+    process.exit(1);
   });
   // Báo cáo tự động 8h sáng mỗi ngày
   function scheduleDailyReport() {

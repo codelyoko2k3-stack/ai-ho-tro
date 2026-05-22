@@ -1,6 +1,6 @@
 const express   = require('express');
 const router    = express.Router();
-const db        = require('../db');
+const { db }    = require('../db');
 const bcrypt    = require('bcryptjs');
 const jwt       = require('jsonwebtoken');
 const tg        = require('../telegram');
@@ -458,13 +458,13 @@ function extractJsonObject(text) {
   throw new Error('AI không trả về JSON hợp lệ');
 }
 
-function uniqueSlug(baseSlug) {
+async function uniqueSlug(baseSlug) {
   const base = toSlug(baseSlug);
   let slug = base;
   let i = 2;
   while (
-    db.prepare('SELECT id FROM blog_posts WHERE slug = ?').get(slug) ||
-    db.prepare('SELECT id FROM news_posts WHERE source_url = ?').get(`/blog/${slug}`)
+    await db.prepare('SELECT id FROM blog_posts WHERE slug = ?').get(slug) ||
+    await db.prepare('SELECT id FROM news_posts WHERE source_url = ?').get(`/blog/${slug}`)
   ) {
     slug = `${base}-${i++}`;
   }
@@ -525,33 +525,27 @@ function runAnthropicPrompt(prompt, maxTokens = 1200) {
 }
 
 // ── Auth ──────────────────────────────────────────────
-router.post('/login', loginLimiter, (req, res) => {
+router.post('/login', loginLimiter, async (req, res) => {
   const { username, password, totp_code } = req.body;
   if (!username || !password)
     return res.status(400).json({ error: 'Vui lòng nhập đầy đủ thông tin' });
   try {
-    const user = db.prepare('SELECT * FROM admin_users WHERE username = ?').get(username);
+    const user = await db.prepare('SELECT * FROM admin_users WHERE username = ?').get(username);
     if (!user || !bcrypt.compareSync(password, user.password_hash)) {
-      try { db.prepare('INSERT INTO login_logs (username, ip, success, note) VALUES (?, ?, 0, ?)').run(username, req.headers['x-forwarded-for'] || req.ip || '', 'Sai mật khẩu'); } catch {}
+      try { await db.prepare('INSERT INTO login_logs (username, ip, success, note) VALUES (?, ?, 0, ?)').run(username, req.headers['x-forwarded-for'] || req.ip || '', 'Sai mật khẩu'); } catch {}
       return res.status(401).json({ error: 'Sai tên đăng nhập hoặc mật khẩu' });
     }
 
-    // Kiểm tra 2FA nếu đã bật
     if (user.totp_enabled && user.totp_secret) {
       if (!totp_code)
         return res.status(206).json({ require2fa: true, message: 'Vui lòng nhập mã xác thực 2FA' });
-      const valid = speakeasy.totp.verify({
-        secret: user.totp_secret,
-        encoding: 'base32',
-        token: totp_code,
-        window: 1,
-      });
+      const valid = speakeasy.totp.verify({ secret: user.totp_secret, encoding: 'base32', token: totp_code, window: 1 });
       if (!valid)
         return res.status(401).json({ error: 'Mã 2FA không đúng hoặc đã hết hạn' });
     }
 
     const token = jwt.sign({ id: user.id, username }, SECRET, { expiresIn: '24h' });
-    try { db.prepare('INSERT INTO login_logs (username, ip, success) VALUES (?, ?, 1)').run(username, req.headers['x-forwarded-for'] || req.ip || ''); } catch {}
+    try { await db.prepare('INSERT INTO login_logs (username, ip, success) VALUES (?, ?, 1)').run(username, req.headers['x-forwarded-for'] || req.ip || ''); } catch {}
     res.json({ token });
   } catch {
     res.status(500).json({ error: 'Lỗi máy chủ, vui lòng thử lại.' });
@@ -561,355 +555,365 @@ router.post('/login', loginLimiter, (req, res) => {
 // ── 2FA Setup ─────────────────────────────────────────
 router.post('/2fa/setup', auth, async (req, res) => {
   try {
-    const user = db.prepare('SELECT * FROM admin_users WHERE id = ?').get(req.user?.id || 1);
+    const user = await db.prepare('SELECT * FROM admin_users WHERE id = ?').get(req.user?.id || 1);
     const secret = speakeasy.generateSecret({ name: `VIAi Admin (${user.username})` });
-    db.prepare('UPDATE admin_users SET totp_secret = ? WHERE id = ?').run(secret.base32, user.id);
+    await db.prepare('UPDATE admin_users SET totp_secret = ? WHERE id = ?').run(secret.base32, user.id);
     const qrUrl = await QRCode.toDataURL(secret.otpauth_url);
     res.json({ secret: secret.base32, qr: qrUrl });
-  } catch (e) {
-    res.status(500).json({ error: 'Lỗi máy chủ' });
-  }
+  } catch (e) { res.status(500).json({ error: 'Lỗi máy chủ' }); }
 });
 
-router.post('/2fa/enable', auth, (req, res) => {
+router.post('/2fa/enable', auth, async (req, res) => {
   try {
     const { code } = req.body;
-    const user = db.prepare('SELECT * FROM admin_users WHERE id = ?').get(req.user?.id || 1);
+    const user = await db.prepare('SELECT * FROM admin_users WHERE id = ?').get(req.user?.id || 1);
     if (!user.totp_secret) return res.status(400).json({ error: 'Chưa setup 2FA' });
     const valid = speakeasy.totp.verify({ secret: user.totp_secret, encoding: 'base32', token: code, window: 1 });
     if (!valid) return res.status(400).json({ error: 'Mã không đúng, vui lòng thử lại' });
-    db.prepare('UPDATE admin_users SET totp_enabled = 1 WHERE id = ?').run(user.id);
+    await db.prepare('UPDATE admin_users SET totp_enabled = 1 WHERE id = ?').run(user.id);
     res.json({ success: true, message: '2FA đã được bật thành công!' });
-  } catch {
-    res.status(500).json({ error: 'Lỗi máy chủ' });
-  }
+  } catch { res.status(500).json({ error: 'Lỗi máy chủ' }); }
 });
 
-router.post('/2fa/disable', auth, (req, res) => {
+router.post('/2fa/disable', auth, async (req, res) => {
   try {
-    const user = db.prepare('SELECT * FROM admin_users WHERE id = ?').get(req.user?.id || 1);
-    db.prepare('UPDATE admin_users SET totp_enabled = 0, totp_secret = NULL WHERE id = ?').run(user.id);
+    const user = await db.prepare('SELECT * FROM admin_users WHERE id = ?').get(req.user?.id || 1);
+    await db.prepare('UPDATE admin_users SET totp_enabled = 0, totp_secret = NULL WHERE id = ?').run(user.id);
     res.json({ success: true, message: '2FA đã được tắt' });
-  } catch {
-    res.status(500).json({ error: 'Lỗi máy chủ' });
-  }
+  } catch { res.status(500).json({ error: 'Lỗi máy chủ' }); }
 });
 
-router.get('/2fa/status', auth, (req, res) => {
-  const user = db.prepare('SELECT totp_enabled FROM admin_users WHERE id = ?').get(req.user?.id || 1);
+router.get('/2fa/status', auth, async (req, res) => {
+  const user = await db.prepare('SELECT totp_enabled FROM admin_users WHERE id = ?').get(req.user?.id || 1);
   res.json({ enabled: !!user?.totp_enabled });
 });
 
 // ── Site Settings (Homepage Globals) ─────────────────
-router.get('/site-settings', auth, (req, res) => {
+router.get('/site-settings', auth, async (req, res) => {
   try {
-    const rows = db.prepare('SELECT key, value FROM site_settings').all();
+    const rows = await db.prepare('SELECT key, value FROM site_settings').all();
     const settings = Object.fromEntries(rows.map(r => [r.key, r.value]));
     res.json(settings);
   } catch(e) { res.status(500).json({ error: 'Lỗi lấy cài đặt' }); }
 });
 
-router.put('/site-settings', auth, (req, res) => {
+router.put('/site-settings', auth, async (req, res) => {
   try {
-    const upd = db.prepare("INSERT INTO site_settings (key, value, updated_at) VALUES (?, ?, datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=excluded.updated_at");
-    const trx = db.transaction((data) => {
-      Object.entries(data).forEach(([k, v]) => upd.run(k, String(v ?? '')));
-    });
-    trx(req.body);
+    for (const [k, v] of Object.entries(req.body)) {
+      await db.prepare("INSERT INTO site_settings (key, value, updated_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET value=EXCLUDED.value, updated_at=EXCLUDED.updated_at")
+        .run(k, String(v ?? ''), new Date().toISOString().slice(0,19).replace('T',' '));
+    }
     res.json({ success: true });
   } catch(e) { res.status(500).json({ error: 'Lỗi lưu cài đặt' }); }
 });
 
 // ── Pricing Plans ─────────────────────────────────────
-router.get('/pricing', auth, (req, res) => {
-  const rows = db.prepare('SELECT * FROM pricing_plans ORDER BY order_index ASC').all();
+router.get('/pricing', auth, async (req, res) => {
+  const rows = await db.prepare('SELECT * FROM pricing_plans ORDER BY order_index ASC').all();
   rows.forEach(r => { try { r.features = JSON.parse(r.features || '[]'); } catch { r.features = []; } });
   res.json(rows);
 });
 
-router.post('/pricing', auth, (req, res) => {
+router.post('/pricing', auth, async (req, res) => {
   const { name, icon, subtitle, price_month, price_year, highlight, badge, cta_text, features, order_index } = req.body;
-  const r = db.prepare(`INSERT INTO pricing_plans (name,icon,subtitle,price_month,price_year,highlight,badge,cta_text,features,order_index)
+  const r = await db.prepare(`INSERT INTO pricing_plans (name,icon,subtitle,price_month,price_year,highlight,badge,cta_text,features,order_index)
     VALUES (?,?,?,?,?,?,?,?,?,?)`).run(name, icon||'🌱', subtitle||'', price_month, price_year||'', highlight?1:0, badge||null, cta_text||'Dùng thử miễn phí', JSON.stringify(features||[]), order_index||0);
   res.json({ id: r.lastInsertRowid });
 });
 
-router.put('/pricing/:id', auth, (req, res) => {
+router.put('/pricing/:id', auth, async (req, res) => {
   const { name, icon, subtitle, price_month, price_year, highlight, badge, cta_text, features, order_index, active } = req.body;
-  db.prepare(`UPDATE pricing_plans SET name=?,icon=?,subtitle=?,price_month=?,price_year=?,highlight=?,badge=?,cta_text=?,features=?,order_index=?,active=? WHERE id=?`)
+  await db.prepare(`UPDATE pricing_plans SET name=?,icon=?,subtitle=?,price_month=?,price_year=?,highlight=?,badge=?,cta_text=?,features=?,order_index=?,active=? WHERE id=?`)
     .run(name, icon||'🌱', subtitle||'', price_month, price_year||'', highlight?1:0, badge||null, cta_text||'Dùng thử miễn phí', JSON.stringify(features||[]), order_index||0, active?1:0, req.params.id);
   res.json({ success: true });
 });
 
-router.delete('/pricing/:id', auth, (req, res) => {
-  db.prepare('DELETE FROM pricing_plans WHERE id=?').run(req.params.id);
+router.delete('/pricing/:id', auth, async (req, res) => {
+  await db.prepare('DELETE FROM pricing_plans WHERE id=?').run(req.params.id);
   res.json({ success: true });
 });
 
 // ── Admin Profile ─────────────────────────────────────
-router.get('/profile', auth, (req, res) => {
-  const u = db.prepare('SELECT id, username, display_name, email, avatar_url FROM admin_users WHERE id=?').get(req.user.id || 1);
+router.get('/profile', auth, async (req, res) => {
+  const u = await db.prepare('SELECT id, username, display_name, email, avatar_url FROM admin_users WHERE id=?').get(req.user.id || 1);
   res.json(u || {});
 });
 
-router.put('/profile', auth, (req, res) => {
+router.put('/profile', auth, async (req, res) => {
   const { display_name, email } = req.body;
-  db.prepare('UPDATE admin_users SET display_name=?, email=? WHERE id=?').run(display_name || null, email || null, req.user.id || 1);
+  await db.prepare('UPDATE admin_users SET display_name=?, email=? WHERE id=?').run(display_name || null, email || null, req.user.id || 1);
   res.json({ success: true });
 });
 
-router.put('/profile/password', auth, (req, res) => {
+router.put('/profile/password', auth, async (req, res) => {
   const { current_password, new_password } = req.body;
   if (!current_password || !new_password)
     return res.status(400).json({ error: 'Vui lòng nhập đầy đủ thông tin' });
   if (new_password.length < 6)
     return res.status(400).json({ error: 'Mật khẩu mới phải ít nhất 6 ký tự' });
-  const u = db.prepare('SELECT * FROM admin_users WHERE id=?').get(req.user.id || 1);
+  const u = await db.prepare('SELECT * FROM admin_users WHERE id=?').get(req.user.id || 1);
   if (!bcrypt.compareSync(current_password, u.password_hash))
     return res.status(400).json({ error: 'Mật khẩu hiện tại không đúng' });
-  db.prepare('UPDATE admin_users SET password_hash=? WHERE id=?').run(bcrypt.hashSync(new_password, 10), u.id);
+  await db.prepare('UPDATE admin_users SET password_hash=? WHERE id=?').run(bcrypt.hashSync(new_password, 10), u.id);
   res.json({ success: true });
 });
 
-router.post('/upload-avatar', auth, upload.single('avatar'), (req, res) => {
+router.post('/upload-avatar', auth, upload.single('avatar'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'Không có file ảnh' });
   const url = `/uploads/${req.file.filename}`;
-  db.prepare('UPDATE admin_users SET avatar_url=? WHERE id=?').run(url, req.user.id || 1);
+  await db.prepare('UPDATE admin_users SET avatar_url=? WHERE id=?').run(url, req.user.id || 1);
   res.json({ url });
 });
 
 // ── Analytics: page views & login logs ───────────────
-router.get('/analytics', auth, (req, res) => {
+router.get('/analytics', auth, async (req, res) => {
   try {
-    const totalViews   = db.prepare("SELECT COUNT(*) as c FROM page_views").get().c;
-    const todayViews   = db.prepare("SELECT COUNT(*) as c FROM page_views WHERE date(created_at)=date('now')").get().c;
-    const weekViews    = db.prepare("SELECT COUNT(*) as c FROM page_views WHERE created_at >= datetime('now','-7 days')").get().c;
-    const topPages     = db.prepare("SELECT path, COUNT(*) as views FROM page_views GROUP BY path ORDER BY views DESC LIMIT 10").all();
-    const dailyViews   = db.prepare("SELECT date(created_at) as day, COUNT(*) as views FROM page_views WHERE created_at >= datetime('now','-14 days') GROUP BY day ORDER BY day ASC").all();
-    const logins       = db.prepare("SELECT id, username, ip, success, note, created_at FROM login_logs ORDER BY created_at DESC LIMIT 50").all();
-    const loginSuccess = db.prepare("SELECT COUNT(*) as c FROM login_logs WHERE success=1").get().c;
-    const loginFailed  = db.prepare("SELECT COUNT(*) as c FROM login_logs WHERE success=0").get().c;
-    const loginToday   = db.prepare("SELECT COUNT(*) as c FROM login_logs WHERE success=1 AND date(created_at)=date('now')").get().c;
+    const today = new Date().toISOString().slice(0,10);
+    const week7  = new Date(Date.now() - 7*86400000).toISOString().slice(0,19).replace('T',' ');
+    const week14 = new Date(Date.now() - 14*86400000).toISOString().slice(0,19).replace('T',' ');
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
 
-    // Chi tiết từng trang: today / week / total + trend 7 ngày gần nhất
-    const allPaths = db.prepare("SELECT DISTINCT path FROM page_views ORDER BY path ASC").all().map(r => r.path);
-    const pageDetails = allPaths.map(path => {
-      const total = db.prepare("SELECT COUNT(*) as c FROM page_views WHERE path=?").get(path).c;
-      const today = db.prepare("SELECT COUNT(*) as c FROM page_views WHERE path=? AND date(created_at)=date('now')").get(path).c;
-      const week  = db.prepare("SELECT COUNT(*) as c FROM page_views WHERE path=? AND created_at>=datetime('now','-7 days')").get(path).c;
-      const yesterday = db.prepare("SELECT COUNT(*) as c FROM page_views WHERE path=? AND date(created_at)=date('now','-1 day')").get(path).c;
-      // Trend: mảng 7 ngày gần nhất
-      const trend = db.prepare("SELECT date(created_at) as day, COUNT(*) as v FROM page_views WHERE path=? AND created_at>=datetime('now','-6 days') GROUP BY day ORDER BY day ASC").all(path);
+    const [tv, tdv, wv, tp, dv, lg, ls, lf, lt] = await Promise.all([
+      db.prepare("SELECT COUNT(*) as c FROM page_views").get(),
+      db.prepare("SELECT COUNT(*) as c FROM page_views WHERE SUBSTRING(created_at,1,10)=?").get(today),
+      db.prepare("SELECT COUNT(*) as c FROM page_views WHERE created_at >= ?").get(week7),
+      db.prepare("SELECT path, COUNT(*) as views FROM page_views GROUP BY path ORDER BY views DESC LIMIT 10").all(),
+      db.prepare("SELECT SUBSTRING(created_at,1,10) as day, COUNT(*) as views FROM page_views WHERE created_at >= ? GROUP BY day ORDER BY day ASC").all(week14),
+      db.prepare("SELECT id, username, ip, success, note, created_at FROM login_logs ORDER BY created_at DESC LIMIT 50").all(),
+      db.prepare("SELECT COUNT(*) as c FROM login_logs WHERE success=1").get(),
+      db.prepare("SELECT COUNT(*) as c FROM login_logs WHERE success=0").get(),
+      db.prepare("SELECT COUNT(*) as c FROM login_logs WHERE success=1 AND SUBSTRING(created_at,1,10)=?").get(today),
+    ]);
+
+    const allPaths = (await db.prepare("SELECT DISTINCT path FROM page_views ORDER BY path ASC").all()).map(r => r.path);
+    const week6 = new Date(Date.now() - 6*86400000).toISOString().slice(0,19).replace('T',' ');
+    const pageDetails = await Promise.all(allPaths.map(async path => {
+      const [total, todayRow, weekRow, yestRow, trend] = await Promise.all([
+        db.prepare("SELECT COUNT(*) as c FROM page_views WHERE path=?").get(path),
+        db.prepare("SELECT COUNT(*) as c FROM page_views WHERE path=? AND SUBSTRING(created_at,1,10)=?").get(path, today),
+        db.prepare("SELECT COUNT(*) as c FROM page_views WHERE path=? AND created_at>=?").get(path, week7),
+        db.prepare("SELECT COUNT(*) as c FROM page_views WHERE path=? AND SUBSTRING(created_at,1,10)=?").get(path, yesterday),
+        db.prepare("SELECT SUBSTRING(created_at,1,10) as day, COUNT(*) as v FROM page_views WHERE path=? AND created_at>=? GROUP BY day ORDER BY day ASC").all(path, week6),
+      ]);
       const trendArr = [];
       for (let i = 6; i >= 0; i--) {
         const d = new Date(); d.setDate(d.getDate() - i);
         const key = d.toISOString().slice(0, 10);
         const found = trend.find(t => t.day === key);
-        trendArr.push(found ? found.v : 0);
+        trendArr.push(found ? Number(found.v) : 0);
       }
-      return { path, total, today, week, yesterday, trend: trendArr };
-    }).sort((a, b) => b.total - a.total);
+      return { path, total: Number(total.c), today: Number(todayRow.c), week: Number(weekRow.c), yesterday: Number(yestRow.c), trend: trendArr };
+    }));
+    pageDetails.sort((a, b) => b.total - a.total);
 
-    res.json({ totalViews, todayViews, weekViews, topPages, dailyViews, logins, loginSuccess, loginFailed, loginToday, pageDetails });
+    res.json({ totalViews: Number(tv.c), todayViews: Number(tdv.c), weekViews: Number(wv.c), topPages: tp, dailyViews: dv, logins: lg, loginSuccess: Number(ls.c), loginFailed: Number(lf.c), loginToday: Number(lt.c), pageDetails });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
 // ── Dashboard stats ───────────────────────────────────
-router.get('/stats', auth, (req, res) => {
+router.get('/stats', auth, async (req, res) => {
   try {
-    const stats = {
-      blog_total:    db.prepare("SELECT COUNT(*) as c FROM blog_posts").get().c,
-      blog_draft:    db.prepare("SELECT COUNT(*) as c FROM blog_posts WHERE active=0").get().c,
-      blog_pub:      db.prepare("SELECT COUNT(*) as c FROM blog_posts WHERE active=1").get().c,
-      products:      db.prepare("SELECT COUNT(*) as c FROM products WHERE active=1").get().c,
-      news:          db.prepare("SELECT COUNT(*) as c FROM news_posts WHERE active=1").get().c,
-      customers:     db.prepare("SELECT COUNT(*) as c FROM customers").get().c,
-      customers_new: db.prepare("SELECT COUNT(*) as c FROM customers WHERE date(created_at)=date('now')").get().c,
-      users:         db.prepare("SELECT COUNT(*) as c FROM users").get().c,
-      gallery:       db.prepare("SELECT COUNT(*) as c FROM gallery_images WHERE active=1").get().c,
-      why:           db.prepare("SELECT COUNT(*) as c FROM why_items WHERE active=1").get().c,
-      // Lượt xem gần đây từ server log (đơn giản)
-      recent_posts: db.prepare("SELECT id,title,slug,published_at FROM blog_posts WHERE active=1 ORDER BY created_at DESC LIMIT 5").all(),
-      recent_customers: db.prepare("SELECT id,name,phone,company,created_at FROM customers ORDER BY created_at DESC LIMIT 5").all(),
-    };
-    res.json(stats);
+    const today = new Date().toISOString().slice(0,10);
+    const [bt, bd, bp, pr, nw, cu, cun, us, ga, wh, rp, rc] = await Promise.all([
+      db.prepare("SELECT COUNT(*) as c FROM blog_posts").get(),
+      db.prepare("SELECT COUNT(*) as c FROM blog_posts WHERE active=0").get(),
+      db.prepare("SELECT COUNT(*) as c FROM blog_posts WHERE active=1").get(),
+      db.prepare("SELECT COUNT(*) as c FROM products WHERE active=1").get(),
+      db.prepare("SELECT COUNT(*) as c FROM news_posts WHERE active=1").get(),
+      db.prepare("SELECT COUNT(*) as c FROM customers").get(),
+      db.prepare("SELECT COUNT(*) as c FROM customers WHERE SUBSTRING(created_at,1,10)=?").get(today),
+      db.prepare("SELECT COUNT(*) as c FROM users").get(),
+      db.prepare("SELECT COUNT(*) as c FROM gallery_images WHERE active=1").get(),
+      db.prepare("SELECT COUNT(*) as c FROM why_items WHERE active=1").get(),
+      db.prepare("SELECT id,title,slug,published_at FROM blog_posts WHERE active=1 ORDER BY created_at DESC LIMIT 5").all(),
+      db.prepare("SELECT id,name,phone,company,created_at FROM customers ORDER BY created_at DESC LIMIT 5").all(),
+    ]);
+    res.json({
+      blog_total: Number(bt.c), blog_draft: Number(bd.c), blog_pub: Number(bp.c),
+      products: Number(pr.c), news: Number(nw.c),
+      customers: Number(cu.c), customers_new: Number(cun.c),
+      users: Number(us.c), gallery: Number(ga.c), why: Number(wh.c),
+      recent_posts: rp, recent_customers: rc,
+    });
   } catch(e) { res.status(500).json({ error: 'Lỗi lấy thống kê' }); }
 });
 
 // ── Products ──────────────────────────────────────────
-router.get('/products', auth, (req, res) => {
-  res.json(db.prepare('SELECT * FROM products ORDER BY order_index ASC').all());
+router.get('/products', auth, async (req, res) => {
+  res.json(await db.prepare('SELECT * FROM products ORDER BY order_index ASC').all());
 });
 
-router.post('/products', auth, (req, res) => {
+router.post('/products', auth, async (req, res) => {
   const { name, description, icon, icon_color, badge, badge_type, category, users_count, link, active, order_index } = req.body;
-  const r = db.prepare(`
+  const r = await db.prepare(`
     INSERT INTO products (name, description, icon, icon_color, badge, badge_type, category, users_count, link, active, order_index)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(name, description, icon||'🤖', icon_color||'blue', badge||null, badge_type||null,
         category||'all', users_count||0, link||'#', active?1:0, order_index||0);
-  const newProd = db.prepare('SELECT * FROM products WHERE id = ?').get(r.lastInsertRowid);
+  const newProd = await db.prepare('SELECT * FROM products WHERE id = ?').get(r.lastInsertRowid);
   tg.notifyNewProduct(newProd.name, newProd.category);
   res.json(newProd);
 });
 
-router.put('/products/:id', auth, (req, res) => {
+router.put('/products/:id', auth, async (req, res) => {
   const { name, description, icon, icon_color, badge, badge_type, category, users_count, link, active, order_index } = req.body;
-  db.prepare(`
+  await db.prepare(`
     UPDATE products SET name=?, description=?, icon=?, icon_color=?, badge=?, badge_type=?,
     category=?, users_count=?, link=?, active=?, order_index=? WHERE id=?`
   ).run(name, description, icon, icon_color, badge||null, badge_type||null,
         category, users_count, link, active?1:0, order_index, req.params.id);
-  res.json(db.prepare('SELECT * FROM products WHERE id = ?').get(req.params.id));
+  res.json(await db.prepare('SELECT * FROM products WHERE id = ?').get(req.params.id));
 });
 
-router.delete('/products/:id', auth, (req, res) => {
-  db.prepare('DELETE FROM products WHERE id = ?').run(req.params.id);
+router.delete('/products/:id', auth, async (req, res) => {
+  await db.prepare('DELETE FROM products WHERE id = ?').run(req.params.id);
   res.json({ success: true });
 });
 
 // ── News ──────────────────────────────────────────────
-router.get('/news', auth, (req, res) => {
-  res.json(db.prepare('SELECT * FROM news_posts ORDER BY published_at DESC').all());
+router.get('/news', auth, async (req, res) => {
+  res.json(await db.prepare('SELECT * FROM news_posts ORDER BY published_at DESC').all());
 });
 
-router.post('/news', auth, (req, res) => {
+router.post('/news', auth, async (req, res) => {
   const { title, excerpt, image_url, source_name, source_tag, source_url, published_at, active } = req.body;
-  const r = db.prepare(`
+  const r = await db.prepare(`
     INSERT INTO news_posts (title, excerpt, image_url, source_name, source_tag, source_url, published_at, active)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(title, excerpt, image_url, source_name, source_tag, source_url, published_at, active?1:0);
-  const newNews = db.prepare('SELECT * FROM news_posts WHERE id = ?').get(r.lastInsertRowid);
+  const newNews = await db.prepare('SELECT * FROM news_posts WHERE id = ?').get(r.lastInsertRowid);
   tg.notifyNewNews(newNews.title, newNews.source_name);
   res.json(newNews);
 });
 
-router.put('/news/:id', auth, (req, res) => {
+router.put('/news/:id', auth, async (req, res) => {
   const { title, excerpt, image_url, source_name, source_tag, source_url, published_at, active } = req.body;
-  db.prepare(`
+  await db.prepare(`
     UPDATE news_posts SET title=?, excerpt=?, image_url=?, source_name=?, source_tag=?,
     source_url=?, published_at=?, active=? WHERE id=?`
   ).run(title, excerpt, image_url, source_name, source_tag, source_url, published_at, active?1:0, req.params.id);
-  res.json(db.prepare('SELECT * FROM news_posts WHERE id = ?').get(req.params.id));
+  res.json(await db.prepare('SELECT * FROM news_posts WHERE id = ?').get(req.params.id));
 });
 
-router.delete('/news/:id', auth, (req, res) => {
-  db.prepare('DELETE FROM news_posts WHERE id = ?').run(req.params.id);
+router.delete('/news/:id', auth, async (req, res) => {
+  await db.prepare('DELETE FROM news_posts WHERE id = ?').run(req.params.id);
   res.json({ success: true });
 });
 
 // ── Blog Posts ────────────────────────────────────────
-router.get('/blog-posts', auth, (req, res) => {
-  res.json(db.prepare('SELECT * FROM blog_posts ORDER BY published_at DESC').all());
+router.get('/blog-posts', auth, async (req, res) => {
+  res.json(await db.prepare('SELECT * FROM blog_posts ORDER BY published_at DESC').all());
 });
 
-router.post('/blog-posts', auth, (req, res) => {
+router.post('/blog-posts', auth, async (req, res) => {
   const { title, excerpt, content, seo_title, meta_description, faq_json, image_url, image_alt, category, author, published_at, active } = req.body;
   if (!title) return res.status(400).json({ error: 'Tiêu đề không được để trống' });
-  const finalSlug = req.body.slug ? uniqueSlug(req.body.slug) : uniqueSlug(toSlug(title));
-  const r = db.prepare(`
+  const finalSlug = req.body.slug ? await uniqueSlug(req.body.slug) : await uniqueSlug(toSlug(title));
+  const r = await db.prepare(`
     INSERT INTO blog_posts (title, excerpt, content, seo_title, meta_description, faq_json, image_url, image_alt, category, author, slug, published_at, active)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(title, excerpt, content||null, seo_title||null, meta_description||null, faq_json||'[]', image_url||null, image_alt||null, category||'Tin tức', author||'VIAi Team', finalSlug, published_at||new Date().toISOString().slice(0,10), active?1:0);
-  res.json(db.prepare('SELECT * FROM blog_posts WHERE id = ?').get(r.lastInsertRowid));
+  res.json(await db.prepare('SELECT * FROM blog_posts WHERE id = ?').get(r.lastInsertRowid));
 });
 
-router.put('/blog-posts/:id', auth, (req, res) => {
+router.put('/blog-posts/:id', auth, async (req, res) => {
   const { title, excerpt, content, seo_title, meta_description, faq_json, image_url, image_alt, category, author, published_at, active } = req.body;
   if (!title) return res.status(400).json({ error: 'Tiêu đề không được để trống' });
-  const existing = db.prepare('SELECT slug FROM blog_posts WHERE id=?').get(req.params.id);
-  const finalSlug = req.body.slug || existing?.slug || uniqueSlug(toSlug(title));
-  db.prepare(`
+  const existing = await db.prepare('SELECT slug FROM blog_posts WHERE id=?').get(req.params.id);
+  const finalSlug = req.body.slug || existing?.slug || await uniqueSlug(toSlug(title));
+  await db.prepare(`
     UPDATE blog_posts SET title=?, excerpt=?, content=?, seo_title=?, meta_description=?, faq_json=?, image_url=?, image_alt=?, category=?, author=?, slug=?, published_at=?, active=?
     WHERE id=?`
   ).run(title, excerpt, content||null, seo_title||null, meta_description||null, faq_json||'[]', image_url||null, image_alt||null, category, author, finalSlug, published_at, active?1:0, req.params.id);
-  res.json(db.prepare('SELECT * FROM blog_posts WHERE id = ?').get(req.params.id));
+  res.json(await db.prepare('SELECT * FROM blog_posts WHERE id = ?').get(req.params.id));
 });
 
-router.delete('/blog-posts/:id', auth, (req, res) => {
-  db.prepare('DELETE FROM blog_posts WHERE id = ?').run(req.params.id);
+router.delete('/blog-posts/:id', auth, async (req, res) => {
+  await db.prepare('DELETE FROM blog_posts WHERE id = ?').run(req.params.id);
   res.json({ success: true });
 });
 
 // ── Why Items ─────────────────────────────────────────
-router.get('/why', auth, (req, res) => res.json(db.prepare('SELECT * FROM why_items ORDER BY order_index ASC').all()));
+router.get('/why', auth, async (req, res) => res.json(await db.prepare('SELECT * FROM why_items ORDER BY order_index ASC').all()));
 
-router.post('/why', auth, (req, res) => {
+router.post('/why', auth, async (req, res) => {
   const { icon, icon_color, title, description, order_index, active } = req.body;
-  const r = db.prepare('INSERT INTO why_items (icon,icon_color,title,description,order_index,active) VALUES (?,?,?,?,?,?)').run(icon||'⭐',icon_color||'blue',title,description,order_index||0,active?1:0);
-  res.json(db.prepare('SELECT * FROM why_items WHERE id=?').get(r.lastInsertRowid));
+  const r = await db.prepare('INSERT INTO why_items (icon,icon_color,title,description,order_index,active) VALUES (?,?,?,?,?,?)').run(icon||'⭐',icon_color||'blue',title,description,order_index||0,active?1:0);
+  res.json(await db.prepare('SELECT * FROM why_items WHERE id=?').get(r.lastInsertRowid));
 });
 
-router.put('/why/:id', auth, (req, res) => {
+router.put('/why/:id', auth, async (req, res) => {
   const { icon, icon_color, title, description, order_index, active } = req.body;
-  db.prepare('UPDATE why_items SET icon=?,icon_color=?,title=?,description=?,order_index=?,active=? WHERE id=?').run(icon,icon_color,title,description,order_index,active?1:0,req.params.id);
-  res.json(db.prepare('SELECT * FROM why_items WHERE id=?').get(req.params.id));
+  await db.prepare('UPDATE why_items SET icon=?,icon_color=?,title=?,description=?,order_index=?,active=? WHERE id=?').run(icon,icon_color,title,description,order_index,active?1:0,req.params.id);
+  res.json(await db.prepare('SELECT * FROM why_items WHERE id=?').get(req.params.id));
 });
 
-router.delete('/why/:id', auth, (req, res) => { db.prepare('DELETE FROM why_items WHERE id=?').run(req.params.id); res.json({success:true}); });
+router.delete('/why/:id', auth, async (req, res) => { await db.prepare('DELETE FROM why_items WHERE id=?').run(req.params.id); res.json({success:true}); });
 
 // ── How Steps ─────────────────────────────────────────
-router.get('/how-steps', auth, (req, res) => {
-  const rows = db.prepare('SELECT * FROM how_steps ORDER BY order_index ASC').all();
+router.get('/how-steps', auth, async (req, res) => {
+  const rows = await db.prepare('SELECT * FROM how_steps ORDER BY order_index ASC').all();
   rows.forEach(r => { r.features = JSON.parse(r.features||'[]'); r.mockup_bars = JSON.parse(r.mockup_bars||'[]'); });
   res.json(rows);
 });
 
-router.post('/how-steps', auth, (req, res) => {
+router.post('/how-steps', auth, async (req, res) => {
   const { step_number, title, short_desc, panel_title, panel_desc, features, mockup_bars, order_index, active } = req.body;
-  const r = db.prepare('INSERT INTO how_steps (step_number,title,short_desc,panel_title,panel_desc,features,mockup_bars,order_index,active) VALUES (?,?,?,?,?,?,?,?,?)').run(step_number,title,short_desc,panel_title,panel_desc,JSON.stringify(features||[]),JSON.stringify(mockup_bars||[]),order_index||0,active?1:0);
-  const row = db.prepare('SELECT * FROM how_steps WHERE id=?').get(r.lastInsertRowid);
+  const r = await db.prepare('INSERT INTO how_steps (step_number,title,short_desc,panel_title,panel_desc,features,mockup_bars,order_index,active) VALUES (?,?,?,?,?,?,?,?,?)').run(step_number,title,short_desc,panel_title,panel_desc,JSON.stringify(features||[]),JSON.stringify(mockup_bars||[]),order_index||0,active?1:0);
+  const row = await db.prepare('SELECT * FROM how_steps WHERE id=?').get(r.lastInsertRowid);
   row.features = JSON.parse(row.features||'[]'); row.mockup_bars = JSON.parse(row.mockup_bars||'[]');
   res.json(row);
 });
 
-router.put('/how-steps/:id', auth, (req, res) => {
+router.put('/how-steps/:id', auth, async (req, res) => {
   const { step_number, title, short_desc, panel_title, panel_desc, features, mockup_bars, order_index, active } = req.body;
-  db.prepare('UPDATE how_steps SET step_number=?,title=?,short_desc=?,panel_title=?,panel_desc=?,features=?,mockup_bars=?,order_index=?,active=? WHERE id=?').run(step_number,title,short_desc,panel_title,panel_desc,JSON.stringify(features||[]),JSON.stringify(mockup_bars||[]),order_index,active?1:0,req.params.id);
-  const row = db.prepare('SELECT * FROM how_steps WHERE id=?').get(req.params.id);
+  await db.prepare('UPDATE how_steps SET step_number=?,title=?,short_desc=?,panel_title=?,panel_desc=?,features=?,mockup_bars=?,order_index=?,active=? WHERE id=?').run(step_number,title,short_desc,panel_title,panel_desc,JSON.stringify(features||[]),JSON.stringify(mockup_bars||[]),order_index,active?1:0,req.params.id);
+  const row = await db.prepare('SELECT * FROM how_steps WHERE id=?').get(req.params.id);
   row.features = JSON.parse(row.features||'[]'); row.mockup_bars = JSON.parse(row.mockup_bars||'[]');
   res.json(row);
 });
 
-router.delete('/how-steps/:id', auth, (req, res) => { db.prepare('DELETE FROM how_steps WHERE id=?').run(req.params.id); res.json({success:true}); });
+router.delete('/how-steps/:id', auth, async (req, res) => { await db.prepare('DELETE FROM how_steps WHERE id=?').run(req.params.id); res.json({success:true}); });
 
 // ── Tech Items ────────────────────────────────────────
-router.get('/tech', auth, (req, res) => res.json(db.prepare('SELECT * FROM tech_items ORDER BY order_index ASC').all()));
+router.get('/tech', auth, async (req, res) => res.json(await db.prepare('SELECT * FROM tech_items ORDER BY order_index ASC').all()));
 
-router.post('/tech', auth, (req, res) => {
+router.post('/tech', auth, async (req, res) => {
   const { image_url, title, description, is_featured, order_index, active } = req.body;
-  const r = db.prepare('INSERT INTO tech_items (image_url,title,description,is_featured,order_index,active) VALUES (?,?,?,?,?,?)').run(image_url,title,description,is_featured?1:0,order_index||0,active?1:0);
-  res.json(db.prepare('SELECT * FROM tech_items WHERE id=?').get(r.lastInsertRowid));
+  const r = await db.prepare('INSERT INTO tech_items (image_url,title,description,is_featured,order_index,active) VALUES (?,?,?,?,?,?)').run(image_url,title,description,is_featured?1:0,order_index||0,active?1:0);
+  res.json(await db.prepare('SELECT * FROM tech_items WHERE id=?').get(r.lastInsertRowid));
 });
 
-router.put('/tech/:id', auth, (req, res) => {
+router.put('/tech/:id', auth, async (req, res) => {
   const { image_url, title, description, is_featured, order_index, active } = req.body;
-  db.prepare('UPDATE tech_items SET image_url=?,title=?,description=?,is_featured=?,order_index=?,active=? WHERE id=?').run(image_url,title,description,is_featured?1:0,order_index,active?1:0,req.params.id);
-  res.json(db.prepare('SELECT * FROM tech_items WHERE id=?').get(req.params.id));
+  await db.prepare('UPDATE tech_items SET image_url=?,title=?,description=?,is_featured=?,order_index=?,active=? WHERE id=?').run(image_url,title,description,is_featured?1:0,order_index,active?1:0,req.params.id);
+  res.json(await db.prepare('SELECT * FROM tech_items WHERE id=?').get(req.params.id));
 });
 
-router.delete('/tech/:id', auth, (req, res) => { db.prepare('DELETE FROM tech_items WHERE id=?').run(req.params.id); res.json({success:true}); });
+router.delete('/tech/:id', auth, async (req, res) => { await db.prepare('DELETE FROM tech_items WHERE id=?').run(req.params.id); res.json({success:true}); });
 
 // ── Gallery ───────────────────────────────────────────
-router.get('/gallery', auth, (req, res) => res.json(db.prepare('SELECT * FROM gallery_images ORDER BY order_index ASC').all()));
+router.get('/gallery', auth, async (req, res) => res.json(await db.prepare('SELECT * FROM gallery_images ORDER BY order_index ASC').all()));
 
-router.post('/gallery', auth, (req, res) => {
+router.post('/gallery', auth, async (req, res) => {
   const { image_url, alt_text, caption, order_index, active } = req.body;
-  const r = db.prepare('INSERT INTO gallery_images (image_url,alt_text,caption,order_index,active) VALUES (?,?,?,?,?)').run(image_url,alt_text,caption,order_index||0,active?1:0);
-  res.json(db.prepare('SELECT * FROM gallery_images WHERE id=?').get(r.lastInsertRowid));
+  const r = await db.prepare('INSERT INTO gallery_images (image_url,alt_text,caption,order_index,active) VALUES (?,?,?,?,?)').run(image_url,alt_text,caption,order_index||0,active?1:0);
+  res.json(await db.prepare('SELECT * FROM gallery_images WHERE id=?').get(r.lastInsertRowid));
 });
 
-router.put('/gallery/:id', auth, (req, res) => {
+router.put('/gallery/:id', auth, async (req, res) => {
   const { image_url, alt_text, caption, order_index, active } = req.body;
-  db.prepare('UPDATE gallery_images SET image_url=?,alt_text=?,caption=?,order_index=?,active=? WHERE id=?').run(image_url,alt_text,caption,order_index,active?1:0,req.params.id);
-  res.json(db.prepare('SELECT * FROM gallery_images WHERE id=?').get(req.params.id));
+  await db.prepare('UPDATE gallery_images SET image_url=?,alt_text=?,caption=?,order_index=?,active=? WHERE id=?').run(image_url,alt_text,caption,order_index,active?1:0,req.params.id);
+  res.json(await db.prepare('SELECT * FROM gallery_images WHERE id=?').get(req.params.id));
 });
 
-router.delete('/gallery/:id', auth, (req, res) => { db.prepare('DELETE FROM gallery_images WHERE id=?').run(req.params.id); res.json({success:true}); });
+router.delete('/gallery/:id', auth, async (req, res) => { await db.prepare('DELETE FROM gallery_images WHERE id=?').run(req.params.id); res.json({success:true}); });
 
 // ── Registered Users ─────────────────────────────────
-router.get('/users', auth, (req, res) => {
+router.get('/users', auth, async (req, res) => {
   const { status, q } = req.query;
+  const today = new Date().toISOString().slice(0,10);
+  const week7 = new Date(Date.now() - 7*86400000).toISOString().slice(0,19).replace('T',' ');
   let sql = 'SELECT id, name, email, phone, status, source_page, last_login, created_at FROM users';
   const params = [];
   const where = [];
@@ -917,48 +921,49 @@ router.get('/users', auth, (req, res) => {
   if (q) { where.push('(name LIKE ? OR email LIKE ? OR phone LIKE ?)'); params.push(`%${q}%`,`%${q}%`,`%${q}%`); }
   if (where.length) sql += ' WHERE ' + where.join(' AND ');
   sql += ' ORDER BY created_at DESC';
-  const rows = db.prepare(sql).all(...params);
-
-  const total      = db.prepare("SELECT COUNT(*) as c FROM users").get().c;
-  const newToday   = db.prepare("SELECT COUNT(*) as c FROM users WHERE date(created_at)=date('now')").get().c;
-  const newWeek    = db.prepare("SELECT COUNT(*) as c FROM users WHERE created_at>=datetime('now','-7 days')").get().c;
-  const blocked    = db.prepare("SELECT COUNT(*) as c FROM users WHERE status='blocked'").get().c;
-  const byPage     = db.prepare("SELECT COALESCE(source_page,'(Không rõ)') as page, COUNT(*) as cnt FROM users GROUP BY source_page ORDER BY cnt DESC").all();
-  res.json({ rows, stats: { total, newToday, newWeek, blocked }, byPage });
+  const [rows, total, newToday, newWeek, blocked, byPage] = await Promise.all([
+    db.prepare(sql).all(...params),
+    db.prepare("SELECT COUNT(*) as c FROM users").get(),
+    db.prepare("SELECT COUNT(*) as c FROM users WHERE SUBSTRING(created_at,1,10)=?").get(today),
+    db.prepare("SELECT COUNT(*) as c FROM users WHERE created_at>=?").get(week7),
+    db.prepare("SELECT COUNT(*) as c FROM users WHERE status='blocked'").get(),
+    db.prepare("SELECT COALESCE(source_page,'(Không rõ)') as page, COUNT(*) as cnt FROM users GROUP BY source_page ORDER BY cnt DESC").all(),
+  ]);
+  res.json({ rows, stats: { total: Number(total.c), newToday: Number(newToday.c), newWeek: Number(newWeek.c), blocked: Number(blocked.c) }, byPage });
 });
 
-router.put('/users/:id/status', auth, (req, res) => {
+router.put('/users/:id/status', auth, async (req, res) => {
   const { status } = req.body;
   if (!['active','blocked'].includes(status)) return res.status(400).json({ error: 'Trạng thái không hợp lệ' });
-  db.prepare('UPDATE users SET status=? WHERE id=?').run(status, req.params.id);
+  await db.prepare('UPDATE users SET status=? WHERE id=?').run(status, req.params.id);
   res.json({ success: true });
 });
 
-router.put('/users/:id/reset-password', auth, (req, res) => {
+router.put('/users/:id/reset-password', auth, async (req, res) => {
   const { new_password } = req.body;
   if (!new_password || new_password.length < 6) return res.status(400).json({ error: 'Mật khẩu tối thiểu 6 ký tự' });
-  db.prepare('UPDATE users SET password_hash=? WHERE id=?').run(bcrypt.hashSync(new_password, 10), req.params.id);
+  await db.prepare('UPDATE users SET password_hash=? WHERE id=?').run(bcrypt.hashSync(new_password, 10), req.params.id);
   res.json({ success: true });
 });
 
-router.delete('/users/:id', auth, (req, res) => {
-  db.prepare('DELETE FROM users WHERE id=?').run(req.params.id);
+router.delete('/users/:id', auth, async (req, res) => {
+  await db.prepare('DELETE FROM users WHERE id=?').run(req.params.id);
   res.json({ success: true });
 });
 
 // ── Customers ─────────────────────────────────────────
-router.get('/customers', auth, (req, res) => {
-  res.json(db.prepare('SELECT * FROM customers ORDER BY created_at DESC').all());
+router.get('/customers', auth, async (req, res) => {
+  res.json(await db.prepare('SELECT * FROM customers ORDER BY created_at DESC').all());
 });
 
-router.put('/customers/:id', auth, (req, res) => {
+router.put('/customers/:id', auth, async (req, res) => {
   const { status } = req.body;
-  db.prepare('UPDATE customers SET status=? WHERE id=?').run(status, req.params.id);
-  res.json(db.prepare('SELECT * FROM customers WHERE id=?').get(req.params.id));
+  await db.prepare('UPDATE customers SET status=? WHERE id=?').run(status, req.params.id);
+  res.json(await db.prepare('SELECT * FROM customers WHERE id=?').get(req.params.id));
 });
 
-router.delete('/customers/:id', auth, (req, res) => {
-  db.prepare('DELETE FROM customers WHERE id=?').run(req.params.id);
+router.delete('/customers/:id', auth, async (req, res) => {
+  await db.prepare('DELETE FROM customers WHERE id=?').run(req.params.id);
   res.json({ success: true });
 });
 
@@ -1154,57 +1159,38 @@ Chỉ trả về JSON hợp lệ, không thêm giải thích ngoài JSON. Schema
   }
 });
 
-router.post('/ai-blog-publish', auth, (req, res) => {
+router.post('/ai-blog-publish', auth, async (req, res) => {
   try {
     const draft = normalizeBlogDraft(req.body.draft || req.body);
     if (!draft.title || !draft.content) {
       return res.status(400).json({ error: 'Bản nháp thiếu tiêu đề hoặc nội dung bài viết' });
     }
 
-    const slug = uniqueSlug(draft.slug || draft.title);
+    const slug = await uniqueSlug(draft.slug || draft.title);
     const publishedAt = new Date().toISOString().slice(0, 10);
     const imageUrl = draft.image_url || 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&q=80';
 
-    const blogResult = db.prepare(`
+    const blogResult = await db.prepare(`
       INSERT INTO blog_posts
         (title, excerpt, content, seo_title, meta_description, faq_json, image_alt, image_url, category, author, slug, published_at, active)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
-      draft.title,
-      draft.excerpt,
-      draft.content,
-      draft.seo_title,
-      draft.meta_description,
-      JSON.stringify(draft.faq || []),
-      draft.image_alt,
-      imageUrl,
-      draft.category || 'Kiến thức AI',
-      draft.author || 'VIAi Team',
-      slug,
-      publishedAt,
-      1
+      draft.title, draft.excerpt, draft.content, draft.seo_title, draft.meta_description,
+      JSON.stringify(draft.faq || []), draft.image_alt, imageUrl,
+      draft.category || 'Kiến thức AI', draft.author || 'VIAi Team', slug, publishedAt, 1
     );
 
     const sourceUrl = `/blog/${slug}`;
-    const newsResult = db.prepare(`
+    const newsResult = await db.prepare(`
       INSERT INTO news_posts (title, excerpt, image_url, source_name, source_tag, source_url, published_at, active)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(
-      draft.title,
-      draft.excerpt,
-      imageUrl,
-      'VIAi Blog',
-      'viai',
-      sourceUrl,
-      publishedAt,
-      1
-    );
+    `).run(draft.title, draft.excerpt, imageUrl, 'VIAi Blog', 'viai', sourceUrl, publishedAt, 1);
 
     res.json({
       success: true,
       url: sourceUrl,
-      blog: db.prepare('SELECT * FROM blog_posts WHERE id = ?').get(blogResult.lastInsertRowid),
-      news: db.prepare('SELECT * FROM news_posts WHERE id = ?').get(newsResult.lastInsertRowid)
+      blog: await db.prepare('SELECT * FROM blog_posts WHERE id = ?').get(blogResult.lastInsertRowid),
+      news: await db.prepare('SELECT * FROM news_posts WHERE id = ?').get(newsResult.lastInsertRowid)
     });
   } catch (e) {
     res.status(500).json({ error: e.message || 'Không đăng được bài viết' });

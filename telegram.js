@@ -29,20 +29,23 @@ function notifyNewWhy(title) {
   sendMessage(`✅ <b>Lý do mới được thêm:</b>\n${title}`);
 }
 
-function sendDailyReport(db) {
-  const products = db.prepare('SELECT COUNT(*) as c FROM products WHERE active=1').get().c;
-  const news     = db.prepare('SELECT COUNT(*) as c FROM news_posts WHERE active=1').get().c;
-  const gallery  = db.prepare('SELECT COUNT(*) as c FROM gallery_images WHERE active=1').get().c;
-  const why      = db.prepare('SELECT COUNT(*) as c FROM why_items WHERE active=1').get().c;
-
-  sendMessage(
-    `📊 <b>Báo cáo VIAi – ${new Date().toLocaleDateString('vi-VN')}</b>\n\n` +
-    `📦 Sản phẩm: <b>${products}</b>\n` +
-    `📰 Tin tức: <b>${news}</b>\n` +
-    `🖼️ Thư viện ảnh: <b>${gallery}</b>\n` +
-    `✅ Lý do chọn VIAi: <b>${why}</b>\n\n` +
-    `🌐 Admin: https://respectful-courtesy-production-4318.up.railway.app/admin`
-  );
+async function sendDailyReport(db) {
+  try {
+    const [products, news, gallery, why] = await Promise.all([
+      db.prepare('SELECT COUNT(*) as c FROM products WHERE active=1').get(),
+      db.prepare('SELECT COUNT(*) as c FROM news_posts WHERE active=1').get(),
+      db.prepare('SELECT COUNT(*) as c FROM gallery_images WHERE active=1').get(),
+      db.prepare('SELECT COUNT(*) as c FROM why_items WHERE active=1').get(),
+    ]);
+    sendMessage(
+      `📊 <b>Báo cáo VIAi – ${new Date().toLocaleDateString('vi-VN')}</b>\n\n` +
+      `📦 Sản phẩm: <b>${products.c}</b>\n` +
+      `📰 Tin tức: <b>${news.c}</b>\n` +
+      `🖼️ Thư viện ảnh: <b>${gallery.c}</b>\n` +
+      `✅ Lý do chọn VIAi: <b>${why.c}</b>\n\n` +
+      `🌐 Admin: https://phanmemaiagent.net/admin`
+    );
+  } catch {}
 }
 
 module.exports = { sendMessage, notifyNewProduct, notifyNewNews, notifyNewWhy, sendDailyReport };
