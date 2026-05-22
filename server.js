@@ -156,8 +156,8 @@ async function renderSiteToolbar(active = '') {
   // Load 3 tin tức + 4 blog mới nhất để inject vào dropdown
   let latestNews = [], latestBlogs = [];
   try {
-    latestNews  = await db.prepare("SELECT title, source_name, source_url, published_at FROM news_posts WHERE active=1 ORDER BY published_at DESC LIMIT 3").all();
-    latestBlogs = await db.prepare("SELECT title, category, slug, published_at FROM blog_posts WHERE active=1 ORDER BY published_at DESC LIMIT 4").all();
+    latestNews  = await db.prepare("SELECT title, source_name, source_url, published_at FROM news_posts WHERE active=1 ORDER BY published_at DESC LIMIT 2").all();
+    latestBlogs = await db.prepare("SELECT title, category, slug, published_at FROM blog_posts WHERE active=1 ORDER BY published_at DESC LIMIT 3").all();
   } catch {}
 
   const newsItems = latestNews.map(n => `

@@ -4115,12 +4115,12 @@
         const el = document.getElementById('nav-news-content');
         if (!el) return;
         let html = '';
-        (newsRes||[]).slice(0,3).forEach(n => {
+        (newsRes||[]).slice(0,2).forEach(n => {
           const href = n.source_url && n.source_url.startsWith('http') ? n.source_url : '/blog';
           const target = href.startsWith('http') ? ' target="_blank"' : '';
           html += `<a href="${href}"${target}><span class="dd-icon">📰</span><span><strong>${n.title||''}</strong><small>${n.source_name||''} · ${(n.published_at||'').slice(0,10)}</small></span></a>`;
         });
-        (blogRes||[]).slice(0,4).forEach(b => {
+        (blogRes||[]).slice(0,3).forEach(b => {
           html += `<a href="/blog/${b.slug||''}"><span class="dd-icon">✍️</span><span><strong>${b.title||''}</strong><small>${b.category||'Blog'} · ${(b.published_at||'').slice(0,10)}</small></span></a>`;
         });
         html += '<a href="/blog" class="service-dropdown-all"><span class="dd-icon">↗</span><span><strong>Xem tất cả tin tức</strong></span></a>';
@@ -5020,12 +5020,15 @@
     }
 
     .news-dropdown {
-      min-width: 420px !important;
+      min-width: 380px !important;
+      max-width: 420px !important;
       grid-template-columns: 1fr !important;
-      gap: 4px !important;
-      padding: 16px !important;
+      gap: 2px !important;
+      padding: 12px !important;
       border-radius: 14px !important;
       box-shadow: 0 24px 60px rgba(15,23,42,0.14) !important;
+      max-height: 480px !important;
+      overflow-y: auto !important;
     }
     .news-dropdown .mega-title {
       color: #64748b !important;
