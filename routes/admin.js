@@ -747,7 +747,7 @@ router.post('/products', auth, (req, res) => {
     INSERT INTO products (name, description, icon, icon_color, badge, badge_type, category, users_count, link, active, order_index)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(name, description, icon||'🤖', icon_color||'blue', badge||null, badge_type||null,
-        category||'all', users_count||0, link||'#', active===false?0:1, order_index||0);
+        category||'all', users_count||0, link||'#', active?1:0, order_index||0);
   const newProd = db.prepare('SELECT * FROM products WHERE id = ?').get(r.lastInsertRowid);
   tg.notifyNewProduct(newProd.name, newProd.category);
   res.json(newProd);
@@ -759,7 +759,7 @@ router.put('/products/:id', auth, (req, res) => {
     UPDATE products SET name=?, description=?, icon=?, icon_color=?, badge=?, badge_type=?,
     category=?, users_count=?, link=?, active=?, order_index=? WHERE id=?`
   ).run(name, description, icon, icon_color, badge||null, badge_type||null,
-        category, users_count, link, active===false?0:1, order_index, req.params.id);
+        category, users_count, link, active?1:0, order_index, req.params.id);
   res.json(db.prepare('SELECT * FROM products WHERE id = ?').get(req.params.id));
 });
 
@@ -778,7 +778,7 @@ router.post('/news', auth, (req, res) => {
   const r = db.prepare(`
     INSERT INTO news_posts (title, excerpt, image_url, source_name, source_tag, source_url, published_at, active)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-  ).run(title, excerpt, image_url, source_name, source_tag, source_url, published_at, active===false?0:1);
+  ).run(title, excerpt, image_url, source_name, source_tag, source_url, published_at, active?1:0);
   const newNews = db.prepare('SELECT * FROM news_posts WHERE id = ?').get(r.lastInsertRowid);
   tg.notifyNewNews(newNews.title, newNews.source_name);
   res.json(newNews);
@@ -789,7 +789,7 @@ router.put('/news/:id', auth, (req, res) => {
   db.prepare(`
     UPDATE news_posts SET title=?, excerpt=?, image_url=?, source_name=?, source_tag=?,
     source_url=?, published_at=?, active=? WHERE id=?`
-  ).run(title, excerpt, image_url, source_name, source_tag, source_url, published_at, active===false?0:1, req.params.id);
+  ).run(title, excerpt, image_url, source_name, source_tag, source_url, published_at, active?1:0, req.params.id);
   res.json(db.prepare('SELECT * FROM news_posts WHERE id = ?').get(req.params.id));
 });
 
@@ -810,7 +810,7 @@ router.post('/blog-posts', auth, (req, res) => {
   const r = db.prepare(`
     INSERT INTO blog_posts (title, excerpt, content, seo_title, meta_description, faq_json, image_url, image_alt, category, author, slug, published_at, active)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-  ).run(title, excerpt, content||null, seo_title||null, meta_description||null, faq_json||'[]', image_url||null, image_alt||null, category||'Tin tức', author||'VIAi Team', finalSlug, published_at||new Date().toISOString().slice(0,10), active===false?0:1);
+  ).run(title, excerpt, content||null, seo_title||null, meta_description||null, faq_json||'[]', image_url||null, image_alt||null, category||'Tin tức', author||'VIAi Team', finalSlug, published_at||new Date().toISOString().slice(0,10), active?1:0);
   res.json(db.prepare('SELECT * FROM blog_posts WHERE id = ?').get(r.lastInsertRowid));
 });
 
@@ -822,7 +822,7 @@ router.put('/blog-posts/:id', auth, (req, res) => {
   db.prepare(`
     UPDATE blog_posts SET title=?, excerpt=?, content=?, seo_title=?, meta_description=?, faq_json=?, image_url=?, image_alt=?, category=?, author=?, slug=?, published_at=?, active=?
     WHERE id=?`
-  ).run(title, excerpt, content||null, seo_title||null, meta_description||null, faq_json||'[]', image_url||null, image_alt||null, category, author, finalSlug, published_at, active===false?0:1, req.params.id);
+  ).run(title, excerpt, content||null, seo_title||null, meta_description||null, faq_json||'[]', image_url||null, image_alt||null, category, author, finalSlug, published_at, active?1:0, req.params.id);
   res.json(db.prepare('SELECT * FROM blog_posts WHERE id = ?').get(req.params.id));
 });
 
@@ -836,13 +836,13 @@ router.get('/why', auth, (req, res) => res.json(db.prepare('SELECT * FROM why_it
 
 router.post('/why', auth, (req, res) => {
   const { icon, icon_color, title, description, order_index, active } = req.body;
-  const r = db.prepare('INSERT INTO why_items (icon,icon_color,title,description,order_index,active) VALUES (?,?,?,?,?,?)').run(icon||'⭐',icon_color||'blue',title,description,order_index||0,active===false?0:1);
+  const r = db.prepare('INSERT INTO why_items (icon,icon_color,title,description,order_index,active) VALUES (?,?,?,?,?,?)').run(icon||'⭐',icon_color||'blue',title,description,order_index||0,active?1:0);
   res.json(db.prepare('SELECT * FROM why_items WHERE id=?').get(r.lastInsertRowid));
 });
 
 router.put('/why/:id', auth, (req, res) => {
   const { icon, icon_color, title, description, order_index, active } = req.body;
-  db.prepare('UPDATE why_items SET icon=?,icon_color=?,title=?,description=?,order_index=?,active=? WHERE id=?').run(icon,icon_color,title,description,order_index,active===false?0:1,req.params.id);
+  db.prepare('UPDATE why_items SET icon=?,icon_color=?,title=?,description=?,order_index=?,active=? WHERE id=?').run(icon,icon_color,title,description,order_index,active?1:0,req.params.id);
   res.json(db.prepare('SELECT * FROM why_items WHERE id=?').get(req.params.id));
 });
 
@@ -857,7 +857,7 @@ router.get('/how-steps', auth, (req, res) => {
 
 router.post('/how-steps', auth, (req, res) => {
   const { step_number, title, short_desc, panel_title, panel_desc, features, mockup_bars, order_index, active } = req.body;
-  const r = db.prepare('INSERT INTO how_steps (step_number,title,short_desc,panel_title,panel_desc,features,mockup_bars,order_index,active) VALUES (?,?,?,?,?,?,?,?,?)').run(step_number,title,short_desc,panel_title,panel_desc,JSON.stringify(features||[]),JSON.stringify(mockup_bars||[]),order_index||0,active===false?0:1);
+  const r = db.prepare('INSERT INTO how_steps (step_number,title,short_desc,panel_title,panel_desc,features,mockup_bars,order_index,active) VALUES (?,?,?,?,?,?,?,?,?)').run(step_number,title,short_desc,panel_title,panel_desc,JSON.stringify(features||[]),JSON.stringify(mockup_bars||[]),order_index||0,active?1:0);
   const row = db.prepare('SELECT * FROM how_steps WHERE id=?').get(r.lastInsertRowid);
   row.features = JSON.parse(row.features||'[]'); row.mockup_bars = JSON.parse(row.mockup_bars||'[]');
   res.json(row);
@@ -865,7 +865,7 @@ router.post('/how-steps', auth, (req, res) => {
 
 router.put('/how-steps/:id', auth, (req, res) => {
   const { step_number, title, short_desc, panel_title, panel_desc, features, mockup_bars, order_index, active } = req.body;
-  db.prepare('UPDATE how_steps SET step_number=?,title=?,short_desc=?,panel_title=?,panel_desc=?,features=?,mockup_bars=?,order_index=?,active=? WHERE id=?').run(step_number,title,short_desc,panel_title,panel_desc,JSON.stringify(features||[]),JSON.stringify(mockup_bars||[]),order_index,active===false?0:1,req.params.id);
+  db.prepare('UPDATE how_steps SET step_number=?,title=?,short_desc=?,panel_title=?,panel_desc=?,features=?,mockup_bars=?,order_index=?,active=? WHERE id=?').run(step_number,title,short_desc,panel_title,panel_desc,JSON.stringify(features||[]),JSON.stringify(mockup_bars||[]),order_index,active?1:0,req.params.id);
   const row = db.prepare('SELECT * FROM how_steps WHERE id=?').get(req.params.id);
   row.features = JSON.parse(row.features||'[]'); row.mockup_bars = JSON.parse(row.mockup_bars||'[]');
   res.json(row);
@@ -878,13 +878,13 @@ router.get('/tech', auth, (req, res) => res.json(db.prepare('SELECT * FROM tech_
 
 router.post('/tech', auth, (req, res) => {
   const { image_url, title, description, is_featured, order_index, active } = req.body;
-  const r = db.prepare('INSERT INTO tech_items (image_url,title,description,is_featured,order_index,active) VALUES (?,?,?,?,?,?)').run(image_url,title,description,is_featured?1:0,order_index||0,active===false?0:1);
+  const r = db.prepare('INSERT INTO tech_items (image_url,title,description,is_featured,order_index,active) VALUES (?,?,?,?,?,?)').run(image_url,title,description,is_featured?1:0,order_index||0,active?1:0);
   res.json(db.prepare('SELECT * FROM tech_items WHERE id=?').get(r.lastInsertRowid));
 });
 
 router.put('/tech/:id', auth, (req, res) => {
   const { image_url, title, description, is_featured, order_index, active } = req.body;
-  db.prepare('UPDATE tech_items SET image_url=?,title=?,description=?,is_featured=?,order_index=?,active=? WHERE id=?').run(image_url,title,description,is_featured?1:0,order_index,active===false?0:1,req.params.id);
+  db.prepare('UPDATE tech_items SET image_url=?,title=?,description=?,is_featured=?,order_index=?,active=? WHERE id=?').run(image_url,title,description,is_featured?1:0,order_index,active?1:0,req.params.id);
   res.json(db.prepare('SELECT * FROM tech_items WHERE id=?').get(req.params.id));
 });
 
@@ -895,13 +895,13 @@ router.get('/gallery', auth, (req, res) => res.json(db.prepare('SELECT * FROM ga
 
 router.post('/gallery', auth, (req, res) => {
   const { image_url, alt_text, caption, order_index, active } = req.body;
-  const r = db.prepare('INSERT INTO gallery_images (image_url,alt_text,caption,order_index,active) VALUES (?,?,?,?,?)').run(image_url,alt_text,caption,order_index||0,active===false?0:1);
+  const r = db.prepare('INSERT INTO gallery_images (image_url,alt_text,caption,order_index,active) VALUES (?,?,?,?,?)').run(image_url,alt_text,caption,order_index||0,active?1:0);
   res.json(db.prepare('SELECT * FROM gallery_images WHERE id=?').get(r.lastInsertRowid));
 });
 
 router.put('/gallery/:id', auth, (req, res) => {
   const { image_url, alt_text, caption, order_index, active } = req.body;
-  db.prepare('UPDATE gallery_images SET image_url=?,alt_text=?,caption=?,order_index=?,active=? WHERE id=?').run(image_url,alt_text,caption,order_index,active===false?0:1,req.params.id);
+  db.prepare('UPDATE gallery_images SET image_url=?,alt_text=?,caption=?,order_index=?,active=? WHERE id=?').run(image_url,alt_text,caption,order_index,active?1:0,req.params.id);
   res.json(db.prepare('SELECT * FROM gallery_images WHERE id=?').get(req.params.id));
 });
 

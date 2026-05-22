@@ -1950,6 +1950,36 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="pricing-modal">
+  <div class="modal-box" style="width:560px">
+    <div class="modal-title" id="pricing-modal-title">Thêm gói giá</div>
+    <input type="hidden" id="pr-id" />
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="field"><label>Tên gói *</label><input id="pr-name" placeholder="Pro" /></div>
+      <div class="field"><label>Icon</label><input id="pr-icon" placeholder="🌱" /></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="field"><label>Badge (VD: PHỔ BIẾN NHẤT)</label><input id="pr-badge" placeholder="" /></div>
+      <div class="field"><label>Nổi bật</label><select id="pr-highlight"><option value="0">Không</option><option value="1">Có</option></select></div>
+    </div>
+    <div class="field"><label>Mô tả ngắn</label><input id="pr-subtitle" placeholder="Cho doanh nghiệp tăng trưởng..." /></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="field"><label>Giá tháng *</label><input id="pr-price-month" placeholder="990.000đ" /></div>
+      <div class="field"><label>Giá năm</label><input id="pr-price-year" placeholder="792.000đ (bỏ trống nếu không có)" /></div>
+    </div>
+    <div class="field"><label>Text nút CTA</label><input id="pr-cta" placeholder="Dùng thử miễn phí" /></div>
+    <div class="field">
+      <label>Tính năng <span style="color:#94a3b8;font-weight:400">(mỗi dòng 1 tính năng)</span></label>
+      <textarea id="pr-features" rows="6" style="width:100%;font-family:inherit;font-size:13px;padding:8px 11px;border:1.5px solid #e2e8f0;border-radius:8px;resize:vertical;outline:none" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='#e2e8f0'" placeholder="2 AI Agent&#10;1.000 tin nhắn/tháng&#10;Hỗ trợ email"></textarea>
+    </div>
+    <div class="field"><label>Thứ tự hiển thị</label><input id="pr-order" type="number" value="0" style="width:80px" /></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('pricing-modal')">Huỷ</button>
+      <button class="btn-save" onclick="savePricing()">Lưu</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -2645,56 +2675,52 @@
 
   function openPricingModal(id) {
     const p = id ? pricingList.find(x => x.id === id) : null;
-    const featStr = p ? (p.features||[]).join('\n') : '';
-    document.getElementById('modal-title').textContent = id ? 'Sửa gói giá' : 'Thêm gói giá';
-    document.getElementById('modal-body').innerHTML = `
-      <div class="field"><label>Tên gói *</label><input id="pr-name" value="${escH(p?.name||'')}" placeholder="Pro"/></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="field"><label>Icon</label><input id="pr-icon" value="${escH(p?.icon||'🌱')}" placeholder="🌱"/></div>
-        <div class="field"><label>Badge (VD: PHỔ BIẾN NHẤT)</label><input id="pr-badge" value="${escH(p?.badge||'')}" placeholder=""/></div>
-      </div>
-      <div class="field"><label>Mô tả ngắn</label><input id="pr-subtitle" value="${escH(p?.subtitle||'')}" placeholder="Cho doanh nghiệp..."/></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="field"><label>Giá tháng *</label><input id="pr-price-month" value="${escH(p?.price_month||'')}" placeholder="990.000đ"/></div>
-        <div class="field"><label>Giá năm</label><input id="pr-price-year" value="${escH(p?.price_year||'')}" placeholder="792.000đ"/></div>
-      </div>
-      <div class="field"><label>Text nút CTA</label><input id="pr-cta" value="${escH(p?.cta_text||'Dùng thử miễn phí')}" placeholder="Dùng thử miễn phí"/></div>
-      <div class="field"><label>Tính năng (mỗi dòng 1 tính năng)</label><textarea id="pr-features" rows="6" style="width:100%;font-family:inherit;font-size:13px;padding:8px;border:1.5px solid #e2e8f0;border-radius:8px;resize:vertical">${escH(featStr)}</textarea></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="field"><label>Thứ tự</label><input id="pr-order" type="number" value="${p?.order_index||0}" style="width:80px"/></div>
-        <div class="field"><label>Nổi bật (highlight)</label><select id="pr-highlight"><option value="0"${!p?.highlight?' selected':''}>Không</option><option value="1"${p?.highlight?' selected':''}>Có</option></select></div>
-      </div>
-      <input type="hidden" id="pr-id" value="${id||''}"/>`;
-    openModal(() => savePricing());
+    document.getElementById('pricing-modal-title').textContent = id ? 'Sửa gói giá' : 'Thêm gói giá';
+    document.getElementById('pr-id').value          = id || '';
+    document.getElementById('pr-name').value        = p?.name || '';
+    document.getElementById('pr-icon').value        = p?.icon || '🌱';
+    document.getElementById('pr-badge').value       = p?.badge || '';
+    document.getElementById('pr-subtitle').value    = p?.subtitle || '';
+    document.getElementById('pr-price-month').value = p?.price_month || '';
+    document.getElementById('pr-price-year').value  = p?.price_year || '';
+    document.getElementById('pr-cta').value         = p?.cta_text || 'Dùng thử miễn phí';
+    document.getElementById('pr-features').value   = (p?.features || []).join('\n');
+    document.getElementById('pr-order').value       = p?.order_index ?? 0;
+    document.getElementById('pr-highlight').value   = p?.highlight ? '1' : '0';
+    openModal('pricing-modal');
   }
 
   function editPricing(id) { openPricingModal(id); }
 
   async function savePricing() {
     const id = document.getElementById('pr-id').value;
-    const features = document.getElementById('pr-features').value.split('\n').filter(f=>f.trim());
+    const name = document.getElementById('pr-name').value.trim();
+    if (!name) { alert('Vui lòng nhập tên gói'); return; }
+    const features = document.getElementById('pr-features').value.split('\n').map(f=>f.trim()).filter(Boolean);
     const body = {
-      name: document.getElementById('pr-name').value,
-      icon: document.getElementById('pr-icon').value,
-      subtitle: document.getElementById('pr-subtitle').value,
+      name,
+      icon:        document.getElementById('pr-icon').value || '🌱',
+      subtitle:    document.getElementById('pr-subtitle').value,
       price_month: document.getElementById('pr-price-month').value,
-      price_year: document.getElementById('pr-price-year').value,
-      badge: document.getElementById('pr-badge').value,
-      cta_text: document.getElementById('pr-cta').value,
-      highlight: +document.getElementById('pr-highlight').value,
+      price_year:  document.getElementById('pr-price-year').value,
+      badge:       document.getElementById('pr-badge').value || null,
+      cta_text:    document.getElementById('pr-cta').value || 'Dùng thử miễn phí',
+      highlight:   +document.getElementById('pr-highlight').value,
       order_index: +document.getElementById('pr-order').value,
       features, active: 1,
     };
-    const url = id ? `${API}/pricing/${id}` : `${API}/pricing`;
+    const url    = id ? `${API}/pricing/${id}` : `${API}/pricing`;
     const method = id ? 'PUT' : 'POST';
     const r = await apiFetch(url, { method, headers: { ...hdr(), 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    if (r) { closeModal(); loadPricing(); }
+    if (r && !r.error) { closeModal('pricing-modal'); loadPricing(); toast(id ? 'Đã cập nhật gói giá' : 'Đã thêm gói giá mới'); }
+    else if (r?.error) alert(r.error);
   }
 
   async function deletePricing(id) {
     if (!confirm('Xóa gói giá này?')) return;
     await apiFetch(`${API}/pricing/${id}`, { method: 'DELETE', headers: hdr() });
     loadPricing();
+    toast('Đã xóa gói giá');
   }
 
   // ── SITE SETTINGS ─────────────────────────────────────
