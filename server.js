@@ -2534,6 +2534,104 @@ app.get('/cong-cu/:slug', (req, res) => {
   res.send(renderProductDetailPage(product));
 });
 
+app.get('/blog', async (_req, res) => {
+  const posts = await db.prepare("SELECT id,title,excerpt,image_url,category,author,slug,published_at FROM blog_posts WHERE active=1 ORDER BY published_at DESC").all();
+  const siteUrl = SITE_URL;
+  res.send(`<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Blog – Kiến thức AI Agent cho doanh nghiệp | VIAi</title>
+  <meta name="description" content="Kiến thức thực tế về AI Agent, tự động hóa và chuyển đổi số cho doanh nghiệp Việt Nam. Hướng dẫn, tin tức và case study từ VIAi."/>
+  <link rel="canonical" href="${siteUrl}/blog"/>
+  <link rel="icon" href="/anhlogo/logo2.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Be Vietnam Pro',sans-serif;background:#f4f7ff;color:#0f172a;line-height:1.7}
+    a{text-decoration:none;color:inherit}
+    .site-header{position:sticky;top:0;z-index:999;background:white;border-bottom:2px solid #1A56DB;box-shadow:0 2px 12px rgba(26,86,219,.08)}
+    .header-inner{max-width:1240px;margin:0 auto;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between}
+    .logo-img{height:120px;width:auto;object-fit:contain;mix-blend-mode:multiply}
+    .header-actions{display:flex;gap:10px}
+    .btn-login{padding:8px 18px;border:2px solid #1A56DB;border-radius:8px;font-size:.85rem;font-weight:700;color:#1A56DB;background:white}
+    .btn-register{padding:8px 18px;background:#FF6B00;border-radius:8px;font-size:.85rem;font-weight:700;color:white}
+    /* hero */
+    .blog-hero{background:linear-gradient(135deg,#0F172A 0%,#1A56DB 60%,#FF6B00 100%);padding:60px 20px;text-align:center;color:white}
+    .blog-hero h1{font-size:clamp(1.8rem,3vw,2.8rem);font-weight:900;margin-bottom:12px}
+    .blog-hero p{font-size:1rem;color:rgba(255,255,255,.75);max-width:560px;margin:0 auto}
+    /* filters */
+    .blog-filters{max-width:1200px;margin:32px auto 0;padding:0 20px;display:flex;gap:10px;flex-wrap:wrap}
+    .filter-btn{padding:7px 18px;border-radius:50px;font-size:.82rem;font-weight:700;border:1.5px solid #dbe8ff;background:white;color:#1A56DB;cursor:pointer;transition:all .2s}
+    .filter-btn.active,.filter-btn:hover{background:#1A56DB;color:white;border-color:#1A56DB}
+    /* grid */
+    .blog-wrap{max-width:1200px;margin:32px auto 80px;padding:0 20px}
+    .blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:28px}
+    .blog-card{background:white;border-radius:16px;overflow:hidden;border:1px solid #e8eef8;transition:all .25s;display:flex;flex-direction:column}
+    .blog-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(26,86,219,.1)}
+    .blog-card-img{width:100%;height:200px;object-fit:cover;display:block;background:#EEF3FF}
+    .blog-card-img-placeholder{width:100%;height:200px;background:linear-gradient(135deg,#1040B0,#1A56DB);display:flex;align-items:center;justify-content:center;font-size:2.5rem}
+    .blog-card-body{padding:20px 22px 24px;flex:1;display:flex;flex-direction:column}
+    .blog-cat{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#FF6B00;margin-bottom:10px}
+    .blog-title{font-size:1rem;font-weight:800;color:#0f172a;line-height:1.45;margin-bottom:10px;flex:1}
+    .blog-title:hover{color:#1A56DB}
+    .blog-excerpt{font-size:.84rem;color:#64748b;line-height:1.7;margin-bottom:16px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .blog-meta{display:flex;align-items:center;justify-content:space-between;font-size:.78rem;color:#94a3b8;border-top:1px solid #f1f5f9;padding-top:14px;margin-top:auto}
+    .blog-read-more{font-size:.82rem;font-weight:700;color:#1A56DB}
+    .empty-state{text-align:center;padding:80px 20px;color:#94a3b8}
+    @media(max-width:640px){.blog-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  ${renderSiteToolbar('blog')}
+  <div class="blog-hero">
+    <h1>Blog <span style="color:#FFB800">VIAi</span></h1>
+    <p>Kiến thức thực tế về AI Agent, tự động hóa và chuyển đổi số cho doanh nghiệp Việt Nam</p>
+  </div>
+
+  <div class="blog-filters" id="filters">
+    <button class="filter-btn active" onclick="filterCat('all',this)">Tất cả</button>
+    ${[...new Set(posts.map(p=>p.category).filter(Boolean))].map(cat=>
+      `<button class="filter-btn" onclick="filterCat('${escapeHtml(cat)}',this)">${escapeHtml(cat)}</button>`
+    ).join('')}
+  </div>
+
+  <div class="blog-wrap">
+    ${posts.length === 0 ? '<div class="empty-state"><p>Chưa có bài viết nào.</p></div>' :
+    `<div class="blog-grid" id="blog-grid">
+      ${posts.map(p => `
+        <a href="/blog/${escapeHtml(p.slug||'')}" class="blog-card" data-cat="${escapeHtml(p.category||'')}">
+          ${p.image_url
+            ? `<img src="${escapeHtml(p.image_url)}" alt="${escapeHtml(p.title)}" class="blog-card-img" loading="lazy"/>`
+            : `<div class="blog-card-img-placeholder">📝</div>`}
+          <div class="blog-card-body">
+            <div class="blog-cat">${escapeHtml(p.category||'Tin tức')}</div>
+            <div class="blog-title">${escapeHtml(p.title)}</div>
+            <div class="blog-excerpt">${escapeHtml(p.excerpt||'')}</div>
+            <div class="blog-meta">
+              <span>${escapeHtml(p.author||'VIAi Team')} · ${p.published_at ? p.published_at.slice(0,10) : ''}</span>
+              <span class="blog-read-more">Đọc thêm →</span>
+            </div>
+          </div>
+        </a>`).join('')}
+    </div>`}
+  </div>
+
+  ${renderSiteToolbarScript()}
+  <script>
+    function filterCat(cat, el) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      document.querySelectorAll('.blog-card').forEach(card => {
+        card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>`);
+});
+
 app.get('/blog/:slug', async (req, res) => {
   const post = await db.prepare('SELECT * FROM blog_posts WHERE slug = ? AND active = 1').get(req.params.slug);
   if (!post) return res.status(404).sendFile(path.join(__dirname, '404.html'));
