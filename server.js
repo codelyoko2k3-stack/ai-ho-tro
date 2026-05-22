@@ -8,7 +8,7 @@ const path         = require('path');
 const db           = require('./db');
 const tg           = require('./telegram');
 
-const SITE_URL = (process.env.SITE_URL || 'https://respectful-courtesy-production-4318.up.railway.app').replace(/\/$/, '');
+const SITE_URL = (process.env.SITE_URL || 'https://phanmemaiagent.net').replace(/\/$/, '');
 
 const app = express();
 
@@ -1618,10 +1618,10 @@ app.use(helmet({
 
 // ── CORS — chỉ cho phép domain của mình ──────────────
 const allowedOrigins = [
+  'https://phanmemaiagent.net',
+  'https://www.phanmemaiagent.net',
   'https://ai-ho-tro-production.up.railway.app',
-  'https://baitap-truong-01.up.railway.app',
   'https://respectful-courtesy-production-4318.up.railway.app',
-  'https://ai-ho-tro.onrender.com',
   'http://localhost:3000',
 ];
 app.use(cors({
