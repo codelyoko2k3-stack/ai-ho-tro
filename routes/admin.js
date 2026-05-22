@@ -531,8 +531,10 @@ router.post('/login', loginLimiter, (req, res) => {
     return res.status(400).json({ error: 'Vui lòng nhập đầy đủ thông tin' });
   try {
     const user = db.prepare('SELECT * FROM admin_users WHERE username = ?').get(username);
-    if (!user || !bcrypt.compareSync(password, user.password_hash))
+    if (!user || !bcrypt.compareSync(password, user.password_hash)) {
+      try { db.prepare('INSERT INTO login_logs (username, ip, success, note) VALUES (?, ?, 0, ?)').run(username, req.headers['x-forwarded-for'] || req.ip || '', 'Sai mật khẩu'); } catch {}
       return res.status(401).json({ error: 'Sai tên đăng nhập hoặc mật khẩu' });
+    }
 
     // Kiểm tra 2FA nếu đã bật
     if (user.totp_enabled && user.totp_secret) {
@@ -549,6 +551,7 @@ router.post('/login', loginLimiter, (req, res) => {
     }
 
     const token = jwt.sign({ id: user.id, username }, SECRET, { expiresIn: '24h' });
+    try { db.prepare('INSERT INTO login_logs (username, ip, success) VALUES (?, ?, 1)').run(username, req.headers['x-forwarded-for'] || req.ip || ''); } catch {}
     res.json({ token });
   } catch {
     res.status(500).json({ error: 'Lỗi máy chủ, vui lòng thử lại.' });
@@ -641,6 +644,22 @@ router.put('/pricing/:id', auth, (req, res) => {
 router.delete('/pricing/:id', auth, (req, res) => {
   db.prepare('DELETE FROM pricing_plans WHERE id=?').run(req.params.id);
   res.json({ success: true });
+});
+
+// ── Analytics: page views & login logs ───────────────
+router.get('/analytics', auth, (req, res) => {
+  try {
+    const totalViews   = db.prepare("SELECT COUNT(*) as c FROM page_views").get().c;
+    const todayViews   = db.prepare("SELECT COUNT(*) as c FROM page_views WHERE date(created_at)=date('now')").get().c;
+    const weekViews    = db.prepare("SELECT COUNT(*) as c FROM page_views WHERE created_at >= datetime('now','-7 days')").get().c;
+    const topPages     = db.prepare("SELECT path, COUNT(*) as views FROM page_views GROUP BY path ORDER BY views DESC LIMIT 10").all();
+    const dailyViews   = db.prepare("SELECT date(created_at) as day, COUNT(*) as views FROM page_views WHERE created_at >= datetime('now','-14 days') GROUP BY day ORDER BY day ASC").all();
+    const logins       = db.prepare("SELECT id, username, ip, success, note, created_at FROM login_logs ORDER BY created_at DESC LIMIT 50").all();
+    const loginSuccess = db.prepare("SELECT COUNT(*) as c FROM login_logs WHERE success=1").get().c;
+    const loginFailed  = db.prepare("SELECT COUNT(*) as c FROM login_logs WHERE success=0").get().c;
+    const loginToday   = db.prepare("SELECT COUNT(*) as c FROM login_logs WHERE success=1 AND date(created_at)=date('now')").get().c;
+    res.json({ totalViews, todayViews, weekViews, topPages, dailyViews, logins, loginSuccess, loginFailed, loginToday });
+  } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
 // ── Dashboard stats ───────────────────────────────────

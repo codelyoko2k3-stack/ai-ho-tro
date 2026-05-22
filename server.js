@@ -1678,6 +1678,18 @@ app.use(express.json({ limit: '2mb' }));
 // ── Gzip compression ──────────────────────────────────
 app.use(compression({ threshold: 1024 }));
 
+// ── Page view tracking ────────────────────────────────
+app.use((req, res, next) => {
+  if (req.method === 'GET'
+    && !req.path.startsWith('/api')
+    && !req.path.startsWith('/admin')
+    && !req.path.startsWith('/uploads')
+    && !/\.(css|js|png|jpg|jpeg|ico|svg|woff|woff2|webp|gif|map|txt|xml)$/i.test(req.path)) {
+    try { db.prepare('INSERT INTO page_views (path, ip) VALUES (?, ?)').run(req.path, req.ip || ''); } catch {}
+  }
+  next();
+});
+
 // ── Dynamic sitemap.xml ───────────────────────────────
 app.get('/sitemap.xml', (_req, res) => {
   const now = new Date().toISOString().slice(0, 10);

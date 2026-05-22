@@ -625,6 +625,17 @@
         </a>
       </div>
 
+      <!-- GROUP: PHÂN TÍCH -->
+      <div class="nav-group-header" onclick="toggleNav(this)">
+        <div class="nav-group-header-left"><i class="fas fa-chart-bar"></i> 📊 PHÂN TÍCH</div>
+        <i class="fas fa-chevron-right nav-chevron"></i>
+      </div>
+      <div class="nav-submenu">
+        <a class="nav-sub-item" onclick="showPage('analytics',this,'Thống kê truy cập')">
+          <i class="fas fa-chart-line"></i> Thống kê truy cập
+        </a>
+      </div>
+
       <!-- GROUP: CẤU HÌNH -->
       <div class="nav-group-header" onclick="toggleNav(this)">
         <div class="nav-group-header-left"><i class="fas fa-cog"></i> ⚙ CẤU HÌNH</div>
@@ -1060,6 +1071,88 @@
             <table>
               <thead><tr><th>Tiêu đề</th><th>Slug / Link</th><th>Danh mục</th><th>Ngày đăng</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
               <tbody id="blog-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ANALYTICS PAGE ── -->
+      <div id="page-analytics" style="display:none">
+        <div class="content-topbar">
+          <div class="content-title">Thống kê truy cập</div>
+          <div class="breadcrumb-inner"><i class="fas fa-home"></i> › Phân tích › <span>Thống kê</span></div>
+        </div>
+        <div class="content-body">
+          <p class="page-subtitle" style="margin-bottom:16px">Lượt xem trang & lịch sử đăng nhập admin — cập nhật realtime.</p>
+
+          <!-- Stat cards -->
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">
+            <div class="dash-stat-card">
+              <div class="dsc-icon" style="background:#EEF3FF;color:#1A56DB"><i class="fas fa-eye"></i></div>
+              <div class="dsc-num" id="an-total">—</div>
+              <div class="dsc-lbl">Tổng lượt xem</div>
+            </div>
+            <div class="dash-stat-card">
+              <div class="dsc-icon" style="background:#ECFDF5;color:#10b981"><i class="fas fa-calendar-day"></i></div>
+              <div class="dsc-num" id="an-today" style="color:#10b981">—</div>
+              <div class="dsc-lbl">Hôm nay</div>
+            </div>
+            <div class="dash-stat-card">
+              <div class="dsc-icon" style="background:#FFF0E6;color:#FF6B00"><i class="fas fa-calendar-week"></i></div>
+              <div class="dsc-num" id="an-week" style="color:#FF6B00">—</div>
+              <div class="dsc-lbl">7 ngày qua</div>
+            </div>
+            <div class="dash-stat-card">
+              <div class="dsc-icon" style="background:#F0FDF4;color:#16a34a"><i class="fas fa-sign-in-alt"></i></div>
+              <div class="dsc-num" id="an-login-today" style="color:#16a34a">—</div>
+              <div class="dsc-lbl">Đăng nhập hôm nay</div>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+            <!-- Top trang được xem -->
+            <div class="dash-panel">
+              <div class="dash-panel-header">
+                <span><i class="fas fa-chart-bar"></i> Top trang được xem nhiều nhất</span>
+                <button onclick="loadAnalytics()" class="btn" style="height:26px;font-size:11px;background:#EEF3FF;color:var(--primary)"><i class="fas fa-sync-alt"></i> Làm mới</button>
+              </div>
+              <table style="width:100%;font-size:12px;border-collapse:collapse">
+                <thead><tr>
+                  <th style="text-align:left;padding:8px 10px;background:#F8FAFF;color:#64748b;font-size:10px;text-transform:uppercase;font-weight:700">#</th>
+                  <th style="text-align:left;padding:8px 10px;background:#F8FAFF;color:#64748b;font-size:10px;text-transform:uppercase;font-weight:700">Đường dẫn</th>
+                  <th style="text-align:right;padding:8px 10px;background:#F8FAFF;color:#64748b;font-size:10px;text-transform:uppercase;font-weight:700">Lượt xem</th>
+                </tr></thead>
+                <tbody id="an-top-pages"><tr><td colspan="3" style="text-align:center;padding:20px;color:#94a3b8">Đang tải...</td></tr></tbody>
+              </table>
+            </div>
+
+            <!-- Biểu đồ 14 ngày dạng text -->
+            <div class="dash-panel">
+              <div class="dash-panel-header"><span><i class="fas fa-chart-line"></i> Lượt xem 14 ngày gần đây</span></div>
+              <div id="an-daily-chart" style="padding:12px;display:flex;flex-direction:column;gap:6px">
+                <div style="text-align:center;padding:20px;color:#94a3b8">Đang tải...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lịch sử đăng nhập -->
+          <div class="dash-panel">
+            <div class="dash-panel-header">
+              <span><i class="fas fa-key"></i> Lịch sử đăng nhập admin</span>
+              <div style="display:flex;gap:8px;font-size:11px">
+                <span style="background:#ECFDF5;color:#16a34a;padding:2px 8px;border-radius:4px;font-weight:700" id="an-login-ok">— thành công</span>
+                <span style="background:#FEF2F2;color:#E52222;padding:2px 8px;border-radius:4px;font-weight:700" id="an-login-fail">— thất bại</span>
+              </div>
+            </div>
+            <table style="width:100%;font-size:12px;border-collapse:collapse">
+              <thead><tr>
+                <th style="text-align:left;padding:8px 10px;background:#F8FAFF;color:#64748b;font-size:10px;text-transform:uppercase;font-weight:700">Thời gian</th>
+                <th style="text-align:left;padding:8px 10px;background:#F8FAFF;color:#64748b;font-size:10px;text-transform:uppercase;font-weight:700">Tài khoản</th>
+                <th style="text-align:left;padding:8px 10px;background:#F8FAFF;color:#64748b;font-size:10px;text-transform:uppercase;font-weight:700">IP</th>
+                <th style="text-align:center;padding:8px 10px;background:#F8FAFF;color:#64748b;font-size:10px;text-transform:uppercase;font-weight:700">Kết quả</th>
+                <th style="text-align:left;padding:8px 10px;background:#F8FAFF;color:#64748b;font-size:10px;text-transform:uppercase;font-weight:700">Ghi chú</th>
+              </tr></thead>
+              <tbody id="an-login-tbody"><tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8">Đang tải...</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -1732,6 +1825,13 @@
     }
   }
 
+  async function apiFetch(url, opts = {}) {
+    if (!opts.headers) opts.headers = hdr();
+    const r = await safeFetch(url, opts);
+    if (!r) return null;
+    return r.json().catch(() => null);
+  }
+
   // ── LAYOUT ────────────────────────────────────────────
   function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('collapsed');
@@ -1750,7 +1850,7 @@
   }
 
   function showPage(p, el, title) {
-    ['dashboard','products','news','seo','blog-posts','why','how','tech','gallery','customers','pricing','site-settings','security'].forEach(n => {
+    ['dashboard','products','news','seo','blog-posts','why','how','tech','gallery','customers','analytics','pricing','site-settings','security'].forEach(n => {
       const pg = document.getElementById(`page-${n}`);
       if (pg) pg.style.display = n === p ? '' : 'none';
     });
@@ -1769,6 +1869,7 @@
     if (p === 'site-settings') loadSettings();
     if (p === 'security')    load2FAStatus();
     if (p === 'customers')   loadCustomers();
+    if (p === 'analytics')   loadAnalytics();
   }
 
   async function loadDashboard() {
@@ -1783,6 +1884,7 @@
     // Load stats
     try {
       const r = await apiFetch('/admin-api/stats');
+      if (!r) return;
       document.getElementById('ds-blog').textContent      = r.blog_pub ?? '—';
       document.getElementById('ds-draft').textContent     = r.blog_draft ?? '—';
       document.getElementById('ds-products').textContent  = r.products ?? '—';
@@ -1803,6 +1905,70 @@
 
   function escH(s) {
     return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  async function loadAnalytics() {
+    try {
+      const r = await apiFetch('/admin-api/analytics');
+      if (!r) return;
+      document.getElementById('an-total').textContent      = r.totalViews ?? '—';
+      document.getElementById('an-today').textContent      = r.todayViews ?? '—';
+      document.getElementById('an-week').textContent       = r.weekViews ?? '—';
+      document.getElementById('an-login-today').textContent = r.loginToday ?? '—';
+      document.getElementById('an-login-ok').textContent   = `${r.loginSuccess ?? 0} thành công`;
+      document.getElementById('an-login-fail').textContent = `${r.loginFailed ?? 0} thất bại`;
+
+      // Top pages
+      const tpBody = document.getElementById('an-top-pages');
+      const maxViews = r.topPages?.[0]?.views || 1;
+      tpBody.innerHTML = r.topPages?.length
+        ? r.topPages.map((p, i) => {
+            const pct = Math.round((p.views / maxViews) * 100);
+            return `<tr>
+              <td style="padding:7px 10px;color:#94a3b8;width:24px">${i+1}</td>
+              <td style="padding:7px 10px;max-width:200px">
+                <div style="font-size:11px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escH(p.path)}</div>
+                <div style="height:4px;background:#EEF3FF;border-radius:2px;margin-top:4px"><div style="height:4px;background:var(--primary);border-radius:2px;width:${pct}%"></div></div>
+              </td>
+              <td style="padding:7px 10px;text-align:right;font-weight:700;color:var(--primary)">${p.views}</td>
+            </tr>`;
+          }).join('')
+        : '<tr><td colspan="3" style="text-align:center;padding:20px;color:#94a3b8">Chưa có dữ liệu</td></tr>';
+
+      // Daily chart (bar chart dạng text)
+      const chart = document.getElementById('an-daily-chart');
+      if (r.dailyViews?.length) {
+        const maxDay = Math.max(...r.dailyViews.map(d => d.views), 1);
+        chart.innerHTML = r.dailyViews.map(d => {
+          const pct = Math.round((d.views / maxDay) * 100);
+          const label = d.day?.slice(5) || d.day;
+          return `<div style="display:flex;align-items:center;gap:8px;font-size:11px">
+            <span style="width:40px;color:#64748b;flex-shrink:0">${label}</span>
+            <div style="flex:1;height:16px;background:#F8FAFF;border-radius:3px;overflow:hidden">
+              <div style="height:100%;background:linear-gradient(90deg,#1A56DB,#4B82F4);border-radius:3px;width:${pct}%;transition:width .4s"></div>
+            </div>
+            <span style="width:28px;text-align:right;font-weight:700;color:var(--primary)">${d.views}</span>
+          </div>`;
+        }).join('');
+      } else {
+        chart.innerHTML = '<div style="text-align:center;padding:20px;color:#94a3b8">Chưa có dữ liệu</div>';
+      }
+
+      // Login history
+      const lBody = document.getElementById('an-login-tbody');
+      lBody.innerHTML = r.logins?.length
+        ? r.logins.map(l => `<tr>
+            <td style="padding:7px 10px;color:#94a3b8;white-space:nowrap;font-size:11px">${escH((l.created_at||'').slice(0,16))}</td>
+            <td style="padding:7px 10px;font-weight:600">${escH(l.username||'—')}</td>
+            <td style="padding:7px 10px;color:#64748b;font-size:11px">${escH(l.ip||'—')}</td>
+            <td style="padding:7px 10px;text-align:center">
+              ${l.success ? '<span style="background:#ECFDF5;color:#16a34a;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">✓ OK</span>'
+                          : '<span style="background:#FEF2F2;color:#E52222;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">✗ Lỗi</span>'}
+            </td>
+            <td style="padding:7px 10px;color:#94a3b8;font-size:11px">${escH(l.note||'—')}</td>
+          </tr>`).join('')
+        : '<tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8">Chưa có dữ liệu đăng nhập</td></tr>';
+    } catch(e) { console.error('Analytics error', e); }
   }
 
   // ── FAQ EDITOR ─────────────────────────────────────────

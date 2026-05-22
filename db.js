@@ -129,6 +129,24 @@ db.exec(`
   );
 `);
 
+// ── Analytics: page views & login logs ───────────────
+db.exec(`
+  CREATE TABLE IF NOT EXISTS page_views (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    path       TEXT NOT NULL,
+    ip         TEXT,
+    created_at TEXT DEFAULT (datetime('now'))
+  );
+  CREATE TABLE IF NOT EXISTS login_logs (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    username   TEXT,
+    ip         TEXT,
+    success    INTEGER DEFAULT 1,
+    note       TEXT,
+    created_at TEXT DEFAULT (datetime('now'))
+  );
+`);
+
 // ── Site settings (homepage globals) ─────────────────
 db.exec(`
   CREATE TABLE IF NOT EXISTS site_settings (
