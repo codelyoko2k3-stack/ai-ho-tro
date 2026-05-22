@@ -152,7 +152,20 @@ function renderMarkdown(md, options = {}) {
   return html;
 }
 
-function renderSiteToolbar(active = '') {
+async function renderSiteToolbar(active = '') {
+  // Load 3 tin tức + 4 blog mới nhất để inject vào dropdown
+  let latestNews = [], latestBlogs = [];
+  try {
+    latestNews  = await db.prepare("SELECT title, source_name, source_url, published_at FROM news_posts WHERE active=1 ORDER BY published_at DESC LIMIT 3").all();
+    latestBlogs = await db.prepare("SELECT title, category, slug, published_at FROM blog_posts WHERE active=1 ORDER BY published_at DESC LIMIT 4").all();
+  } catch {}
+
+  const newsItems = latestNews.map(n => `
+    <a href="${escapeHtml(n.source_url||'/#blog')}"><span class="dd-icon">📰</span><span><strong>${escapeHtml(n.title)}</strong><small>${escapeHtml(n.source_name||'')} · ${(n.published_at||'').slice(0,10)}</small></span></a>`).join('');
+
+  const blogItems = latestBlogs.map(b => `
+    <a href="/blog/${escapeHtml(b.slug||'')}"><span class="dd-icon">✍️</span><span><strong>${escapeHtml(b.title)}</strong><small>${escapeHtml(b.category||'Blog')} · ${(b.published_at||'').slice(0,10)}</small></span></a>`).join('');
+
   return `
   <header class="site-header">
     <div class="header-inner">
@@ -180,17 +193,11 @@ function renderSiteToolbar(active = '') {
         <div class="nav-item"><a href="/#how" class="nav-link">Quy trình</a></div>
         <div class="nav-item"><a href="/#tech" class="nav-link">Công nghệ</a></div>
         <div class="nav-item${active === 'blog' ? ' nav-active' : ''}">
-          <a href="/#blog" class="nav-link">Tin tức <span class="arrow">▾</span></a>
+          <a href="/blog" class="nav-link">Tin tức <span class="arrow">▾</span></a>
           <div class="dropdown dropdown-mega news-dropdown">
-            <div class="mega-title">Truyền thông nói về VIAi</div>
-            <a href="/#blog"><span class="dd-icon">📰</span><span><strong>VIAi cam kết hiệu quả AI Agent</strong><small>genk.vn · 15/05/2026</small></span></a>
-            <a href="/#blog"><span class="dd-icon">🤝</span><span><strong>VIAi đồng hành cùng doanh nghiệp SME</strong><small>cand.com.vn · 12/05/2026</small></span></a>
-            <a href="/#blog"><span class="dd-icon">🚀</span><span><strong>AI Agent — xu hướng vận hành năm 2026</strong><small>cafebiz.vn · 08/05/2026</small></span></a>
-            <div class="mega-title" style="margin-top:8px">Blog kiến thức</div>
-            <a href="/blog/5-cach-ai-agent-giup-doanh-nghiep-sme-tiet-kiem-4-gio-moi-ngay"><span class="dd-icon">💡</span><span><strong>5 cách AI Agent tiết kiệm 4 giờ/ngày</strong><small>Kiến thức AI · 15/05/2026</small></span></a>
-            <a href="/blog/huong-dan-chon-ai-agent-cho-sales"><span class="dd-icon">📋</span><span><strong>Chọn AI Agent phù hợp cho đội sales</strong><small>Hướng dẫn · 10/05/2026</small></span></a>
-            <a href="/blog/checklist-bao-mat-ai-du-lieu-khach-hang"><span class="dd-icon">🔒</span><span><strong>Checklist bảo mật AI & dữ liệu khách hàng</strong><small>Bảo mật · 06/05/2026</small></span></a>
-            <a href="/#blog" class="service-dropdown-all"><span class="dd-icon">↗</span><span><strong>Xem tất cả tin tức</strong><small>Truy cập trang tin tức trên trang chủ</small></span></a>
+            ${latestNews.length ? `<div class="mega-title">Truyền thông nói về VIAi</div>${newsItems}` : ''}
+            ${latestBlogs.length ? `<div class="mega-title" style="margin-top:8px">Blog kiến thức</div>${blogItems}` : ''}
+            <a href="/blog" class="service-dropdown-all"><span class="dd-icon">↗</span><span><strong>Xem tất cả tin tức</strong><small>Truy cập trang blog</small></span></a>
           </div>
         </div>
       </nav>
@@ -453,7 +460,7 @@ function renderProductList(items) {
   return items.map(item => `<li>${escapeHtml(item)}</li>`).join('');
 }
 
-function renderProductDetailPage(product) {
+async function renderProductDetailPage(product) {
   const siteUrl = SITE_URL;
   const absoluteUrl = `${siteUrl}/cong-cu/${product.slug}`;
   const title = `${product.name} | VIAi`;
@@ -541,7 +548,7 @@ function renderProductDetailPage(product) {
   </style>
 </head>
 <body>
-  ${renderSiteToolbar('products')}
+  ${await renderSiteToolbar('products')}
   <section class="product-hero">
     <div class="hero-inner">
       <div>
@@ -991,7 +998,7 @@ const PRODUCT_ENRICHMENT = {
   },
 };
 
-function renderProductPage(product, detail, related = []) {
+async function renderProductPage(product, detail, related = []) {
   const siteUrl = SITE_URL;
   const title = `${product.name} – VIAi AI Agent`;
   const desc = detail.heroDesc;
@@ -1209,7 +1216,7 @@ function renderProductPage(product, detail, related = []) {
   </style>
 </head>
 <body>
-  ${renderSiteToolbar('products')}
+  ${await renderSiteToolbar('products')}
 
   <!-- 1. HERO -->
   <section class="p-hero">
@@ -1414,7 +1421,7 @@ function renderProductPage(product, detail, related = []) {
 </html>`;
 }
 
-function renderBlogPage(post) {
+async function renderBlogPage(post) {
   let faq = [];
   try { faq = JSON.parse(post.faq_json || '[]'); } catch {}
   const siteUrl = SITE_URL;
@@ -1592,7 +1599,7 @@ function renderBlogPage(post) {
   </style>
 </head>
 <body>
-  ${renderSiteToolbar('blog')}
+  ${await renderSiteToolbar('blog')}
   <section class="hero">
     <div class="hero-inner">
       <div class="cat">${escapeHtml(post.category || 'Kiến thức AI')}</div>
@@ -2022,7 +2029,7 @@ function renderSolutionCSS() {
 }
 
 // ── Page 1: /phan-mem ─────────────────────────────────
-function renderPhanMem() {
+async function renderPhanMem() {
   const agents = [
     { slug:'zalo-sales-agent', icon:'💬', name:'Zalo Sales Agent', desc:'Tư vấn và chốt đơn qua Zalo OA 24/7 — không cần nhân viên trực.', badge:'HOT' },
     { slug:'order-management-agent', icon:'📦', name:'Order Management Agent', desc:'Gom đơn từ Shopee, Lazada, Website vào một luồng xử lý thống nhất.', badge:'PHỔ BIẾN' },
@@ -2047,7 +2054,7 @@ function renderPhanMem() {
   ${renderSolutionCSS()}
 </head>
 <body>
-  ${renderSiteToolbar()}
+  ${await renderSiteToolbar()}
   <!-- HERO -->
   <section class="sol-hero">
     <div class="sol-inner">
@@ -2187,7 +2194,7 @@ function renderPhanMem() {
 }
 
 // ── Page 2: /dich-vu ─────────────────────────────────
-function renderDichVu() {
+async function renderDichVu() {
   return `<!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -2202,7 +2209,7 @@ function renderDichVu() {
   ${renderSolutionCSS()}
 </head>
 <body>
-  ${renderSiteToolbar()}
+  ${await renderSiteToolbar()}
   <!-- HERO -->
   <section class="sol-hero" style="background:linear-gradient(135deg,#0F172A 0%,#0D3B8E 55%,#1A56DB 100%)">
     <div class="sol-inner">
@@ -2342,7 +2349,7 @@ function renderDichVu() {
 }
 
 // ── Page 3: /dao-tao ─────────────────────────────────
-function renderDaoTao() {
+async function renderDaoTao() {
   const courses = [
     { icon:'🤖', level:'Cơ bản', name:'AI Agent 101', desc:'Hiểu AI Agent là gì, cách hoạt động và cách chọn Agent phù hợp với nghiệp vụ doanh nghiệp. Dành cho người mới bắt đầu.', duration:'8 buổi', format:'Online + Video ghi lại', price:'3.990.000đ' },
     { icon:'⚙️', level:'Thực chiến', name:'n8n & Automation Thực chiến', desc:'Xây dựng workflow tự động hóa với n8n — kết nối Zalo, Google Sheets, CRM và hơn 400 ứng dụng. Không cần code.', duration:'12 buổi', format:'Online Live + Project thực tế', price:'6.990.000đ' },
@@ -2379,7 +2386,7 @@ function renderDaoTao() {
   </style>
 </head>
 <body>
-  ${renderSiteToolbar()}
+  ${await renderSiteToolbar()}
   <!-- HERO -->
   <section class="sol-hero" style="background:linear-gradient(135deg,#0F172A 0%,#1E3A8A 50%,#0F172A 100%)">
     <div class="sol-inner">
@@ -2522,16 +2529,16 @@ function renderDaoTao() {
 }
 
 // ── Routes cho 3 trang giải pháp ─────────────────────
-app.get('/phan-mem', (_req, res) => res.setHeader('Content-Type','text/html;charset=utf-8') && res.send(renderPhanMem()));
-app.get('/dich-vu',  (_req, res) => res.setHeader('Content-Type','text/html;charset=utf-8') && res.send(renderDichVu()));
-app.get('/dao-tao',  (_req, res) => res.setHeader('Content-Type','text/html;charset=utf-8') && res.send(renderDaoTao()));
+app.get('/phan-mem', (_req, res) => res.setHeader('Content-Type','text/html;charset=utf-8') && res.send(await renderPhanMem()));
+app.get('/dich-vu',  (_req, res) => res.setHeader('Content-Type','text/html;charset=utf-8') && res.send(await renderDichVu()));
+app.get('/dao-tao',  (_req, res) => res.setHeader('Content-Type','text/html;charset=utf-8') && res.send(await renderDaoTao()));
 
 app.get('/cong-cu', (_req, res) => res.redirect('/#products'));
 
 app.get('/cong-cu/:slug', (req, res) => {
   const product = PRODUCT_DETAIL_BY_SLUG[req.params.slug];
   if (!product) return res.status(404).sendFile(path.join(__dirname, '404.html'));
-  res.send(renderProductDetailPage(product));
+  res.send(await renderProductDetailPage(product));
 });
 
 app.get('/blog', async (_req, res) => {
@@ -2584,7 +2591,7 @@ app.get('/blog', async (_req, res) => {
   </style>
 </head>
 <body>
-  ${renderSiteToolbar('blog')}
+  ${await renderSiteToolbar('blog')}
   <div class="blog-hero">
     <h1>Blog <span style="color:#FFB800">VIAi</span></h1>
     <p>Kiến thức thực tế về AI Agent, tự động hóa và chuyển đổi số cho doanh nghiệp Việt Nam</p>
@@ -2635,7 +2642,7 @@ app.get('/blog', async (_req, res) => {
 app.get('/blog/:slug', async (req, res) => {
   const post = await db.prepare('SELECT * FROM blog_posts WHERE slug = ? AND active = 1').get(req.params.slug);
   if (!post) return res.status(404).sendFile(path.join(__dirname, '404.html'));
-  res.send(renderBlogPage(post));
+  res.send(await renderBlogPage(post));
 });
 
 app.get('/san-pham/:slug', async (req, res) => {
@@ -2652,7 +2659,7 @@ app.get('/san-pham/:slug', async (req, res) => {
     .filter(p => PRODUCT_DETAILS[p.slug])
     .slice(0, 3)
     .map(p => ({ ...p, detail: PRODUCT_DETAILS[p.slug] }));
-  res.send(renderProductPage(product, detail, related));
+  res.send(await renderProductPage(product, detail, related));
 });
 
 // 404 — bắt tất cả route không khớp
