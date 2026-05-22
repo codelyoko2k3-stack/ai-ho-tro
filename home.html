@@ -4108,14 +4108,20 @@
     // Load dropdown Tin tức động
     (async () => {
       try {
-        const newsRes = await fetch('/api/news').then(r=>r.json());
+        const [newsRes, blogRes] = await Promise.all([
+          fetch('/api/news').then(r=>r.json()).catch(()=>[]),
+          fetch('/api/blog-posts').then(r=>r.json()).catch(()=>[])
+        ]);
         const el = document.getElementById('nav-news-content');
         if (!el) return;
-        const newsList = (newsRes||[]).slice(0,7);
-        const icons = ['📰','🤝','🚀','📢','💡','🔍','🌐'];
         let html = '';
-        newsList.forEach((n,i) => {
-          html += `<a href="${n.source_url||'/blog'}"><span class="dd-icon">${icons[i]||'📰'}</span><span><strong>${n.title||''}</strong><small>${n.source_name||''} · ${(n.published_at||'').slice(0,10)}</small></span></a>`;
+        (newsRes||[]).slice(0,3).forEach(n => {
+          const href = n.source_url && n.source_url.startsWith('http') ? n.source_url : '/blog';
+          const target = href.startsWith('http') ? ' target="_blank"' : '';
+          html += `<a href="${href}"${target}><span class="dd-icon">📰</span><span><strong>${n.title||''}</strong><small>${n.source_name||''} · ${(n.published_at||'').slice(0,10)}</small></span></a>`;
+        });
+        (blogRes||[]).slice(0,4).forEach(b => {
+          html += `<a href="/blog/${b.slug||''}"><span class="dd-icon">✍️</span><span><strong>${b.title||''}</strong><small>${b.category||'Blog'} · ${(b.published_at||'').slice(0,10)}</small></span></a>`;
         });
         html += '<a href="/blog" class="service-dropdown-all"><span class="dd-icon">↗</span><span><strong>Xem tất cả tin tức</strong></span></a>';
         el.innerHTML = html;
