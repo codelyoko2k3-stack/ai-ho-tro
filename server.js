@@ -1676,13 +1676,13 @@ app.use((req, res, next) => {
     && !req.path.startsWith('/admin')
     && !req.path.startsWith('/uploads')
     && !/\.(css|js|png|jpg|jpeg|ico|svg|woff|woff2|webp|gif|map|txt|xml)$/i.test(req.path)) {
-    try { db.prepare('INSERT INTO page_views (path, ip) VALUES (?, ?)').run(req.path, req.ip || ''); } catch {}
+    try { db.prepare('INSERT INTO page_views (path, ip) VALUES (?, ?)').run(req.path, req.ip || '').catch(()=>{}); } catch {}
   }
   next();
 });
 
 // ── Dynamic sitemap.xml ───────────────────────────────
-app.get('/sitemap.xml', (_req, res) => {
+app.get('/sitemap.xml', async (_req, res) => {
   const now = new Date().toISOString().slice(0, 10);
   const staticPages = [
     { loc: '/', changefreq: 'weekly',  priority: '1.0' },
@@ -1694,8 +1694,8 @@ app.get('/sitemap.xml', (_req, res) => {
     { loc: '/terms.html',    changefreq: 'yearly',  priority: '0.3' },
     { loc: '/cookies.html',  changefreq: 'yearly',  priority: '0.3' },
   ];
-  const blogs    = db.prepare("SELECT slug, published_at FROM blog_posts WHERE active=1 ORDER BY published_at DESC").all();
-  const products = db.prepare("SELECT slug FROM products WHERE active=1 AND slug IS NOT NULL ORDER BY order_index ASC").all();
+  const blogs    = await db.prepare("SELECT slug, published_at FROM blog_posts WHERE active=1 ORDER BY published_at DESC").all();
+  const products = await db.prepare("SELECT slug FROM products WHERE active=1 AND slug IS NOT NULL ORDER BY order_index ASC").all();
   const congcus  = Object.keys(PRODUCT_DETAIL_BY_SLUG);
 
   const urlTag = ({ loc, lastmod, changefreq, priority }) =>
@@ -1730,13 +1730,13 @@ const fs = require('fs');
 function getHomeTemplate() {
   return fs.readFileSync(path.join(__dirname, 'home.html'), 'utf8');
 }
-function getSiteSettings() {
-  const rows = db.prepare('SELECT key, value FROM site_settings').all();
+async function getSiteSettings() {
+  const rows = await db.prepare('SELECT key, value FROM site_settings').all();
   return Object.fromEntries(rows.map(r => [r.key, r.value]));
 }
-app.get('/', (_req, res) => {
+app.get('/', async (_req, res) => {
   try {
-    const s = getSiteSettings();
+    const s = await getSiteSettings();
     let html = getHomeTemplate();
     // SEO
     html = html.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(s.seo_title || '')}</title>`);
@@ -1791,7 +1791,7 @@ app.get('/', (_req, res) => {
     }
 
     // Pricing — inject pricing cards từ DB
-    const plans = db.prepare('SELECT * FROM pricing_plans WHERE active=1 ORDER BY order_index ASC').all();
+    const plans = await db.prepare('SELECT * FROM pricing_plans WHERE active=1 ORDER BY order_index ASC').all();
     if (plans.length > 0) {
       const pricingHtml = plans.map(plan => {
         let features = [];
@@ -2534,20 +2534,20 @@ app.get('/cong-cu/:slug', (req, res) => {
   res.send(renderProductDetailPage(product));
 });
 
-app.get('/blog/:slug', (req, res) => {
-  const post = db.prepare('SELECT * FROM blog_posts WHERE slug = ? AND active = 1').get(req.params.slug);
+app.get('/blog/:slug', async (req, res) => {
+  const post = await db.prepare('SELECT * FROM blog_posts WHERE slug = ? AND active = 1').get(req.params.slug);
   if (!post) return res.status(404).sendFile(path.join(__dirname, '404.html'));
   res.send(renderBlogPage(post));
 });
 
-app.get('/san-pham/:slug', (req, res) => {
-  const product = db.prepare('SELECT * FROM products WHERE slug = ? AND active = 1').get(req.params.slug);
+app.get('/san-pham/:slug', async (req, res) => {
+  const product = await db.prepare('SELECT * FROM products WHERE slug = ? AND active = 1').get(req.params.slug);
   if (!product) return res.status(404).sendFile(path.join(__dirname, '404.html'));
   const base = PRODUCT_DETAILS[product.slug];
   if (!base) return res.status(404).sendFile(path.join(__dirname, '404.html'));
   const detail = Object.assign({}, base, PRODUCT_ENRICHMENT[product.slug] || {});
   // Lấy tối đa 3 sản phẩm liên quan (khác slug hiện tại, có data trong PRODUCT_DETAILS)
-  const relatedRaw = db.prepare(
+  const relatedRaw = await db.prepare(
     'SELECT * FROM products WHERE slug != ? AND active = 1 AND slug IS NOT NULL ORDER BY order_index ASC LIMIT 6'
   ).all(product.slug);
   const related = relatedRaw
