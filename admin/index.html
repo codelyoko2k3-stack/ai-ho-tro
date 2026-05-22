@@ -1933,7 +1933,7 @@
 
 <script>
   const API = '/admin-api';
-  let token = localStorage.getItem('viai_token');
+  let token = sessionStorage.getItem('viai_token');
   const badgeLabels = { hot:'HOT', pop:'PHỔ BIẾN', new:'MỚI', beta:'BETA' };
   let currentSeoDraft = null;
 
@@ -1976,7 +1976,7 @@
       return;
     }
     token = data.token;
-    localStorage.setItem('viai_token', token);
+    sessionStorage.setItem('viai_token', token);
     showApp();
   }
 
@@ -2041,12 +2041,12 @@
     document.getElementById('app').style.display = 'block';
     // Lưu username để hiển thị trên dashboard
     const payload = token ? JSON.parse(atob(token.split('.')[1])) : {};
-    if (payload.username) localStorage.setItem('admin_username', payload.username);
+    if (payload.username) sessionStorage.setItem('admin_username', payload.username);
     showPage('dashboard', document.getElementById('nav-dashboard'), 'Dashboard');
   }
 
   function doLogout() {
-    localStorage.removeItem('viai_token');
+    sessionStorage.removeItem('viai_token');
     window.location.href = '/login.html';
   }
 
@@ -2059,7 +2059,7 @@
     try {
       const r = await fetch(url, opts);
       if (r.status === 401) {
-        localStorage.removeItem('viai_token');
+        sessionStorage.removeItem('viai_token');
         token = null;
         document.getElementById('app').style.display = 'none';
         document.getElementById('login-screen').style.display = 'flex';
@@ -2123,7 +2123,7 @@ if (p === 'site-settings') loadSettings();
     // Greeting theo giờ
     const h = new Date().getHours();
     const greet = h < 12 ? 'Chào buổi sáng' : h < 18 ? 'Chào buổi chiều' : 'Chào buổi tối';
-    const user = localStorage.getItem('admin_username') || 'Admin';
+    const user = sessionStorage.getItem('admin_username') || 'Admin';
     document.getElementById('dash-greeting').textContent = `${greet}, ${user}!`;
     const now = new Date();
     document.getElementById('dash-time').textContent =
