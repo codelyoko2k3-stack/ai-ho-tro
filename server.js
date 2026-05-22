@@ -2529,13 +2529,13 @@ async function renderDaoTao() {
 }
 
 // ── Routes cho 3 trang giải pháp ─────────────────────
-app.get('/phan-mem', (_req, res) => res.setHeader('Content-Type','text/html;charset=utf-8') && res.send(await renderPhanMem()));
-app.get('/dich-vu',  (_req, res) => res.setHeader('Content-Type','text/html;charset=utf-8') && res.send(await renderDichVu()));
-app.get('/dao-tao',  (_req, res) => res.setHeader('Content-Type','text/html;charset=utf-8') && res.send(await renderDaoTao()));
+app.get('/phan-mem', async (_req, res) => { res.setHeader('Content-Type','text/html;charset=utf-8'); res.send(await renderPhanMem()); });
+app.get('/dich-vu',  async (_req, res) => { res.setHeader('Content-Type','text/html;charset=utf-8'); res.send(await renderDichVu()); });
+app.get('/dao-tao',  async (_req, res) => { res.setHeader('Content-Type','text/html;charset=utf-8'); res.send(await renderDaoTao()); });
 
 app.get('/cong-cu', (_req, res) => res.redirect('/#products'));
 
-app.get('/cong-cu/:slug', (req, res) => {
+app.get('/cong-cu/:slug', async (req, res) => {
   const product = PRODUCT_DETAIL_BY_SLUG[req.params.slug];
   if (!product) return res.status(404).sendFile(path.join(__dirname, '404.html'));
   res.send(await renderProductDetailPage(product));
