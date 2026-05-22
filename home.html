@@ -4108,28 +4108,15 @@
     // Load dropdown Tin tức động
     (async () => {
       try {
-        const [newsRes, blogRes] = await Promise.all([
-          fetch('/api/news').then(r=>r.json()),
-          fetch('/api/blog-posts').then(r=>r.json())
-        ]);
+        const newsRes = await fetch('/api/news').then(r=>r.json());
         const el = document.getElementById('nav-news-content');
         if (!el) return;
-        const newsList = (newsRes||[]).slice(0,3);
-        const blogList = (blogRes||[]).slice(0,4);
-        const icons = ['📰','🤝','🚀','💡','📋','🔒','✍️'];
+        const newsList = (newsRes||[]).slice(0,7);
+        const icons = ['📰','🤝','🚀','📢','💡','🔍','🌐'];
         let html = '';
-        if (newsList.length) {
-          html += '<div class="mega-title">Truyền thông nói về VIAi</div>';
-          newsList.forEach((n,i) => {
-            html += `<a href="${n.source_url||'/blog'}"><span class="dd-icon">${icons[i]||'📰'}</span><span><strong>${n.title||''}</strong><small>${n.source_name||''} · ${(n.published_at||'').slice(0,10)}</small></span></a>`;
-          });
-        }
-        if (blogList.length) {
-          html += '<div class="mega-title" style="margin-top:8px">Blog kiến thức</div>';
-          blogList.forEach((b,i) => {
-            html += `<a href="/blog/${b.slug||''}"><span class="dd-icon">${icons[i+3]||'✍️'}</span><span><strong>${b.title||''}</strong><small>${b.category||'Blog'} · ${(b.published_at||'').slice(0,10)}</small></span></a>`;
-          });
-        }
+        newsList.forEach((n,i) => {
+          html += `<a href="${n.source_url||'/blog'}"><span class="dd-icon">${icons[i]||'📰'}</span><span><strong>${n.title||''}</strong><small>${n.source_name||''} · ${(n.published_at||'').slice(0,10)}</small></span></a>`;
+        });
         html += '<a href="/blog" class="service-dropdown-all"><span class="dd-icon">↗</span><span><strong>Xem tất cả tin tức</strong></span></a>';
         el.innerHTML = html;
       } catch {}

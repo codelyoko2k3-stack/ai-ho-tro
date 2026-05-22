@@ -156,15 +156,11 @@ async function renderSiteToolbar(active = '') {
   // Load 3 tin tức + 4 blog mới nhất để inject vào dropdown
   let latestNews = [], latestBlogs = [];
   try {
-    latestNews  = await db.prepare("SELECT title, source_name, source_url, published_at FROM news_posts WHERE active=1 ORDER BY published_at DESC LIMIT 3").all();
-    latestBlogs = await db.prepare("SELECT title, category, slug, published_at FROM blog_posts WHERE active=1 ORDER BY published_at DESC LIMIT 4").all();
+    latestNews  = await db.prepare("SELECT title, source_name, source_url, published_at FROM news_posts WHERE active=1 ORDER BY published_at DESC LIMIT 7").all();
   } catch {}
 
   const newsItems = latestNews.map(n => `
-    <a href="${escapeHtml(n.source_url||'/#blog')}"><span class="dd-icon">📰</span><span><strong>${escapeHtml(n.title)}</strong><small>${escapeHtml(n.source_name||'')} · ${(n.published_at||'').slice(0,10)}</small></span></a>`).join('');
-
-  const blogItems = latestBlogs.map(b => `
-    <a href="/blog/${escapeHtml(b.slug||'')}"><span class="dd-icon">✍️</span><span><strong>${escapeHtml(b.title)}</strong><small>${escapeHtml(b.category||'Blog')} · ${(b.published_at||'').slice(0,10)}</small></span></a>`).join('');
+    <a href="${escapeHtml(n.source_url||'/blog')}"><span class="dd-icon">📰</span><span><strong>${escapeHtml(n.title)}</strong><small>${escapeHtml(n.source_name||'')} · ${(n.published_at||'').slice(0,10)}</small></span></a>`).join('');
 
   return `
   <header class="site-header">
@@ -195,9 +191,8 @@ async function renderSiteToolbar(active = '') {
         <div class="nav-item${active === 'blog' ? ' nav-active' : ''}">
           <a href="/blog" class="nav-link">Tin tức <span class="arrow">▾</span></a>
           <div class="dropdown dropdown-mega news-dropdown">
-            ${latestNews.length ? `<div class="mega-title">Truyền thông nói về VIAi</div>${newsItems}` : ''}
-            ${latestBlogs.length ? `<div class="mega-title" style="margin-top:8px">Blog kiến thức</div>${blogItems}` : ''}
-            <a href="/blog" class="service-dropdown-all"><span class="dd-icon">↗</span><span><strong>Xem tất cả tin tức</strong><small>Truy cập trang blog</small></span></a>
+            ${newsItems}
+            <a href="/blog" class="service-dropdown-all"><span class="dd-icon">↗</span><span><strong>Xem tất cả tin tức</strong></span></a>
           </div>
         </div>
       </nav>
