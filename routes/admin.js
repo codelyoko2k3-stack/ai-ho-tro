@@ -804,20 +804,25 @@ router.get('/blog-posts', auth, (req, res) => {
 });
 
 router.post('/blog-posts', auth, (req, res) => {
-  const { title, excerpt, content, seo_title, meta_description, faq_json, image_url, image_alt, category, author, slug, published_at, active } = req.body;
+  const { title, excerpt, content, seo_title, meta_description, faq_json, image_url, image_alt, category, author, published_at, active } = req.body;
+  if (!title) return res.status(400).json({ error: 'Tiêu đề không được để trống' });
+  const finalSlug = req.body.slug ? uniqueSlug(req.body.slug) : uniqueSlug(toSlug(title));
   const r = db.prepare(`
     INSERT INTO blog_posts (title, excerpt, content, seo_title, meta_description, faq_json, image_url, image_alt, category, author, slug, published_at, active)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-  ).run(title, excerpt, content||null, seo_title||null, meta_description||null, faq_json||'[]', image_url, image_alt||null, category||'Tin tức', author||'VIAi Team', slug||null, published_at, active===false?0:1);
+  ).run(title, excerpt, content||null, seo_title||null, meta_description||null, faq_json||'[]', image_url||null, image_alt||null, category||'Tin tức', author||'VIAi Team', finalSlug, published_at||new Date().toISOString().slice(0,10), active===false?0:1);
   res.json(db.prepare('SELECT * FROM blog_posts WHERE id = ?').get(r.lastInsertRowid));
 });
 
 router.put('/blog-posts/:id', auth, (req, res) => {
-  const { title, excerpt, content, seo_title, meta_description, faq_json, image_url, image_alt, category, author, slug, published_at, active } = req.body;
+  const { title, excerpt, content, seo_title, meta_description, faq_json, image_url, image_alt, category, author, published_at, active } = req.body;
+  if (!title) return res.status(400).json({ error: 'Tiêu đề không được để trống' });
+  const existing = db.prepare('SELECT slug FROM blog_posts WHERE id=?').get(req.params.id);
+  const finalSlug = req.body.slug || existing?.slug || uniqueSlug(toSlug(title));
   db.prepare(`
     UPDATE blog_posts SET title=?, excerpt=?, content=?, seo_title=?, meta_description=?, faq_json=?, image_url=?, image_alt=?, category=?, author=?, slug=?, published_at=?, active=?
     WHERE id=?`
-  ).run(title, excerpt, content||null, seo_title||null, meta_description||null, faq_json||'[]', image_url, image_alt||null, category, author, slug||null, published_at, active===false?0:1, req.params.id);
+  ).run(title, excerpt, content||null, seo_title||null, meta_description||null, faq_json||'[]', image_url||null, image_alt||null, category, author, finalSlug, published_at, active===false?0:1, req.params.id);
   res.json(db.prepare('SELECT * FROM blog_posts WHERE id = ?').get(req.params.id));
 });
 
