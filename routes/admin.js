@@ -690,7 +690,27 @@ router.get('/analytics', auth, (req, res) => {
     const loginSuccess = db.prepare("SELECT COUNT(*) as c FROM login_logs WHERE success=1").get().c;
     const loginFailed  = db.prepare("SELECT COUNT(*) as c FROM login_logs WHERE success=0").get().c;
     const loginToday   = db.prepare("SELECT COUNT(*) as c FROM login_logs WHERE success=1 AND date(created_at)=date('now')").get().c;
-    res.json({ totalViews, todayViews, weekViews, topPages, dailyViews, logins, loginSuccess, loginFailed, loginToday });
+
+    // Chi tiết từng trang: today / week / total + trend 7 ngày gần nhất
+    const allPaths = db.prepare("SELECT DISTINCT path FROM page_views ORDER BY path ASC").all().map(r => r.path);
+    const pageDetails = allPaths.map(path => {
+      const total = db.prepare("SELECT COUNT(*) as c FROM page_views WHERE path=?").get(path).c;
+      const today = db.prepare("SELECT COUNT(*) as c FROM page_views WHERE path=? AND date(created_at)=date('now')").get(path).c;
+      const week  = db.prepare("SELECT COUNT(*) as c FROM page_views WHERE path=? AND created_at>=datetime('now','-7 days')").get(path).c;
+      const yesterday = db.prepare("SELECT COUNT(*) as c FROM page_views WHERE path=? AND date(created_at)=date('now','-1 day')").get(path).c;
+      // Trend: mảng 7 ngày gần nhất
+      const trend = db.prepare("SELECT date(created_at) as day, COUNT(*) as v FROM page_views WHERE path=? AND created_at>=datetime('now','-6 days') GROUP BY day ORDER BY day ASC").all(path);
+      const trendArr = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        const key = d.toISOString().slice(0, 10);
+        const found = trend.find(t => t.day === key);
+        trendArr.push(found ? found.v : 0);
+      }
+      return { path, total, today, week, yesterday, trend: trendArr };
+    }).sort((a, b) => b.total - a.total);
+
+    res.json({ totalViews, todayViews, weekViews, topPages, dailyViews, logins, loginSuccess, loginFailed, loginToday, pageDetails });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
