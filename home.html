@@ -5020,36 +5020,40 @@
     }
 
     .news-dropdown {
-      min-width: 380px !important;
-      max-width: 420px !important;
+      min-width: 360px !important;
+      max-width: 400px !important;
       grid-template-columns: 1fr !important;
       gap: 2px !important;
-      padding: 12px !important;
+      padding: 10px !important;
       border-radius: 14px !important;
       box-shadow: 0 24px 60px rgba(15,23,42,0.14) !important;
-      max-height: 480px !important;
-      overflow-y: auto !important;
-    }
-    .news-dropdown .mega-title {
-      color: #64748b !important;
-      letter-spacing: 0.08em !important;
-      border-bottom-color: #e8eef8 !important;
+      overflow: hidden !important;
     }
     .news-dropdown a {
+      grid-column: 1/-1 !important;
+      display: flex !important;
       align-items: flex-start !important;
       gap: 10px !important;
-      padding: 10px !important;
+      padding: 9px 10px !important;
       border-radius: 8px !important;
+      overflow: hidden !important;
     }
     .news-dropdown a:hover { background: #eef4ff !important; transform: none !important; }
+    .news-dropdown a span:last-child { flex: 1; min-width: 0; overflow: hidden; }
     .news-dropdown .dd-icon {
-      width: 28px; height: 28px;
+      width: 28px; height: 28px; flex-shrink: 0;
       display: inline-flex; align-items: center; justify-content: center;
       border-radius: 7px; background: #f8fbff; border: 1px solid #e8eef8;
-      font-size: 0.9rem !important; flex: 0 0 auto;
+      font-size: 0.9rem !important;
     }
-    .news-dropdown strong { display: block; color: #0f172a; font-size: 0.84rem; line-height: 1.3; margin-bottom: 2px; }
-    .news-dropdown small { color: #94a3b8; font-size: 0.75rem; }
+    .news-dropdown strong {
+      display: -webkit-box !important; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden; color: #0f172a; font-size: 0.83rem; line-height: 1.35;
+    }
+    .news-dropdown small {
+      display: block; color: #94a3b8; font-size: 0.74rem; margin-top: 3px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
 
     .service-dropdown {
       min-width: 620px !important;
