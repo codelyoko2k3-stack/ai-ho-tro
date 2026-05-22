@@ -646,6 +646,38 @@ router.delete('/pricing/:id', auth, (req, res) => {
   res.json({ success: true });
 });
 
+// ── Admin Profile ─────────────────────────────────────
+router.get('/profile', auth, (req, res) => {
+  const u = db.prepare('SELECT id, username, display_name, email, avatar_url FROM admin_users WHERE id=?').get(req.user.id || 1);
+  res.json(u || {});
+});
+
+router.put('/profile', auth, (req, res) => {
+  const { display_name, email } = req.body;
+  db.prepare('UPDATE admin_users SET display_name=?, email=? WHERE id=?').run(display_name || null, email || null, req.user.id || 1);
+  res.json({ success: true });
+});
+
+router.put('/profile/password', auth, (req, res) => {
+  const { current_password, new_password } = req.body;
+  if (!current_password || !new_password)
+    return res.status(400).json({ error: 'Vui lòng nhập đầy đủ thông tin' });
+  if (new_password.length < 6)
+    return res.status(400).json({ error: 'Mật khẩu mới phải ít nhất 6 ký tự' });
+  const u = db.prepare('SELECT * FROM admin_users WHERE id=?').get(req.user.id || 1);
+  if (!bcrypt.compareSync(current_password, u.password_hash))
+    return res.status(400).json({ error: 'Mật khẩu hiện tại không đúng' });
+  db.prepare('UPDATE admin_users SET password_hash=? WHERE id=?').run(bcrypt.hashSync(new_password, 10), u.id);
+  res.json({ success: true });
+});
+
+router.post('/upload-avatar', auth, upload.single('avatar'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'Không có file ảnh' });
+  const url = `/uploads/${req.file.filename}`;
+  db.prepare('UPDATE admin_users SET avatar_url=? WHERE id=?').run(url, req.user.id || 1);
+  res.json({ url });
+});
+
 // ── Analytics: page views & login logs ───────────────
 router.get('/analytics', auth, (req, res) => {
   try {

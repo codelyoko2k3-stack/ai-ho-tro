@@ -184,6 +184,10 @@ const settingsDefaults = {
 // Migration: thêm cột 2FA nếu chưa có
 try { db.exec("ALTER TABLE admin_users ADD COLUMN totp_secret TEXT DEFAULT NULL"); } catch {}
 try { db.exec("ALTER TABLE admin_users ADD COLUMN totp_enabled INTEGER DEFAULT 0"); } catch {}
+// Migration: thêm cột profile admin
+try { db.exec("ALTER TABLE admin_users ADD COLUMN display_name TEXT DEFAULT NULL"); } catch {}
+try { db.exec("ALTER TABLE admin_users ADD COLUMN email TEXT DEFAULT NULL"); } catch {}
+try { db.exec("ALTER TABLE admin_users ADD COLUMN avatar_url TEXT DEFAULT NULL"); } catch {}
 try { db.exec("ALTER TABLE blog_posts ADD COLUMN content TEXT"); } catch {}
 try { db.exec("ALTER TABLE blog_posts ADD COLUMN seo_title TEXT"); } catch {}
 try { db.exec("ALTER TABLE blog_posts ADD COLUMN meta_description TEXT"); } catch {}

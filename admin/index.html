@@ -175,6 +175,36 @@
     .nav-sub-item.active i { color: var(--primary); }
     .nav-sidebar-footer { padding: 10px 8px; border-top: 1px solid #E2E8F0; margin-top: auto; }
 
+    /* ── PROFILE MODAL ─────────────────────────────────── */
+    .profile-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:center;justify-content:center }
+    .profile-overlay.open { display:flex }
+    .profile-box { background:white;border-radius:16px;width:460px;max-width:95vw;box-shadow:0 24px 60px rgba(0,0,0,.25);overflow:hidden }
+    .profile-head { background:linear-gradient(135deg,#0F172A,#1A56DB);padding:24px;display:flex;align-items:center;gap:16px }
+    .profile-avatar-wrap { position:relative;cursor:pointer }
+    .profile-avatar-img { width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.35);display:block }
+    .profile-avatar-text { width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#FFB800);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:22px;border:3px solid rgba(255,255,255,.35) }
+    .profile-avatar-edit { position:absolute;bottom:0;right:0;width:22px;height:22px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:white }
+    .profile-head-info { flex:1 }
+    .profile-head-name { color:white;font-size:1.1rem;font-weight:800 }
+    .profile-head-user { color:rgba(255,255,255,.6);font-size:.8rem;margin-top:2px }
+    .profile-tabs { display:flex;border-bottom:2px solid #E2E8F0;padding:0 20px }
+    .profile-tab { padding:10px 16px;font-size:12px;font-weight:700;color:#64748b;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s }
+    .profile-tab.active { color:var(--primary);border-bottom-color:var(--primary) }
+    .profile-body { padding:20px }
+    .profile-panel { display:none }
+    .profile-panel.active { display:block }
+    .pf-row { margin-bottom:14px }
+    .pf-label { font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px }
+    .pf-input { width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none;transition:border-color .2s }
+    .pf-input:focus { border-color:var(--primary) }
+    .pf-btn { width:100%;padding:10px;background:var(--primary);color:white;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:background .2s;margin-top:4px }
+    .pf-btn:hover { background:var(--primary-dark) }
+    .pf-msg { font-size:12px;text-align:center;padding:6px;border-radius:6px;margin-top:8px;display:none }
+    .pf-msg.ok { background:#ECFDF5;color:#16a34a;display:block }
+    .pf-msg.err { background:#FEF2F2;color:#E52222;display:block }
+    .avatar-upload-area { border:2px dashed #CBD5E1;border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:border-color .2s }
+    .avatar-upload-area:hover { border-color:var(--primary) }
+
     /* ── MAIN ──────────────────────────────────────────── */
     .main {
       flex: 1; margin-left: var(--sidebar-w);
@@ -533,7 +563,9 @@
   <!-- TOP HEADER -->
   <header class="top-header">
     <div class="header-left">
-      <div class="header-logo">VI<em>Ai</em></div>
+      <a href="/" target="_blank" class="header-logo" style="display:flex;align-items:center;gap:8px;text-decoration:none">
+        <img src="/anhlogo/logo2.png" alt="VIAi" style="height:32px;width:auto;object-fit:contain;mix-blend-mode:luminosity;filter:brightness(0) invert(1)" />
+      </a>
       <button class="hamburger" onclick="toggleSidebar()" title="Ẩn/hiện menu">
         <i class="fas fa-bars"></i>
       </button>
@@ -546,8 +578,10 @@
       </div>
     </div>
     <div class="header-right">
-      <i class="fas fa-user-circle"></i>
-      <span>Admin</span>
+      <div id="header-admin-wrap" onclick="openProfile()" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 8px;border-radius:8px;transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='transparent'">
+        <div id="header-avatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#FFB800);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:11px;flex-shrink:0">A</div>
+        <span id="header-admin-name" style="font-size:12px;font-weight:600">Admin</span>
+      </div>
       <button class="btn-header-logout" onclick="doLogout()">
         <i class="fas fa-sign-out-alt"></i> Đăng xuất
       </button>
@@ -558,12 +592,13 @@
 
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
-      <div class="sidebar-user">
-        <div class="sidebar-avatar">A</div>
-        <div>
-          <div class="sidebar-username">Admin</div>
+      <div class="sidebar-user" onclick="openProfile()" style="cursor:pointer" title="Hồ sơ Admin">
+        <div id="sidebar-avatar" class="sidebar-avatar">A</div>
+        <div style="flex:1;min-width:0">
+          <div class="sidebar-username" id="sidebar-admin-name">Admin</div>
           <div class="sidebar-status">Online</div>
         </div>
+        <i class="fas fa-pen" style="color:rgba(255,255,255,.4);font-size:10px;flex-shrink:0"></i>
       </div>
 
       <!-- Dashboard -->
@@ -727,6 +762,40 @@
                 <thead><tr><th style="text-align:left;padding:8px 10px;background:#F8FAFF;color:#64748b;font-size:10px;text-transform:uppercase;font-weight:700">Tên</th><th style="text-align:left;padding:8px 10px;background:#F8FAFF;color:#64748b;font-size:10px;text-transform:uppercase;font-weight:700">SĐT</th><th style="text-align:left;padding:8px 10px;background:#F8FAFF;color:#64748b;font-size:10px;text-transform:uppercase;font-weight:700">Ngày</th></tr></thead>
                 <tbody id="dash-customers-tbody"><tr><td colspan="3" style="text-align:center;padding:20px;color:#94a3b8">Đang tải...</td></tr></tbody>
               </table>
+            </div>
+          </div>
+
+          <!-- Bảng thống kê truy cập nhanh -->
+          <div style="margin-top:14px" class="dash-panel">
+            <div class="dash-panel-header">
+              <span><i class="fas fa-chart-bar" style="color:var(--primary)"></i> Thống kê truy cập trang</span>
+              <a onclick="showPage('analytics',document.getElementById('nav-dashboard'),'Thống kê truy cập')" style="font-size:11px;color:var(--primary);cursor:pointer">Xem chi tiết →</a>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px">
+              <div>
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#94a3b8;margin-bottom:8px">Top trang hôm nay</div>
+                <table style="width:100%;font-size:12px;border-collapse:collapse">
+                  <tbody id="dash-toppage-tbody"><tr><td colspan="2" style="text-align:center;padding:12px;color:#94a3b8">Đang tải...</td></tr></tbody>
+                </table>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;align-content:start">
+                <div style="background:#EEF3FF;border-radius:10px;padding:12px;text-align:center">
+                  <div style="font-size:1.4rem;font-weight:900;color:var(--primary)" id="dash-views-today">—</div>
+                  <div style="font-size:10px;color:#64748b;margin-top:2px">Lượt xem hôm nay</div>
+                </div>
+                <div style="background:#FFF0E6;border-radius:10px;padding:12px;text-align:center">
+                  <div style="font-size:1.4rem;font-weight:900;color:var(--accent)" id="dash-views-total">—</div>
+                  <div style="font-size:10px;color:#64748b;margin-top:2px">Tổng lượt xem</div>
+                </div>
+                <div style="background:#ECFDF5;border-radius:10px;padding:12px;text-align:center">
+                  <div style="font-size:1.4rem;font-weight:900;color:#16a34a" id="dash-views-week">—</div>
+                  <div style="font-size:10px;color:#64748b;margin-top:2px">7 ngày qua</div>
+                </div>
+                <div style="background:#F0FDF4;border-radius:10px;padding:12px;text-align:center">
+                  <div style="font-size:1.4rem;font-weight:900;color:#16a34a" id="dash-login-today">—</div>
+                  <div style="font-size:10px;color:#64748b;margin-top:2px">Đăng nhập hôm nay</div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1500,6 +1569,57 @@
   </div>
 </div>
 
+<!-- PROFILE MODAL -->
+<div class="profile-overlay" id="profile-overlay" onclick="if(event.target===this)closeProfile()">
+  <div class="profile-box">
+    <div class="profile-head">
+      <div class="profile-avatar-wrap" onclick="document.getElementById('avatar-file-input').click()" title="Đổi ảnh đại diện">
+        <div id="pf-avatar-display" class="profile-avatar-text">A</div>
+        <div class="profile-avatar-edit"><i class="fas fa-camera"></i></div>
+      </div>
+      <div class="profile-head-info">
+        <div class="profile-head-name" id="pf-head-name">Admin</div>
+        <div class="profile-head-user" id="pf-head-user">@admin</div>
+      </div>
+      <button onclick="closeProfile()" style="background:rgba(255,255,255,.1);border:none;color:white;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;flex-shrink:0">✕</button>
+    </div>
+    <div class="profile-tabs">
+      <div class="profile-tab active" onclick="switchProfileTab('info',this)">Thông tin</div>
+      <div class="profile-tab" onclick="switchProfileTab('password',this)">Đổi mật khẩu</div>
+      <div class="profile-tab" onclick="switchProfileTab('avatar',this)">Ảnh đại diện</div>
+    </div>
+    <div class="profile-body">
+      <!-- Tab: Thông tin -->
+      <div class="profile-panel active" id="pf-tab-info">
+        <div class="pf-row"><div class="pf-label">Tên đăng nhập</div><input class="pf-input" id="pf-username" readonly style="background:#F8FAFF;color:#94a3b8" /></div>
+        <div class="pf-row"><div class="pf-label">Tên hiển thị</div><input class="pf-input" id="pf-displayname" placeholder="Nhập tên hiển thị..." /></div>
+        <div class="pf-row"><div class="pf-label">Email</div><input class="pf-input" id="pf-email" type="email" placeholder="admin@company.com" /></div>
+        <button class="pf-btn" onclick="saveProfile()"><i class="fas fa-save"></i> Lưu thông tin</button>
+        <div class="pf-msg" id="pf-info-msg"></div>
+      </div>
+      <!-- Tab: Đổi mật khẩu -->
+      <div class="profile-panel" id="pf-tab-password">
+        <div class="pf-row"><div class="pf-label">Mật khẩu hiện tại</div><input class="pf-input" id="pf-cur-pass" type="password" placeholder="••••••••" /></div>
+        <div class="pf-row"><div class="pf-label">Mật khẩu mới</div><input class="pf-input" id="pf-new-pass" type="password" placeholder="Tối thiểu 6 ký tự" /></div>
+        <div class="pf-row"><div class="pf-label">Nhập lại mật khẩu mới</div><input class="pf-input" id="pf-confirm-pass" type="password" placeholder="••••••••" /></div>
+        <button class="pf-btn" onclick="savePassword()"><i class="fas fa-lock"></i> Đổi mật khẩu</button>
+        <div class="pf-msg" id="pf-pass-msg"></div>
+      </div>
+      <!-- Tab: Ảnh đại diện -->
+      <div class="profile-panel" id="pf-tab-avatar">
+        <div class="avatar-upload-area" onclick="document.getElementById('avatar-file-input').click()">
+          <div id="pf-avatar-preview" style="margin-bottom:12px;display:flex;justify-content:center"></div>
+          <i class="fas fa-cloud-upload-alt" style="font-size:1.8rem;color:#94a3b8;margin-bottom:8px;display:block"></i>
+          <div style="font-size:13px;font-weight:600;color:#64748b">Click để chọn ảnh</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:4px">JPG, PNG, WebP — Tối đa 5MB</div>
+        </div>
+        <input type="file" id="avatar-file-input" accept="image/*" style="display:none" onchange="uploadAvatar(this)" />
+        <div class="pf-msg" id="pf-avatar-msg" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- BLOG POST MODAL -->
 <div class="modal-overlay" id="blog-modal">
   <div class="modal-box" style="width:900px;max-width:98vw;padding:32px 36px">
@@ -1901,6 +2021,38 @@
         ? r.recent_customers.map(c => `<tr><td style="font-weight:600">${escH(c.name)}</td><td style="color:#64748b">${escH(c.phone||'—')}</td><td style="color:#94a3b8;white-space:nowrap;font-size:11px">${(c.created_at||'').slice(0,10)}</td></tr>`).join('')
         : '<tr><td colspan="3" style="text-align:center;padding:16px;color:#94a3b8">Chưa có khách hàng</td></tr>';
     } catch(e) { console.error('Dashboard stats error', e); }
+
+    // Load analytics nhanh cho dashboard
+    try {
+      const an = await apiFetch('/admin-api/analytics');
+      if (an) {
+        document.getElementById('dash-views-today').textContent = an.todayViews ?? '—';
+        document.getElementById('dash-views-total').textContent = an.totalViews ?? '—';
+        document.getElementById('dash-views-week').textContent  = an.weekViews  ?? '—';
+        document.getElementById('dash-login-today').textContent = an.loginToday ?? '—';
+        const tbody = document.getElementById('dash-toppage-tbody');
+        const maxV = an.topPages?.[0]?.views || 1;
+        tbody.innerHTML = an.topPages?.length
+          ? an.topPages.slice(0,6).map(p => {
+              const pct = Math.round((p.views / maxV) * 100);
+              return `<tr>
+                <td style="padding:5px 0;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px">${escH(p.path)}</td>
+                <td style="padding:5px 0 5px 8px;width:80px">
+                  <div style="display:flex;align-items:center;gap:4px">
+                    <div style="flex:1;height:4px;background:#EEF3FF;border-radius:2px"><div style="height:4px;background:var(--primary);border-radius:2px;width:${pct}%"></div></div>
+                    <span style="font-size:10px;font-weight:700;color:var(--primary);flex-shrink:0">${p.views}</span>
+                  </div>
+                </td></tr>`;
+            }).join('')
+          : '<tr><td colspan="2" style="text-align:center;padding:12px;color:#94a3b8;font-size:11px">Chưa có dữ liệu</td></tr>';
+      }
+    } catch {}
+
+    // Load profile để cập nhật header/sidebar
+    try {
+      const pf = await apiFetch('/admin-api/profile');
+      if (pf) updateAdminUI(pf);
+    } catch {}
   }
 
   function escH(s) {
@@ -1969,6 +2121,142 @@
           </tr>`).join('')
         : '<tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8">Chưa có dữ liệu đăng nhập</td></tr>';
     } catch(e) { console.error('Analytics error', e); }
+  }
+
+  // ── PROFILE ────────────────────────────────────────────
+  function updateAdminUI(pf) {
+    const name = pf.display_name || pf.username || 'Admin';
+    const initials = name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+    // Header
+    document.getElementById('header-admin-name').textContent = name;
+    const hav = document.getElementById('header-avatar');
+    if (pf.avatar_url) {
+      hav.innerHTML = `<img src="${pf.avatar_url}" style="width:28px;height:28px;border-radius:50%;object-fit:cover" />`;
+    } else {
+      hav.textContent = initials;
+    }
+    // Sidebar
+    document.getElementById('sidebar-admin-name').textContent = name;
+    const sav = document.getElementById('sidebar-avatar');
+    if (pf.avatar_url) {
+      sav.innerHTML = `<img src="${pf.avatar_url}" style="width:36px;height:36px;border-radius:50%;object-fit:cover" />`;
+      sav.style.background = 'none';
+    } else {
+      sav.textContent = initials;
+      sav.style.background = '';
+    }
+    // Profile modal header
+    document.getElementById('pf-head-name').textContent = name;
+    document.getElementById('pf-head-user').textContent = '@' + (pf.username || 'admin');
+    const pfAv = document.getElementById('pf-avatar-display');
+    if (pf.avatar_url) {
+      pfAv.outerHTML = `<img id="pf-avatar-display" src="${pf.avatar_url}" class="profile-avatar-img" alt="Avatar" />`;
+    } else {
+      pfAv.textContent = initials;
+    }
+    // Preview trong tab avatar
+    const prev = document.getElementById('pf-avatar-preview');
+    if (prev && pf.avatar_url) {
+      prev.innerHTML = `<img src="${pf.avatar_url}" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid #e2e8f0" />`;
+    }
+    // Form fields
+    const u = document.getElementById('pf-username');
+    const d = document.getElementById('pf-displayname');
+    const e = document.getElementById('pf-email');
+    if (u) u.value = pf.username || '';
+    if (d) d.value = pf.display_name || '';
+    if (e) e.value = pf.email || '';
+  }
+
+  async function openProfile() {
+    document.getElementById('profile-overlay').classList.add('open');
+    switchProfileTab('info', document.querySelector('.profile-tab'));
+    try {
+      const pf = await apiFetch('/admin-api/profile');
+      if (pf) updateAdminUI(pf);
+    } catch {}
+  }
+
+  function closeProfile() {
+    document.getElementById('profile-overlay').classList.remove('open');
+  }
+
+  function switchProfileTab(tab, el) {
+    document.querySelectorAll('.profile-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+    const panel = document.getElementById(`pf-tab-${tab}`);
+    if (panel) panel.classList.add('active');
+    if (el) el.classList.add('active');
+    ['pf-info-msg','pf-pass-msg','pf-avatar-msg'].forEach(id => {
+      const el2 = document.getElementById(id);
+      if (el2) { el2.className = 'pf-msg'; el2.textContent = ''; }
+    });
+  }
+
+  function showPfMsg(id, text, type) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = text;
+    el.className = `pf-msg ${type}`;
+  }
+
+  async function saveProfile() {
+    const display_name = document.getElementById('pf-displayname').value.trim();
+    const email = document.getElementById('pf-email').value.trim();
+    const r = await apiFetch('/admin-api/profile', {
+      method: 'PUT',
+      headers: hdr(),
+      body: JSON.stringify({ display_name, email })
+    });
+    if (r?.success) {
+      showPfMsg('pf-info-msg', '✓ Đã lưu thông tin thành công!', 'ok');
+      try { const pf = await apiFetch('/admin-api/profile'); if (pf) updateAdminUI(pf); } catch {}
+    } else {
+      showPfMsg('pf-info-msg', r?.error || 'Lỗi lưu thông tin', 'err');
+    }
+  }
+
+  async function savePassword() {
+    const current_password = document.getElementById('pf-cur-pass').value;
+    const new_password = document.getElementById('pf-new-pass').value;
+    const confirm = document.getElementById('pf-confirm-pass').value;
+    if (!current_password || !new_password) return showPfMsg('pf-pass-msg', 'Vui lòng nhập đầy đủ', 'err');
+    if (new_password !== confirm) return showPfMsg('pf-pass-msg', 'Mật khẩu mới không khớp', 'err');
+    const r = await apiFetch('/admin-api/profile/password', {
+      method: 'PUT',
+      headers: hdr(),
+      body: JSON.stringify({ current_password, new_password })
+    });
+    if (r?.success) {
+      showPfMsg('pf-pass-msg', '✓ Đổi mật khẩu thành công!', 'ok');
+      ['pf-cur-pass','pf-new-pass','pf-confirm-pass'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+    } else {
+      showPfMsg('pf-pass-msg', r?.error || 'Lỗi đổi mật khẩu', 'err');
+    }
+  }
+
+  async function uploadAvatar(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('avatar', file);
+    showPfMsg('pf-avatar-msg', 'Đang upload...', 'ok');
+    try {
+      const r = await fetch('/admin-api/upload-avatar', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+      });
+      const j = await r.json();
+      if (j.url) {
+        showPfMsg('pf-avatar-msg', '✓ Upload ảnh thành công!', 'ok');
+        const pf = await apiFetch('/admin-api/profile');
+        if (pf) updateAdminUI(pf);
+      } else {
+        showPfMsg('pf-avatar-msg', j.error || 'Upload thất bại', 'err');
+      }
+    } catch { showPfMsg('pf-avatar-msg', 'Lỗi kết nối', 'err'); }
+    input.value = '';
   }
 
   // ── FAQ EDITOR ─────────────────────────────────────────
