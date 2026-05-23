@@ -188,7 +188,7 @@ function ensureSeoTitle(title, topic) {
   return value;
 }
 
-// Cải thiện bài có sẵn: thêm ảnh sau H2, in đậm từ khóa, thêm CTA nếu thiếu
+// Cải thiện bài có sẵn: chuẩn hóa heading, thêm ảnh sau H2, in đậm từ khóa, thêm CTA
 function improveExistingContent(content, keyword, topic, sectionImages) {
   const mainKeyword = normalizeBrandText(keyword || topic || '');
   const shuffled = [...IMG_POOL].sort(() => Math.random() - 0.5);
@@ -204,19 +204,45 @@ function improveExistingContent(content, keyword, topic, sectionImages) {
     return `![${alt || mainKeyword}](${img})`;
   }
 
-  const lines = content.split('\n');
+  // Bước 1: chuẩn hóa heading — nhận dạng nhiều kiểu plain text
+  function isLikelyHeading(line, prevLine, nextLine) {
+    const t = line.trim();
+    if (!t || t.length > 100) return false;
+    if (/^#{1,3}\s/.test(t)) return false; // đã là heading rồi
+    if (/^\d+\.\s+\S/.test(t) && t.length < 80) return true; // 1. Tiêu đề
+    if (/^[IVX]+\.\s+\S/.test(t)) return true; // I. II. III.
+    if (t.endsWith(':') && t.length < 60) return true; // Kết luận:
+    if (t.length < 55 && !t.includes('.') && !t.includes(',') && prevLine === '' && (nextLine === '' || nextLine.length > 50)) return true;
+    return false;
+  }
+
+  const rawLines = content.split('\n').map(l => l.trimEnd());
+  const normalized = [];
+  for (let i = 0; i < rawLines.length; i++) {
+    const line = rawLines[i];
+    const prev = (rawLines[i - 1] || '').trim();
+    const next = (rawLines[i + 1] || '').trim();
+    if (isLikelyHeading(line.trim(), prev, next)) {
+      normalized.push('');
+      normalized.push(`## ${line.trim()}`);
+      normalized.push('');
+    } else {
+      normalized.push(line);
+    }
+  }
+
+  // Bước 2: thêm ảnh sau mỗi H2 nếu chưa có
   const out = [];
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+  for (let i = 0; i < normalized.length; i++) {
+    const line = normalized[i];
     out.push(line);
-    // Sau H2/H3, chèn ảnh nếu dòng tiếp theo chưa có ảnh
-    if (/^#{2,3}\s/.test(line)) {
+    if (/^##\s/.test(line)) {
       let nextNonEmpty = '';
-      for (let j = i + 1; j < lines.length; j++) {
-        if (lines[j].trim()) { nextNonEmpty = lines[j].trim(); break; }
+      for (let j = i + 1; j < normalized.length; j++) {
+        if (normalized[j].trim()) { nextNonEmpty = normalized[j].trim(); break; }
       }
       if (!nextNonEmpty.startsWith('![')) {
-        const alt = line.replace(/^#{2,3}\s*/, '').trim();
+        const alt = line.replace(/^##\s*/, '').trim();
         out.push('');
         out.push(nextImg(alt));
       }
@@ -225,14 +251,14 @@ function improveExistingContent(content, keyword, topic, sectionImages) {
 
   let result = out.join('\n');
 
-  // In đậm từ khóa chính lần đầu xuất hiện (nếu chưa bold)
+  // Bước 3: in đậm từ khóa chính lần đầu (nếu chưa bold)
   if (mainKeyword && mainKeyword.length > 3) {
     const escaped = mainKeyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const re = new RegExp(`(?<!\\*)(${escaped})(?!\\*)`, 'i');
     result = result.replace(re, '**$1**');
   }
 
-  // Thêm CTA nếu chưa có link dung-thu
+  // Bước 4: thêm CTA nếu chưa có
   if (!result.includes('/dung-thu')) {
     result += `\n\n---\n\nSẵn sàng để AI làm việc thay bạn? [Dùng thử miễn phí 14 ngày](/dung-thu.html) — không cần thẻ tín dụng.`;
   }
