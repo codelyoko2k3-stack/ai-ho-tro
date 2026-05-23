@@ -1695,7 +1695,7 @@ async function renderBlogPage(post) {
     <!-- RELATED POSTS -->
     ${relatedPosts.length ? `
     <div class="related-section">
-      <h3>Bài viết liên quan</h3>
+      <h3>📚 Bài viết liên quan</h3>
       <div class="related-grid">
         ${relatedPosts.map(r => `
         <a href="/blog/${escapeHtml(r.slug||'')}" class="related-card">
@@ -1707,9 +1707,13 @@ async function renderBlogPage(post) {
           </div>
         </a>`).join('')}
       </div>
+      <div style="text-align:center;margin-top:24px">
+        <a href="/blog" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border:2px solid #1A56DB;border-radius:10px;font-weight:700;color:#1A56DB;font-size:.9rem;transition:all .2s" onmouseover="this.style.background='#1A56DB';this.style.color='white'" onmouseout="this.style.background='';this.style.color='#1A56DB'">Xem tất cả bài viết →</a>
+      </div>
     </div>` : ''}
   </div>
 
+  ${renderSolutionFooter()}
   ${renderSiteToolbarScript()}
   <script>
     function toggleFaq(i) {
@@ -2776,6 +2780,7 @@ app.get('/blog', async (_req, res) => {
     </div>`}
   </div>
 
+  ${renderSolutionFooter()}
   ${renderSiteToolbarScript()}
   <script>
     function filterCat(cat, el) {
