@@ -216,7 +216,7 @@ async function renderSiteToolbar(active = '') {
                 <div class="ndm-section-label">CHUYÊN MỤC</div>
                 <a href="/blog" class="ndm-cat-link ndm-cat-all"><span class="ndm-cat-icon">📋</span> Tất cả bài viết</a>
                 ${blogCategories.length > 0
-                  ? blogCategories.map(cat => `<a href="/blog?cat=${encodeURIComponent(cat)}" data-filter-cat="${escapeHtml(cat)}" class="ndm-cat-link"><span class="ndm-cat-icon">•</span> ${escapeHtml(cat)}</a>`).join('')
+                  ? blogCategories.map(cat => `<a href="/blog?cat=${encodeURIComponent(cat)}" onclick="if(window.__blogFilterCat)return window.__blogFilterCat(event,'${escapeHtml(cat).replace(/'/g,"\\'")}');" class="ndm-cat-link"><span class="ndm-cat-icon">•</span> ${escapeHtml(cat)}</a>`).join('')
                   : '<span style="font-size:.78rem;color:#94a3b8;padding:6px 10px;display:block">Chưa có danh mục</span>'}
               </div>
               <div class="ndm-divider"></div>
@@ -2842,24 +2842,22 @@ app.get('/blog', async (_req, res) => {
       if (empty) empty.style.display = count === 0 ? '' : 'none';
     }
 
+    // Khi ở trang /blog: click danh mục trong nav dropdown → filter tại chỗ
+    window.__blogFilterCat = function(e, cat) {
+      e.preventDefault();
+      const btn = [...document.querySelectorAll('.filter-btn')].find(b => b.textContent.trim() === cat);
+      filterCat(cat, btn || null);
+      history.pushState(null, '', '/blog?cat=' + encodeURIComponent(cat));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return false;
+    };
+
     // Đọc ?cat= từ URL khi load trang
     const _urlCat = new URLSearchParams(location.search).get('cat');
     if (_urlCat) {
       const _btn = [...document.querySelectorAll('.filter-btn')].find(b => b.textContent.trim() === _urlCat);
       filterCat(_urlCat, _btn || null);
     }
-
-    // Intercept click danh mục từ nav dropdown — filter tại chỗ, không reload
-    document.addEventListener('click', e => {
-      const link = e.target.closest('[data-filter-cat]');
-      if (!link) return;
-      e.preventDefault();
-      const cat = link.dataset.filterCat;
-      const btn = [...document.querySelectorAll('.filter-btn')].find(b => b.textContent.trim() === cat);
-      filterCat(cat, btn || null);
-      history.pushState(null, '', '/blog?cat=' + encodeURIComponent(cat));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
   </script>
 </body>
 </html>`);
