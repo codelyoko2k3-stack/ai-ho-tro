@@ -2899,7 +2899,7 @@
             <div class="ndm-inner">
               <div class="ndm-cats">
                 <div class="ndm-section-label">CHUYÊN MỤC</div>
-                <a href="/blog" class="ndm-cat-link ndm-cat-all"><span class="ndm-cat-icon">📋</span> Tất cả bài viết</a>
+                <a href="javascript:void(0)" class="ndm-cat-link ndm-cat-active" data-ddcat="all" onclick="__ddHover(this)" onmouseenter="__ddHover(this)"><span class="ndm-cat-icon">📋</span> Tất cả bài viết</a>
                 <div id="nav-cat-list"><span style="font-size:.78rem;color:#94a3b8;padding:6px 10px;display:block">Đang tải...</span></div>
               </div>
               <div class="ndm-divider"></div>
@@ -4132,6 +4132,43 @@
       window.location.reload();
     }
 
+
+    // ── Dropdown Tin tức: hover/click danh mục → cập nhật bài viết bên phải ──
+    const __DD_IMG_POOL = [
+      'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&q=70',
+      'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=400&q=70',
+      'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=70',
+      'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&q=70',
+      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=70',
+      'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=70',
+    ];
+    function __ddRenderPosts(posts) {
+      const used = new Set();
+      return posts.slice(0, 4).map((p, i) => {
+        let img = p.image_url || '';
+        if (!img || used.has(img)) img = __DD_IMG_POOL.find(u => !used.has(u)) || __DD_IMG_POOL[i % __DD_IMG_POOL.length];
+        used.add(img);
+        return `<a href="/blog/${p.slug||''}" class="ndm-post-item">
+          <img src="${img}" alt="" loading="lazy" onerror="this.style.display='none'" />
+          <div class="ndm-post-info">
+            <div class="ndm-post-title">${p.title||''}</div>
+            <div class="ndm-post-date">${(p.published_at||'').slice(0,10)}</div>
+          </div></a>`;
+      }).join('') || '<div style="color:#94a3b8;font-size:.82rem;padding:8px">Chưa có bài viết</div>';
+    }
+    function __ddHover(el) {
+      document.querySelectorAll('.ndm-cat-link').forEach(a => a.classList.remove('ndm-cat-active'));
+      el.classList.add('ndm-cat-active');
+      const cat = el.dataset.ddcat;
+      const grid = document.getElementById('ndm-posts-grid');
+      const label = document.getElementById('ndm-right-label');
+      const viewAll = document.getElementById('ndm-view-all-link');
+      if (!grid || !window.__DD_POSTS) return;
+      const filtered = cat === 'all' ? window.__DD_POSTS : window.__DD_POSTS.filter(p => p.category === cat);
+      grid.innerHTML = __ddRenderPosts(filtered);
+      if (label) label.textContent = cat === 'all' ? 'BÀI VIẾT MỚI NHẤT' : cat.toUpperCase();
+      if (viewAll) viewAll.href = cat === 'all' ? '/blog' : '/blog?cat=' + encodeURIComponent(cat);
+    }
 
     loadProducts();
     loadNews();
