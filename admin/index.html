@@ -1968,6 +1968,12 @@
       <div class="field" style="flex:1"><label>Slug URL</label><input id="blog-slug" type="text" placeholder="tieu-de-bai-viet" oninput="blogSlugManual=true" /></div>
     </div>
 
+    <!-- Row: từ khóa -->
+    <div class="field-row">
+      <div class="field"><label>Từ khóa chính <span style="color:#94a3b8;font-weight:400">(dùng cho SEO)</span></label><input id="blog-keyword" type="text" placeholder="VD: AI Agent cho doanh nghiệp" /></div>
+      <div class="field"><label>Từ khóa phụ <span style="color:#94a3b8;font-weight:400">(cách nhau bởi dấu phẩy)</span></label><input id="blog-secondary-kw" type="text" placeholder="VD: chatbot AI, tự động hóa" /></div>
+    </div>
+
     <!-- Row 2: 2 cột — tóm tắt + ảnh -->
     <div class="field-row" style="align-items:start">
       <div class="field" style="flex:1">
@@ -1975,17 +1981,37 @@
         <textarea id="blog-excerpt" data-rich placeholder="Tóm tắt 2-3 câu..." style="min-height:100px"></textarea>
       </div>
       <div class="field" style="flex:1">
-        <label>Ảnh thumbnail</label>
+        <!-- Tạo ảnh AI -->
+        <label style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          <i class="fas fa-image" style="color:#1A56DB"></i> Tạo ảnh AI
+          <span style="font-size:.7rem;background:#e8fdf0;color:#00B341;padding:2px 7px;border-radius:20px;font-weight:700">FREE</span>
+        </label>
+        <div style="display:flex;gap:6px;margin-bottom:6px">
+          <input id="blog-ai-img-prompt" type="text" placeholder="VD: doanh nghiệp dùng AI màu xanh" style="flex:1;font-size:12px" />
+          <button type="button" onclick="genBlogAiImg()" id="btn-gen-blog-img"
+            style="padding:7px 12px;background:#1A56DB;color:white;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">
+            <i class="fas fa-wand-magic-sparkles"></i> Tạo
+          </button>
+        </div>
+        <div id="blog-ai-img-result" style="display:none;margin-bottom:6px">
+          <img id="blog-ai-img-preview" src="" alt="" style="width:100%;border-radius:6px;border:1px solid #e2e8f0;max-height:80px;object-fit:cover;display:block;margin-bottom:4px" />
+          <button type="button" onclick="useBlogAiImg()"
+            style="width:100%;padding:6px;background:#00B341;color:white;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">
+            <i class="fas fa-check"></i> Dùng ảnh này
+          </button>
+        </div>
+        <div id="blog-ai-img-status" style="font-size:11px;color:#64748b;margin-bottom:4px"></div>
+        <label style="font-size:.78rem;font-weight:700;color:#334155;display:block;margin-bottom:4px">Hoặc nhập URL / upload</label>
         <div style="display:flex;gap:8px;margin-bottom:6px">
-          <input id="blog-img" type="text" placeholder="URL hoặc upload bên phải"
+          <input id="blog-img" type="text" placeholder="URL ảnh thumbnail"
             oninput="updateBlogImgPreview(this.value)" style="flex:1" />
           <label style="padding:8px 12px;background:#F0F7FF;border:1.5px solid #c7d9f5;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;color:#1A56DB;white-space:nowrap;display:flex;align-items:center;gap:4px;flex-shrink:0">
             <i class="fas fa-upload"></i> Upload
             <input type="file" id="blog-img-file" accept="image/*" style="display:none" onchange="uploadBlogImg(this)" />
           </label>
         </div>
-        <div id="blog-img-preview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;max-height:110px;text-align:center;background:#f8faff;margin-bottom:4px">
-          <img id="blog-img-preview-el" src="" alt="" style="max-height:110px;max-width:100%;object-fit:contain" />
+        <div id="blog-img-preview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;max-height:80px;text-align:center;background:#f8faff;margin-bottom:4px">
+          <img id="blog-img-preview-el" src="" alt="" style="max-height:80px;max-width:100%;object-fit:contain" />
         </div>
         <div id="blog-upload-status" style="font-size:11px;color:#64748b;display:none"></div>
         <input id="blog-img-alt" type="text" placeholder="Alt ảnh (mô tả ảnh)" style="margin-top:6px" />
@@ -2002,6 +2028,10 @@
             <i class="fas fa-image"></i> Chèn ảnh
             <input type="file" id="blog-content-img-file" accept="image/*" style="display:none" onchange="insertBlogImage(this)" />
           </label>
+          <button type="button" onclick="improveBlogContent()" id="btn-improve-blog"
+            style="padding:5px 12px;background:#FFF3EC;border:1.5px solid #ffd5b5;border-radius:6px;font-size:11px;font-weight:700;color:#FF6B00;cursor:pointer;display:inline-flex;align-items:center;gap:4px;white-space:nowrap">
+            <i class="fas fa-wand-magic-sparkles"></i> Cải thiện AI
+          </button>
         </div>
       </div>
       <textarea id="blog-content"
@@ -3578,6 +3608,59 @@ if (p === 'site-settings') loadSettings();
       draft.content || '',
       faqText ? `\nFAQ\n${faqText}` : ''
     ].join('\n');
+  }
+
+  async function genBlogAiImg() {
+    const prompt = document.getElementById('blog-ai-img-prompt').value.trim();
+    if (!prompt) { toast('Nhập mô tả ảnh trước'); return; }
+    const btn = document.getElementById('btn-gen-blog-img');
+    const status = document.getElementById('blog-ai-img-status');
+    const result = document.getElementById('blog-ai-img-result');
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    status.textContent = 'Đang tạo ảnh...'; result.style.display = 'none';
+    try {
+      const encoded = encodeURIComponent(prompt + ', professional, high quality, 16:9');
+      const url = `https://image.pollinations.ai/prompt/${encoded}?width=1280&height=720&nologo=true&model=flux&seed=${Date.now()}`;
+      const img = document.getElementById('blog-ai-img-preview');
+      img.src = url;
+      await new Promise((res, rej) => { img.onload = res; img.onerror = rej; setTimeout(rej, 30000); });
+      result.style.display = 'block'; status.textContent = 'Ảnh sẵn sàng!';
+    } catch { status.textContent = 'Thất bại. Thử lại hoặc đổi prompt.'; }
+    btn.disabled = false; btn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Tạo';
+  }
+
+  function useBlogAiImg() {
+    const img = document.getElementById('blog-ai-img-preview');
+    if (!img.src) return;
+    document.getElementById('blog-img').value = img.src;
+    updateBlogImgPreview(img.src);
+    toast('Đã đặt làm thumbnail');
+  }
+
+  async function improveBlogContent() {
+    const content = document.getElementById('blog-content').value.trim();
+    if (!content) { toast('Nhập nội dung bài viết trước'); return; }
+    const keyword = document.getElementById('blog-keyword').value.trim();
+    const topic = document.getElementById('blog-title').value.trim();
+    const btn = document.getElementById('btn-improve-blog');
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang cải thiện...';
+    try {
+      const r = await fetch(`${API}/ai-blog-draft`, {
+        method: 'POST', headers: hdr(),
+        body: JSON.stringify({
+          mode: 'improve', existing_content: content,
+          keyword, topic, improve_request: 'Thêm ảnh vào các section, in đậm từ khóa, thêm CTA'
+        })
+      });
+      const data = await r.json();
+      if (data.draft?.content) {
+        document.getElementById('blog-content').value = data.draft.content;
+        if (data.draft.seo_title) document.getElementById('blog-seo-title').value = data.draft.seo_title;
+        if (data.draft.meta_description) document.getElementById('blog-meta-desc').value = data.draft.meta_description;
+        toast('Đã cải thiện nội dung');
+      }
+    } catch { toast('Lỗi cải thiện nội dung'); }
+    btn.disabled = false; btn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Cải thiện AI';
   }
 
   async function genAiImg() {
