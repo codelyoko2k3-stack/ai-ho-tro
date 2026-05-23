@@ -188,6 +188,58 @@ function ensureSeoTitle(title, topic) {
   return value;
 }
 
+// Cải thiện bài có sẵn: thêm ảnh sau H2, in đậm từ khóa, thêm CTA nếu thiếu
+function improveExistingContent(content, keyword, topic, sectionImages) {
+  const mainKeyword = normalizeBrandText(keyword || topic || '');
+  const shuffled = [...IMG_POOL].sort(() => Math.random() - 0.5);
+  const userImgs = Array.isArray(sectionImages) ? sectionImages.filter(Boolean) : [];
+  const imgQueue = [...userImgs, ...shuffled.filter(u => !userImgs.includes(u))];
+  const usedImgs = new Set();
+  let imgIdx = 0;
+
+  function nextImg(alt) {
+    while (imgIdx < imgQueue.length && usedImgs.has(imgQueue[imgIdx])) imgIdx++;
+    const img = imgQueue[imgIdx] || IMG_POOL[imgIdx % IMG_POOL.length];
+    usedImgs.add(img); imgIdx++;
+    return `![${alt || mainKeyword}](${img})`;
+  }
+
+  const lines = content.split('\n');
+  const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    out.push(line);
+    // Sau H2/H3, chèn ảnh nếu dòng tiếp theo chưa có ảnh
+    if (/^#{2,3}\s/.test(line)) {
+      let nextNonEmpty = '';
+      for (let j = i + 1; j < lines.length; j++) {
+        if (lines[j].trim()) { nextNonEmpty = lines[j].trim(); break; }
+      }
+      if (!nextNonEmpty.startsWith('![')) {
+        const alt = line.replace(/^#{2,3}\s*/, '').trim();
+        out.push('');
+        out.push(nextImg(alt));
+      }
+    }
+  }
+
+  let result = out.join('\n');
+
+  // In đậm từ khóa chính lần đầu xuất hiện (nếu chưa bold)
+  if (mainKeyword && mainKeyword.length > 3) {
+    const escaped = mainKeyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp(`(?<!\\*)(${escaped})(?!\\*)`, 'i');
+    result = result.replace(re, '**$1**');
+  }
+
+  // Thêm CTA nếu chưa có link dung-thu
+  if (!result.includes('/dung-thu')) {
+    result += `\n\n---\n\nSẵn sàng để AI làm việc thay bạn? [Dùng thử miễn phí 14 ngày](/dung-thu.html) — không cần thẻ tín dụng.`;
+  }
+
+  return result.trim();
+}
+
 function ensureBlogContent(content, title, keyword, topic, audience) {
   let value = stripMarkdownTitle(normalizeBrandMarkdown(content), title);
   const mainTopic = normalizeBrandText(topic || keyword || 'AI hỗ trợ bán hàng');
@@ -1360,13 +1412,16 @@ Chỉ trả về JSON hợp lệ, không thêm text ngoài JSON:
       // Nếu mode improve + có nội dung gốc → dùng nội dung anh paste, không tạo template mới
       if (input.mode === 'improve' && input.existing_content) {
         const mainTopic = input.topic || input.keyword || 'VIAi AI Agent';
+        const improvedContent = improveExistingContent(
+          input.existing_content, input.keyword, input.topic, input.section_images
+        );
         draft = normalizeBlogDraft({
           title: buildSeoTitleFromTopic(mainTopic, 'doanh nghiệp'),
           seo_title: ensureSeoTitle('', mainTopic),
           slug: toSlug(mainTopic),
           meta_description: ensureMetaDescription('', input.keyword || mainTopic, mainTopic),
-          excerpt: `${mainTopic} — bài viết được cải thiện cấu trúc và SEO bởi VIAi.`,
-          content: ensureBlogContent(input.existing_content, mainTopic, input.keyword, input.topic, input.audience),
+          excerpt: `${mainTopic} — bài viết thực chiến dành cho doanh nghiệp Việt Nam.`,
+          content: improvedContent,
           faq: [],
           category: 'Kiến thức AI',
           author: 'VIAi Team'
