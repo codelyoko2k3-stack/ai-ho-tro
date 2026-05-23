@@ -216,7 +216,7 @@ async function renderSiteToolbar(active = '') {
                 <div class="ndm-section-label">CHUYÊN MỤC</div>
                 <a href="/blog" class="ndm-cat-link ndm-cat-all"><span class="ndm-cat-icon">📋</span> Tất cả bài viết</a>
                 ${blogCategories.length > 0
-                  ? blogCategories.map(cat => `<a href="/blog?cat=${encodeURIComponent(cat)}" class="ndm-cat-link"><span class="ndm-cat-icon">•</span> ${escapeHtml(cat)}</a>`).join('')
+                  ? blogCategories.map(cat => `<a href="/blog?cat=${encodeURIComponent(cat)}" data-filter-cat="${escapeHtml(cat)}" class="ndm-cat-link"><span class="ndm-cat-icon">•</span> ${escapeHtml(cat)}</a>`).join('')
                   : '<span style="font-size:.78rem;color:#94a3b8;padding:6px 10px;display:block">Chưa có danh mục</span>'}
               </div>
               <div class="ndm-divider"></div>
@@ -2744,6 +2744,7 @@ app.get('/blog', async (_req, res) => {
     .news-dropdown a span:last-child{flex:1;min-width:0;overflow:hidden}
     .news-dropdown a strong{display:block;font-size:.83rem;font-weight:700;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical}
     .news-dropdown a small{display:block;font-size:.74rem;color:#94a3b8;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    @media(max-width:700px){.ndm-inner{flex-direction:column}.ndm-cats{width:100%;border-right:none;border-bottom:1px solid #f1f5f9}.ndm-posts-grid{grid-template-columns:1fr}.news-mega-dropdown{min-width:320px!important;left:0!important;transform:none!important}.nav-item.ndm-wrap:hover .news-mega-dropdown{transform:none!important}}
     .header-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
     .btn-login{display:inline-flex;align-items:center;padding:8px 18px;border:2px solid var(--primary);border-radius:8px;font-size:.85rem;font-weight:700;color:var(--primary);background:white;transition:all .2s}
     .btn-login:hover{background:var(--primary);color:white}
@@ -2832,11 +2833,33 @@ app.get('/blog', async (_req, res) => {
   <script>
     function filterCat(cat, el) {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      el.classList.add('active');
+      if (el) el.classList.add('active');
       document.querySelectorAll('.blog-card').forEach(card => {
         card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
       });
+      const count = [...document.querySelectorAll('.blog-card')].filter(c => c.style.display !== 'none').length;
+      const empty = document.getElementById('blog-empty');
+      if (empty) empty.style.display = count === 0 ? '' : 'none';
     }
+
+    // Đọc ?cat= từ URL khi load trang
+    const _urlCat = new URLSearchParams(location.search).get('cat');
+    if (_urlCat) {
+      const _btn = [...document.querySelectorAll('.filter-btn')].find(b => b.textContent.trim() === _urlCat);
+      filterCat(_urlCat, _btn || null);
+    }
+
+    // Intercept click danh mục từ nav dropdown — filter tại chỗ, không reload
+    document.addEventListener('click', e => {
+      const link = e.target.closest('[data-filter-cat]');
+      if (!link) return;
+      e.preventDefault();
+      const cat = link.dataset.filterCat;
+      const btn = [...document.querySelectorAll('.filter-btn')].find(b => b.textContent.trim() === cat);
+      filterCat(cat, btn || null);
+      history.pushState(null, '', '/blog?cat=' + encodeURIComponent(cat));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   </script>
 </body>
 </html>`);
