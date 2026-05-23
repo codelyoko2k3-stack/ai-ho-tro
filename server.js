@@ -153,16 +153,32 @@ function renderMarkdown(md, options = {}) {
 }
 
 async function renderSiteToolbar(active = '') {
-  // Load 3 tin tức + 4 blog mới nhất để inject vào dropdown
-  let latestNews = [], latestBlogs = [];
+  // Load 4 blog mới nhất + ảnh để inject vào dropdown
+  let latestBlogs = [];
   try {
-    latestBlogs = await db.prepare("SELECT title, category, slug, published_at FROM blog_posts WHERE active=1 ORDER BY published_at DESC LIMIT 5").all();
+    latestBlogs = await db.prepare("SELECT title, category, slug, published_at, image_url FROM blog_posts WHERE active=1 ORDER BY published_at DESC LIMIT 4").all();
   } catch {}
 
-  const newsItems = latestNews.map(n => `
-    <a href="${escapeHtml(n.source_url && n.source_url.startsWith('http') ? n.source_url : '/blog')}" target="${n.source_url && n.source_url.startsWith('http') ? '_blank' : '_self'}"><span class="dd-icon">📰</span><span><strong>${escapeHtml(n.title)}</strong><small>${escapeHtml(n.source_name||'')} · ${(n.published_at||'').slice(0,10)}</small></span></a>`).join('');
-  const blogItems = latestBlogs.map(b => `
-    <a href="/blog/${escapeHtml(b.slug||'')}"><span class="dd-icon">✍️</span><span><strong>${escapeHtml(b.title)}</strong><small>${escapeHtml(b.category||'Blog')} · ${(b.published_at||'').slice(0,10)}</small></span></a>`).join('');
+  const BLOG_IMG_POOL = [
+    'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&q=70',
+    'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=400&q=70',
+    'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=70',
+    'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&q=70',
+  ];
+  const usedDdImgs = new Set();
+  const blogPostCards = latestBlogs.map((b, i) => {
+    let img = b.image_url || '';
+    if (!img || usedDdImgs.has(img)) img = BLOG_IMG_POOL.find(u => !usedDdImgs.has(u)) || BLOG_IMG_POOL[i % 4];
+    usedDdImgs.add(img);
+    const d = (b.published_at || '').slice(0, 10);
+    return `<a href="/blog/${escapeHtml(b.slug||'')}" class="ndm-post-item">
+      <img src="${escapeHtml(img)}" alt="${escapeHtml(b.title)}" loading="lazy" onerror="this.style.display='none'" />
+      <div class="ndm-post-info">
+        <div class="ndm-post-title">${escapeHtml(b.title)}</div>
+        <div class="ndm-post-date">${d}</div>
+      </div>
+    </a>`;
+  }).join('');
 
   return `
   <header class="site-header">
@@ -192,9 +208,23 @@ async function renderSiteToolbar(active = '') {
         <div class="nav-item"><a href="/#tech" class="nav-link">Công nghệ</a></div>
         <div class="nav-item${active === 'blog' ? ' nav-active' : ''}">
           <a href="/blog" class="nav-link">Tin tức <span class="arrow">▾</span></a>
-          <div class="dropdown dropdown-mega news-dropdown">
-            ${blogItems}
-            <a href="/blog" class="service-dropdown-all"><span class="dd-icon">↗</span><span><strong>Xem tất cả tin tức</strong></span></a>
+          <div class="dropdown news-mega-dropdown">
+            <div class="ndm-inner">
+              <div class="ndm-cats">
+                <div class="ndm-section-label">CHUYÊN MỤC</div>
+                <a href="/blog" class="ndm-cat-link"><span class="ndm-cat-icon">🤖</span> Kiến thức AI</a>
+                <a href="/blog" class="ndm-cat-link"><span class="ndm-cat-icon">🏆</span> Case Study</a>
+                <a href="/blog" class="ndm-cat-link"><span class="ndm-cat-icon">📖</span> Hướng dẫn triển khai</a>
+                <a href="/blog" class="ndm-cat-link"><span class="ndm-cat-icon">📢</span> Tin tức ngành</a>
+                <a href="/blog" class="ndm-cat-link"><span class="ndm-cat-icon">📊</span> Chuyển đổi số</a>
+              </div>
+              <div class="ndm-divider"></div>
+              <div class="ndm-posts">
+                <div class="ndm-section-label">BÀI VIẾT MỚI NHẤT</div>
+                <div class="ndm-posts-grid">${blogPostCards || '<div style="color:#94a3b8;font-size:.82rem;padding:8px">Chưa có bài viết</div>'}</div>
+                <a href="/blog" class="ndm-view-all">Xem tất cả tin tức →</a>
+              </div>
+            </div>
           </div>
         </div>
       </nav>
@@ -522,11 +552,25 @@ async function renderProductDetailPage(product) {
     .nav-item:hover .dropdown,.nav-item:focus-within .dropdown{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
     .dropdown a{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;font-size:.85rem;font-weight:500;color:var(--gray-600);transition:all .18s ease}.dropdown a:hover{background:var(--gray-50);color:var(--primary);transform:translateX(3px)}
     .dropdown a .dd-icon{font-size:1.1rem;flex-shrink:0}.dropdown-mega{min-width:480px;display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:14px}.dropdown-mega::before{left:50%;transform:translateX(-50%) rotate(45deg)}.mega-title{grid-column:1/-1;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gray-300);padding:4px 14px 8px;border-bottom:1px solid var(--gray-100);margin-bottom:4px}
-    .news-dropdown{min-width:360px!important;max-width:400px!important;grid-template-columns:1fr!important;padding:10px!important;overflow:hidden!important}
-    .news-dropdown a{grid-column:1/-1!important;display:flex!important;align-items:flex-start!important;gap:10px!important;padding:9px 10px!important;border-radius:8px!important;overflow:hidden!important}
-    .news-dropdown a span:last-child{flex:1;min-width:0;overflow:hidden}
-    .news-dropdown a strong{display:block;font-size:.83rem;font-weight:700;line-height:1.35;white-space:normal;word-break:break-word;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-    .news-dropdown a small{display:block;font-size:.74rem;color:#94a3b8;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .news-mega-dropdown{min-width:660px!important;padding:0!important}
+    .ndm-inner{display:flex;gap:0}
+    .ndm-cats{width:190px;flex-shrink:0;padding:16px 12px;border-right:1px solid #f1f5f9}
+    .ndm-section-label{font-size:.67rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;padding:0 8px;margin-bottom:8px}
+    .ndm-cat-link{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:8px;font-size:.84rem;font-weight:600;color:#334155;transition:all .15s;text-decoration:none}
+    .ndm-cat-link:hover{background:#EEF3FF;color:#1A56DB;transform:translateX(2px)}
+    .ndm-cat-icon{font-size:1rem;width:20px;text-align:center;flex-shrink:0}
+    .ndm-divider{width:1px;background:#f1f5f9;flex-shrink:0}
+    .ndm-posts{flex:1;padding:16px 14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+    .ndm-posts-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .ndm-post-item{display:flex;align-items:flex-start;gap:8px;padding:7px 8px;border-radius:8px;transition:all .15s;text-decoration:none;color:inherit}
+    .ndm-post-item:hover{background:#f8faff}
+    .ndm-post-item img{width:52px;height:40px;border-radius:5px;object-fit:cover;flex-shrink:0;background:#e2e8f0}
+    .ndm-post-info{min-width:0}
+    .ndm-post-title{font-size:.78rem;font-weight:700;color:#0F172A;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+    .ndm-post-item:hover .ndm-post-title{color:#1A56DB}
+    .ndm-post-date{font-size:.7rem;color:#94a3b8;margin-top:3px}
+    .ndm-view-all{display:flex;align-items:center;justify-content:center;padding:9px 14px;background:linear-gradient(90deg,#1A56DB,#1040B0);color:white;border-radius:8px;font-size:.82rem;font-weight:700;text-decoration:none;transition:opacity .15s;margin-top:4px}
+    .ndm-view-all:hover{opacity:.88}
     .header-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}.btn-login{display:inline-flex;align-items:center;justify-content:center;padding:8px 18px;border:2px solid var(--primary);border-radius:8px;font-size:.85rem;font-weight:700;color:var(--primary);transition:all .2s;background:white}.btn-login:hover{background:var(--primary);color:white}.btn-register{display:inline-flex;align-items:center;justify-content:center;padding:8px 18px;background:var(--accent);border-radius:8px;font-size:.85rem;font-weight:700;color:white;transition:all .2s;box-shadow:0 4px 14px rgba(255,107,74,.35)}.btn-register:hover{background:var(--accent-light);transform:translateY(-1px)}
     .hamburger-btn{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;padding:6px;border-radius:8px;transition:background .2s;flex-shrink:0}.hamburger-btn:hover{background:var(--gray-50)}.hamburger-btn span{display:block;width:22px;height:2.5px;background:var(--gray-600);border-radius:2px;transition:all .3s ease}.hamburger-btn.open span:nth-child(1){transform:translateY(7.5px) rotate(45deg)}.hamburger-btn.open span:nth-child(2){opacity:0;transform:scaleX(0)}.hamburger-btn.open span:nth-child(3){transform:translateY(-7.5px) rotate(-45deg)}
     .mobile-menu{display:none;position:fixed;top:80px;left:0;right:0;background:white;border-top:2px solid var(--primary);box-shadow:0 8px 32px rgba(0,0,0,.12);z-index:998;padding:16px 20px 24px;max-height:calc(100vh - 80px);overflow-y:auto}.mobile-menu.open{display:block}.mobile-nav-item{border-bottom:1px solid #f1f5f9}.mobile-nav-link{width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 4px;font-size:.95rem;font-weight:700;color:var(--gray-600);cursor:pointer;background:none;border:none;font-family:inherit;text-align:left}.mobile-nav-link .m-arrow{font-size:.65rem;color:var(--gray-300)}.mobile-nav-item.m-open .m-arrow{transform:rotate(180deg)}.mobile-submenu{display:none;padding:0 0 8px 12px}.mobile-nav-item.m-open .mobile-submenu{display:block}.mobile-submenu a{display:flex;align-items:center;gap:10px;padding:10px 8px;font-size:.88rem;font-weight:500;color:var(--gray-600);border-radius:8px}.mobile-plain-link{display:block;padding:14px 4px;font-size:.95rem;font-weight:700;color:var(--gray-600);border-bottom:1px solid #f1f5f9}.mobile-menu-actions{display:flex;flex-direction:column;gap:10px;margin-top:20px}.mobile-menu-actions .btn-login,.mobile-menu-actions .btn-register{text-align:center;padding:12px;font-size:.95rem}
