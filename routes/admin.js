@@ -196,19 +196,35 @@ function ensureBlogContent(content, title, keyword, topic, audience) {
   }
   const wordCount = value.split(/\s+/).filter(Boolean).length;
   if (wordCount < 850) {
+    const extraImg1 = IMG_POOL[Math.floor(Math.random() * 10) + 10];
+    const extraImg2 = IMG_POOL[Math.floor(Math.random() * 10) + 20];
     value += `
 
 ## Lợi ích khi triển khai đúng cách
 
-Để AI tạo ra kết quả thực tế, doanh nghiệp nên bắt đầu từ một quy trình cụ thể thay vì triển khai dàn trải. Với ${mainTopic}, điểm khởi đầu phù hợp thường là tư vấn khách hàng, phân loại nhu cầu, nhắc lịch chăm sóc hoặc tổng hợp dữ liệu bán hàng. Khi quy trình đầu tiên vận hành ổn định, doanh nghiệp có thể mở rộng sang marketing, vận hành và báo cáo quản trị.
+![Lợi ích triển khai AI Agent đúng cách](${extraImg1})
 
-Một lợi ích quan trọng khác là khả năng chuẩn hóa trải nghiệm khách hàng. Thay vì mỗi nhân viên trả lời theo một cách khác nhau, VIAi giúp doanh nghiệp xây dựng kịch bản phản hồi nhất quán, dễ kiểm soát và có thể cải thiện theo dữ liệu thực tế. Điều này giúp đội ngũ mới vào việc nhanh hơn, đồng thời giảm rủi ro bỏ sót khách hàng tiềm năng.
+Để AI tạo ra kết quả thực tế, doanh nghiệp nên bắt đầu từ **một quy trình cụ thể** thay vì triển khai dàn trải. Điểm khởi đầu phù hợp thường là:
+
+- Tư vấn và phản hồi khách hàng tự động
+- Nhắc lịch chăm sóc sau bán
+- Tổng hợp báo cáo doanh thu hàng ngày
+
+Khi quy trình đầu tiên vận hành ổn định, mở rộng dần sang marketing, vận hành và báo cáo quản trị. Đây là cách **giảm rủi ro** và dễ đo hiệu quả hơn so với triển khai toàn bộ cùng lúc.
 
 ## Doanh nghiệp nên chuẩn bị gì?
 
-Trước khi dùng VIAi, doanh nghiệp nên xác định rõ mục tiêu chính: muốn tăng tốc phản hồi, giảm việc thủ công, tăng tỷ lệ chuyển đổi hay cải thiện chăm sóc sau bán. Sau đó, hãy chuẩn bị các thông tin cơ bản như danh sách sản phẩm, câu hỏi thường gặp, chính sách bán hàng, quy trình xử lý đơn và tiêu chí chuyển khách cho nhân viên.
+![Chuẩn bị trước khi triển khai AI Agent VIAi](${extraImg2})
 
-Khi dữ liệu đầu vào rõ ràng, AI sẽ hỗ trợ chính xác hơn và dễ đo lường hiệu quả hơn. Đây là cách tiếp cận thực tế để doanh nghiệp ứng dụng AI mà không cần thay đổi toàn bộ hệ thống ngay từ đầu.`;
+Trước khi bắt đầu, hãy chuẩn bị:
+
+- [ ] Danh sách sản phẩm/dịch vụ và bảng giá
+- [ ] 10-20 câu hỏi khách hàng hay hỏi nhất
+- [ ] Chính sách bán hàng, đổi trả, bảo hành
+- [ ] Quy trình xử lý đơn hàng hiện tại
+- [ ] Tài khoản Zalo OA hoặc Facebook Page
+
+Khi dữ liệu đầu vào rõ ràng, AI phản hồi chính xác hơn và dễ đo lường hiệu quả hơn ngay từ tuần đầu.`;
   }
   return value.trim();
 }
