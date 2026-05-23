@@ -390,39 +390,72 @@ function buildTemplateBlogDraft(input) {
   const mainKeyword = cleanRepeatedSeoText(keyword || topic || 'VIAi AI hỗ trợ');
   const mainTopic = cleanRepeatedSeoText(topic || keyword || 'AI hỗ trợ doanh nghiệp');
   const title = buildSeoTitleFromTopic(mainTopic, 'doanh nghiệp');
-  const content = `Trong bối cảnh chi phí nhân sự, quảng cáo và vận hành ngày càng tăng, nhiều doanh nghiệp Việt đang tìm kiếm một giải pháp giúp làm việc nhanh hơn nhưng không làm phức tạp hệ thống hiện tại. Đây là lý do ${mainKeyword} ngày càng được quan tâm, đặc biệt với các đội ngũ bán hàng, marketing và chăm sóc khách hàng.
 
-VIAi được xây dựng để hỗ trợ doanh nghiệp ứng dụng AI vào các công việc thực tế. Thay vì chỉ dừng ở việc trả lời tin nhắn đơn giản, VIAi có thể hỗ trợ tư vấn khách hàng, phân loại nhu cầu, ghi nhận thông tin, tạo báo cáo và giảm bớt các thao tác lặp lại trong ngày.
+  const content = `Mỗi ngày doanh nghiệp của bạn đang mất bao nhiêu giờ cho những công việc lặp đi lặp lại — trả lời tin nhắn, xử lý đơn hàng, tổng hợp báo cáo? Nếu câu trả lời là hơn 3 tiếng, **${mainKeyword}** chính là giải pháp bạn cần đọc hôm nay.
 
-## AI hỗ trợ doanh nghiệp là gì?
+![Doanh nghiệp ứng dụng AI để tăng hiệu quả vận hành](https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&q=80)
 
-AI hỗ trợ doanh nghiệp là việc sử dụng trí tuệ nhân tạo để xử lý một phần công việc thường xuyên lặp lại. Ví dụ, khi khách hàng nhắn hỏi sản phẩm, AI có thể phản hồi nhanh theo dữ liệu đã được thiết lập. Khi có nhiều yêu cầu giống nhau, AI giúp đội ngũ tiết kiệm thời gian và giảm nguy cơ bỏ sót thông tin.
+## ${mainTopic} là gì và tại sao quan trọng?
 
-Điểm quan trọng là AI không nhất thiết thay thế con người. Trong nhiều trường hợp, AI đóng vai trò như một trợ lý vận hành, giúp nhân viên tập trung vào các việc cần tư duy, đàm phán hoặc xử lý tình huống phức tạp hơn.
+![AI Agent hoạt động trong doanh nghiệp](https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=900&q=80)
 
-## VIAi giúp gì cho bán hàng và chăm sóc khách hàng?
+**${mainTopic}** không phải chatbot trả lời theo kịch bản cố định. Đây là hệ thống AI có khả năng:
 
-Với hoạt động bán hàng, VIAi có thể hỗ trợ phản hồi khách hàng nhanh hơn trên các kênh online. Khi khách để lại thông tin, AI có thể ghi nhận nhu cầu, đề xuất hướng tư vấn và chuyển dữ liệu cho đội ngũ phụ trách. Điều này đặc biệt hữu ích với doanh nghiệp có nhiều khách hỏi nhưng chưa đủ nhân sự trực liên tục.
+- Hiểu ngữ cảnh hội thoại và phản hồi linh hoạt
+- Tự động thực hiện hành động: tạo đơn, gửi báo cáo, cập nhật CRM
+- Kết nối đồng thời nhiều kênh: Zalo, Facebook, Website
+- Hoạt động 24/7 không cần người trực
 
-Ở khâu chăm sóc khách hàng, VIAi có thể hỗ trợ nhắc lịch, gửi hướng dẫn, phân loại phản hồi và tạo kịch bản chăm sóc sau bán. Nhờ đó, doanh nghiệp giữ được sự chuyên nghiệp mà không cần tăng quá nhiều chi phí vận hành.
+> Theo khảo sát McKinsey, **70% công việc lặp lại** trong doanh nghiệp SME có thể được tự động hóa bằng AI Agent.
 
-## Ứng dụng VIAi trong vận hành hằng ngày
+## Doanh nghiệp được gì khi ứng dụng ${mainTopic}?
 
-Ngoài bán hàng, VIAi còn có thể hỗ trợ tổng hợp dữ liệu và báo cáo. Thay vì mất thời gian gom thông tin thủ công, doanh nghiệp có thể dùng AI để chuẩn hóa dữ liệu, tóm tắt tình hình và gợi ý các điểm cần theo dõi.
+![Kết quả kinh doanh sau khi dùng AI Agent VIAi](https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=80)
 
-Khi dữ liệu được tổ chức tốt hơn, chủ doanh nghiệp và đội ngũ quản lý có thêm cơ sở để ra quyết định. Đây là lợi ích quan trọng của ${mainKeyword}: không chỉ làm nhanh hơn, mà còn giúp doanh nghiệp nhìn rõ hơn các điểm nghẽn trong quy trình.
+| Tiêu chí | Trước khi dùng AI | Sau khi dùng VIAi |
+|----------|-------------------|-------------------|
+| Thời gian phản hồi | 30 phút – 2 tiếng | Dưới 5 giây |
+| Hoạt động ngoài giờ | ❌ Không | ✅ 24/7 |
+| Xử lý nhiều kênh cùng lúc | Tối đa 1-2 người | Không giới hạn |
+| Chi phí nhân sự | 100% | Giảm 30-50% |
+| Tỷ lệ bỏ lỡ khách | Cao | Gần bằng 0 |
 
-## Vì sao doanh nghiệp nên cân nhắc VIAi?
+## Ví dụ thực tế: Shop Thời Trang Minh Anh
 
-VIAi phù hợp với doanh nghiệp muốn bắt đầu ứng dụng AI theo từng bước nhỏ. Thay vì triển khai một hệ thống lớn ngay từ đầu, doanh nghiệp có thể chọn một quy trình cụ thể như tư vấn khách hàng, chăm sóc sau bán hoặc báo cáo tự động. Cách tiếp cận này giúp giảm rủi ro và dễ đo hiệu quả hơn.
+![Chủ doanh nghiệp sử dụng AI Agent VIAi](https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&q=80)
 
-Với đối tượng đọc là ${audience || 'chủ doanh nghiệp và đội ngũ marketing tại Việt Nam'}, giải pháp AI cần dễ hiểu, dễ triển khai và gắn với kết quả kinh doanh thực tế. VIAi hướng tới đúng nhu cầu đó: hỗ trợ đội ngũ làm việc hiệu quả hơn mà không yêu cầu kiến thức kỹ thuật phức tạp.
+Chị Minh Anh — chủ shop thời trang online tại TP.HCM — nhận **150-200 tin nhắn Zalo mỗi ngày**. Trước đây chị mất 5-6 tiếng chỉ để trả lời khách hỏi giá, hỏi size và xác nhận đơn.
 
-## Kết luận
+Sau khi triển khai VIAi Zalo Sales Agent:
+- ⏱ Tiết kiệm **5 giờ/ngày**
+- 📦 Đơn hàng tăng **35%** nhờ không bỏ lỡ khách đêm
+- 😴 Chị có thể nghỉ ngơi mà doanh thu vẫn chạy
 
-${mainTopic} không còn là xu hướng xa vời. Với VIAi, doanh nghiệp có thể bắt đầu tự động hóa những công việc lặp lại, phản hồi khách hàng nhanh hơn và xây dựng quy trình vận hành rõ ràng hơn. Nếu doanh nghiệp của bạn đang cân nhắc ứng dụng AI, hãy bắt đầu từ một nhu cầu cụ thể và đo hiệu quả từng bước.
+> *"Giờ khách nhắn lúc 2 giờ sáng cũng được trả lời ngay. Tháng đầu doanh thu tăng gần 30%."* — Chị Minh Anh, chủ shop thời trang
 
-Xem thêm [giải pháp AI Agent cho doanh nghiệp](/#products) hoặc [đăng ký tư vấn VIAi](/dung-thu.html) để được gợi ý cách áp dụng AI phù hợp với quy trình bán hàng, marketing và vận hành của doanh nghiệp bạn.`;
+## Checklist: Bắt Đầu Với ${mainTopic} Trong 24 Giờ
+
+![Hướng dẫn triển khai AI Agent cho doanh nghiệp](https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&q=80)
+
+- [ ] Xác định 1 quy trình lặp lại tốn thời gian nhất
+- [ ] Đăng ký dùng thử VIAi miễn phí 14 ngày
+- [ ] Kết nối kênh Zalo OA hoặc Website (mất 15 phút)
+- [ ] Cài đặt kịch bản phản hồi cơ bản
+- [ ] Chạy thử 7 ngày và đo kết quả
+- [ ] Mở rộng sang quy trình tiếp theo
+
+## Vì Sao Chọn VIAi Thay Vì Tự Xây?
+
+Tự xây hệ thống AI tốn 6-12 tháng và hàng trăm triệu đồng. VIAi triển khai trong **24 giờ**, không cần đội kỹ thuật riêng.
+
+- ✅ Hỗ trợ 1-1 từ đội ngũ VIAi
+- ✅ Tích hợp 50+ ứng dụng phổ biến
+- ✅ Hoàn tiền 100% trong 7 ngày nếu không hài lòng
+- ✅ Không ràng buộc hợp đồng dài hạn
+
+---
+
+Sẵn sàng để AI làm việc thay bạn? [Dùng thử miễn phí 14 ngày](/dung-thu.html) — không cần thẻ tín dụng. Hoặc [xem các AI Agent phù hợp với ngành của bạn](/san-pham.html).`;
 
   return normalizeBlogDraft({
     title,
