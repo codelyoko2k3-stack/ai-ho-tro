@@ -1085,57 +1085,70 @@ router.post('/ai-blog-draft', auth, async (req, res) => {
     return res.status(400).json({ error: 'Vui lòng nhập yêu cầu, từ khóa hoặc chủ đề bài viết' });
   }
 
-  const prompt = `Bạn là trợ lý AI SEO cho website VIAi, sản phẩm AI Agent cho doanh nghiệp Việt Nam.
-Hãy tạo một bài blog phong phú, trực quan, có thể đăng ngay. Giọng văn ${input.tone}.
+  const prompt = `Bạn là chuyên gia viết blog cho VIAi — nền tảng AI Agent dành cho doanh nghiệp SME Việt Nam.
+Phong cách viết: HubSpot / Notion blog — hiện đại, dễ đọc, thực chiến. KHÔNG viết như textbook hay bài SEO nhàm.
 
-Yêu cầu của người dùng: ${input.request || '(không có yêu cầu thêm)'}
-Từ khóa chính: ${input.keyword || input.topic}
-Chủ đề: ${input.topic || input.keyword}
-Đối tượng đọc: ${input.audience}
-Search intent: ${input.intent}
+Thông tin bài viết:
+- Từ khóa chính: ${input.keyword || input.topic}
+- Chủ đề: ${input.topic || input.keyword}
+- Đối tượng: ${input.audience} — chủ doanh nghiệp/người mới, KHÔNG giả định họ hiểu AI
+- Giọng văn: ${input.tone} — gần gũi, thực chiến, không corporate
+- Search intent: ${input.intent}
+- Yêu cầu thêm: ${input.request || '(không có)'}
 
-Quy chuẩn SEO & nội dung bắt buộc:
-- Dùng đúng thương hiệu "VIAi", không viết thường "viai".
-- SEO title 50-60 ký tự, có từ khóa chính và VIAi. Không lặp từ.
-- Meta description 140-160 ký tự, kết thúc bằng câu đầy đủ.
-- Content 1100-1400 từ. KHÔNG dùng H1 ở đầu content; chỉ dùng đoạn mở, H2 và H3.
-- Từ khóa chính xuất hiện trong mở bài, ít nhất 1 H2, và kết luận.
-- Có ít nhất 2 internal link markdown tới /san-pham.html và /dung-thu.html.
-- CTA rõ ở cuối bài, FAQ 4-6 câu hỏi.
-- Không bịa số liệu cụ thể, không cam kết quá mức.
+CHUẨN VIẾT BẮT BUỘC (8 tiêu chí):
 
-Yêu cầu HÌNH ẢNH (quan trọng):
-- Chèn 2-3 ảnh trong bài dùng cú pháp markdown: ![Mô tả ảnh tiếng Việt](URL_ảnh)
-- Dùng ảnh Unsplash thật, ví dụ: https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&q=80
-- Các URL Unsplash phổ biến cho chủ đề AI/business:
-  * AI công nghệ: https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&q=80
-  * Dữ liệu/analytics: https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=80
-  * Team làm việc: https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&q=80
-  * Laptop/digital: https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&q=80
-  * Mobile/Zalo: https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=900&q=80
-- Đặt ảnh sau mỗi H2 lớn hoặc sau đoạn giới thiệu.
+1. HOOK MỞ ĐẦU = CÂU HỎI GÂY ĐAU
+   - Dòng đầu PHẢI là câu hỏi chỉ ra vấn đề thực tế của độc giả
+   - VD: "Bạn đang mất bao nhiêu giờ mỗi ngày chỉ để trả lời tin nhắn Zalo?"
+   - KHÔNG bắt đầu bằng định nghĩa như "AI Agent là..."
 
-Yêu cầu BẢNG DỮ LIỆU (nếu phù hợp với chủ đề):
-- Dùng markdown table để trình bày dữ liệu so sánh, danh sách, checklist.
-- Ví dụ: | Tính năng | Thủ công | VIAi AI Agent |
-- Nếu bài có thể có bảng thì bắt buộc phải có ít nhất 1 bảng.
+2. CẤU TRÚC RÕ RÀNG
+   - Paragraph tối đa 3 câu — ngắn, dễ scan
+   - Dùng **bold** cho từ quan trọng
+   - Có bullet points, ordered list, checklist (- [ ])
+   - Có ít nhất 1 bảng so sánh markdown: | Tiêu chí | Thủ công | VIAi |
+   - Có ít nhất 1 checklist actionable (- [ ] Việc cần làm)
 
-Yêu cầu ĐỊNH DẠNG bổ sung:
-- Dùng ordered list (1. 2. 3.) cho các bước hướng dẫn.
-- Dùng > blockquote cho số liệu/trích dẫn nổi bật.
-- Dùng --- để ngăn cách giữa các phần lớn (tùy chọn).
+3. ẢNH SAU MỖI H2 SECTION (BẮT BUỘC)
+   - Mỗi H2 PHẢI có 1 ảnh ngay sau heading hoặc sau đoạn đầu của section đó
+   - Cú pháp: ![Mô tả tiếng Việt phù hợp section](URL)
+   - Dùng ảnh Unsplash khác nhau, không lặp lại:
+     * AI/tech: https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&q=80
+     * Robot/automation: https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=900&q=80
+     * Analytics/data: https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=80
+     * Team/people: https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&q=80
+     * Laptop/work: https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&q=80
+     * Mobile/Zalo: https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=900&q=80
+     * Security: https://images.unsplash.com/photo-1563986768609-322da13575f3?w=900&q=80
+     * Growth: https://images.unsplash.com/photo-1553877522-43269d4ea984?w=900&q=80
+     * Meeting: https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=900&q=80
 
-Chỉ trả về JSON hợp lệ, không thêm giải thích ngoài JSON. Schema:
+4. VÍ DỤ THỰC TẾ (1 case study bắt buộc)
+   - Dùng tên doanh nghiệp Việt Nam cụ thể (shop thời trang, phòng khám, F&B...)
+   - Có số liệu trước/sau rõ ràng (VD: từ 2 tiếng → 3 giây)
+   - Có quote thực tế: > "Câu nói của người dùng..." — Tên, chức danh
+
+5. SEO TỰ NHIÊN
+   - SEO title 50-60 ký tự, có từ khóa + VIAi
+   - Meta description 140-160 ký tự
+   - Từ khóa xuất hiện tự nhiên, KHÔNG nhồi nhét
+   - Có 2 internal link: /san-pham.html và /dung-thu.html
+
+6. CTA CUỐI BÀI
+   - Link rõ ràng đến /dung-thu.html hoặc sản phẩm cụ thể
+   - Tự nhiên, không ép buộc
+
+Chỉ trả về JSON hợp lệ, không thêm text ngoài JSON:
 {
-  "title": "Tiêu đề bài viết",
-  "seo_title": "SEO title tối đa 60 ký tự",
-  "slug": "slug-khong-dau",
-  "meta_description": "140-160 ký tự",
-  "excerpt": "Tóm tắt 2-3 câu",
-  "content": "Bài viết markdown 1000-1300 từ, không có H1, có H2/H3, internal link và CTA cuối bài",
-  "faq": [{"question":"...","answer":"..."}],
-  "image_prompt": "Prompt tạo ảnh thumbnail",
-  "image_alt": "Alt ảnh thumbnail",
+  "title": "Tiêu đề bài viết (có từ khóa, hấp dẫn)",
+  "seo_title": "SEO title tối đa 60 ký tự | VIAi",
+  "slug": "slug-khong-dau-viet-hoa",
+  "meta_description": "140-160 ký tự, có từ khóa, kết thúc bằng câu đầy đủ",
+  "excerpt": "2-3 câu tóm tắt, hấp dẫn, có pain point",
+  "content": "Nội dung markdown đầy đủ: hook câu hỏi → vấn đề → giải pháp (mỗi H2 có ảnh) → ví dụ thực tế → checklist → CTA. Tối thiểu 1200 từ.",
+  "faq": [{"question":"Câu hỏi thực tế độc giả hay hỏi","answer":"Câu trả lời ngắn gọn, hữu ích"}],
+  "image_alt": "Mô tả ảnh thumbnail phù hợp chủ đề",
   "category": "Kiến thức AI",
   "author": "VIAi Team"
 }`;
