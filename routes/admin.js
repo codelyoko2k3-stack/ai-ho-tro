@@ -1210,7 +1210,11 @@ router.post('/ai-blog-draft', auth, async (req, res) => {
     tone: clean(req.body.tone) || 'chuyên nghiệp, rõ ràng, dễ hiểu',
     request: clean(req.body.request).slice(0, 4000),
     image_url: clean(req.body.image_url),
-    section_images: Array.isArray(req.body.section_images) ? req.body.section_images.map(u => String(u || '').trim()).filter(Boolean) : []
+    section_images: Array.isArray(req.body.section_images) ? req.body.section_images.map(u => String(u || '').trim()).filter(Boolean) : [],
+    secondary_keywords: clean(req.body.secondary_keywords),
+    preset_title: clean(req.body.preset_title),
+    preset_meta: clean(req.body.preset_meta),
+    internal_links: clean(req.body.internal_links) || '/san-pham.html, /dung-thu.html'
   };
 
   if (!input.keyword && !input.topic && !input.request) {
@@ -1225,10 +1229,13 @@ Phong cách: HubSpot / Notion blog — hiện đại, dễ đọc, thực chiế
 THÔNG TIN BÀI VIẾT:
 - Từ khóa chính: ${input.keyword || input.topic}
 - Chủ đề: ${input.topic || input.keyword}
+${input.secondary_keywords ? `- Từ khóa phụ / LSI: ${input.secondary_keywords} — dùng tự nhiên trong bài, không nhồi nhét` : ''}
 - Đối tượng: ${input.audience} — KHÔNG giả định họ hiểu kỹ thuật AI, giải thích thuật ngữ ngắn gọn nếu cần
 - Mục tiêu content: ${input.intent} (SEO / lead gen / chuyển đổi)
 - Giọng văn: ${input.tone} — chuyên nghiệp nhưng gần gũi, tránh corporate cứng nhắc
 - Yêu cầu thêm: ${input.request || '(không có)'}
+${input.preset_title ? `- SEO Title BẮT BUỘC dùng: "${input.preset_title}"` : ''}
+${input.preset_meta ? `- Meta Description BẮT BUỘC dùng: "${input.preset_meta}"` : ''}
 
 CẤU TRÚC NỘI DUNG CHUẨN (theo framework service content):
   Vấn đề khách hàng đang gặp → Giải pháp VIAi cung cấp → Lợi ích cụ thể → Quy trình triển khai → Lý do nên chọn VIAi → CTA rõ ràng
@@ -1275,8 +1282,8 @@ ${input.section_images.map((u,i) => `     * Section ${i+1}: ${u}`).join('\n')}`
 5. SEO TỰ NHIÊN
    - SEO title 50-60 ký tự, có từ khóa + VIAi
    - Meta description 140-160 ký tự, kết thúc bằng câu đầy đủ
-   - Từ khóa xuất hiện tự nhiên ở tiêu đề, đoạn mở, ít nhất 1 H2 — KHÔNG nhồi nhét
-   - Có 2 internal link: /san-pham.html và /dung-thu.html
+   - Từ khóa chính + phụ xuất hiện tự nhiên, KHÔNG nhồi nhét
+   - Internal links BẮT BUỘC chèn vào bài: ${input.internal_links}
 
 6. CTA CUỐI BÀI
    - Lời kêu gọi hành động cụ thể, tự nhiên, không ép buộc

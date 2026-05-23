@@ -441,6 +441,40 @@
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(255,107,0,0.1);
     }
+    /* ── SEO PANEL TABS ──────────────────────────────────── */
+    .seo-tab-bar {
+      display: flex; gap: 4px; margin-bottom: 12px;
+      background: #f1f5f9; border-radius: 10px; padding: 4px;
+    }
+    .seo-tab-btn {
+      flex: 1; padding: 7px 0; font-size: 0.8rem; font-weight: 700;
+      border: none; border-radius: 7px; cursor: pointer; font-family: inherit;
+      background: transparent; color: #64748b; transition: all 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+    .seo-tab-btn.active { background: white; color: #0F172A; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    /* ── SEO EDIT PANEL ──────────────────────────────────── */
+    .seo-edit-panel { display: none; }
+    .seo-edit-panel.active { display: block; }
+    .seo-edit-field { margin-bottom: 12px; }
+    .seo-edit-field label {
+      display: block; font-size: 0.72rem; font-weight: 700; color: #1A56DB;
+      text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 5px;
+    }
+    .seo-edit-field input, .seo-edit-field textarea, .seo-edit-field select {
+      width: 100%; padding: 9px 12px; border: 1.5px solid #e2e8f0;
+      border-radius: 8px; font-family: inherit; font-size: 0.85rem;
+      color: #0F172A; outline: none; background: white; transition: border-color 0.15s;
+    }
+    .seo-edit-field input:focus, .seo-edit-field textarea:focus {
+      border-color: #1A56DB; box-shadow: 0 0 0 3px rgba(26,86,219,0.08);
+    }
+    .seo-edit-field textarea { resize: vertical; min-height: 100px; line-height: 1.65; }
+    .seo-edit-field textarea.tall { min-height: 380px; }
+    .seo-edit-save-bar {
+      display: flex; gap: 8px; margin-top: 14px; padding-top: 12px;
+      border-top: 1px solid #e2e8f0;
+    }
     /* ── SEO DRAFT PREVIEW (blog-like) ───────────────────── */
     .seo-preview {
       width: 100%;
@@ -1004,6 +1038,30 @@
                 <textarea id="seo-request" placeholder="VD: Viết theo hướng VIAi hỗ trợ chủ shop online chốt đơn nhanh hơn, có CTA đăng ký dùng thử..." style="min-height:120px"></textarea>
               </div>
 
+              <details style="margin-bottom:14px">
+                <summary style="cursor:pointer;font-size:0.8rem;font-weight:700;color:#1A56DB;list-style:none;display:flex;align-items:center;gap:6px;padding:8px 10px;background:#EEF3FF;border-radius:8px;border:1.5px solid #dbe8ff">
+                  <i class="fas fa-sliders"></i> SEO nâng cao <i class="fas fa-chevron-down" style="margin-left:auto;font-size:10px"></i>
+                </summary>
+                <div style="padding:12px 4px 0;display:flex;flex-direction:column;gap:10px">
+                  <div class="field" style="margin-bottom:0">
+                    <label>Từ khóa phụ / LSI <span style="color:#94a3b8;font-weight:400">(cách nhau bởi dấu phẩy)</span></label>
+                    <input id="seo-secondary-kw" type="text" placeholder="VD: chatbot AI, tự động hóa, phần mềm AI" />
+                  </div>
+                  <div class="field" style="margin-bottom:0">
+                    <label>SEO Title muốn dùng <span style="color:#94a3b8;font-weight:400">(tối đa 60 ký tự)</span></label>
+                    <input id="seo-preset-title" type="text" placeholder="Để trống AI tự tạo" maxlength="70" />
+                  </div>
+                  <div class="field" style="margin-bottom:0">
+                    <label>Meta Description <span style="color:#94a3b8;font-weight:400">(140-160 ký tự)</span></label>
+                    <textarea id="seo-preset-meta" placeholder="Để trống AI tự tạo" style="min-height:70px;resize:vertical"></textarea>
+                  </div>
+                  <div class="field" style="margin-bottom:0">
+                    <label>Internal links muốn chèn <span style="color:#94a3b8;font-weight:400">(cách nhau bởi dấu phẩy)</span></label>
+                    <input id="seo-internal-links" type="text" placeholder="VD: /san-pham.html, /dung-thu.html" value="/san-pham.html, /dung-thu.html" />
+                  </div>
+                </div>
+              </details>
+
               <div class="field">
                 <label>Ảnh thumbnail (tùy chọn)</label>
                 <div style="display:flex;gap:8px;margin-bottom:6px">
@@ -1042,9 +1100,56 @@
 
             <div class="seo-panel">
               <div class="seo-panel-title"><i class="fas fa-list-check"></i> Bản nháp trước khi đăng</div>
-              <div id="seo-preview" class="seo-preview">
-                <div class="seo-empty">Bản nháp AI sẽ hiện ở đây sau khi bấm Tạo bản nháp.</div>
+              <div class="seo-tab-bar">
+                <button class="seo-tab-btn active" id="tab-preview-btn" onclick="switchSeoTab('preview')">
+                  <i class="fas fa-eye"></i> Xem trước
+                </button>
+                <button class="seo-tab-btn" id="tab-edit-btn" onclick="switchSeoTab('edit')">
+                  <i class="fas fa-pen"></i> Chỉnh sửa
+                </button>
               </div>
+
+              <!-- Preview tab -->
+              <div id="seo-preview-tab">
+                <div id="seo-preview" class="seo-preview">
+                  <div class="seo-empty"><i class="fas fa-robot" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:10px"></i>Bản nháp AI sẽ hiện ở đây sau khi bấm Tạo bản nháp.</div>
+                </div>
+              </div>
+
+              <!-- Edit tab -->
+              <div id="seo-edit-tab" class="seo-edit-panel">
+                <div class="seo-edit-field">
+                  <label><i class="fas fa-heading"></i> Tiêu đề bài viết</label>
+                  <input id="edit-title" type="text" placeholder="Tiêu đề bài viết" />
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                  <div class="seo-edit-field">
+                    <label><i class="fas fa-search"></i> SEO Title</label>
+                    <input id="edit-seo-title" type="text" placeholder="SEO title (max 60 ký tự)" maxlength="70" />
+                  </div>
+                  <div class="seo-edit-field">
+                    <label><i class="fas fa-link"></i> Slug URL</label>
+                    <input id="edit-slug" type="text" placeholder="slug-bai-viet" />
+                  </div>
+                </div>
+                <div class="seo-edit-field">
+                  <label><i class="fas fa-align-left"></i> Tóm tắt (Excerpt)</label>
+                  <textarea id="edit-excerpt" placeholder="2-3 câu tóm tắt hấp dẫn"></textarea>
+                </div>
+                <div class="seo-edit-field">
+                  <label><i class="fas fa-tag"></i> Meta Description</label>
+                  <textarea id="edit-meta" placeholder="140-160 ký tự" style="min-height:70px"></textarea>
+                </div>
+                <div class="seo-edit-field">
+                  <label><i class="fas fa-file-alt"></i> Nội dung (Markdown)</label>
+                  <textarea id="edit-content" class="tall" placeholder="Nội dung markdown..."></textarea>
+                </div>
+                <div class="seo-edit-save-bar">
+                  <button class="btn btn-export" onclick="saveDraftEdits()"><i class="fas fa-check"></i> Lưu & Xem trước</button>
+                  <button class="btn btn-refresh" onclick="switchSeoTab('preview')"><i class="fas fa-times"></i> Hủy</button>
+                </div>
+              </div>
+
               <textarea id="seo-output" class="seo-output" readonly style="display:none"></textarea>
               <div class="seo-actions">
                 <button class="btn btn-export" id="btn-seo-publish" onclick="publishSeoDraft()" disabled><i class="fas fa-paper-plane"></i> Đăng bài</button>
@@ -3439,6 +3544,50 @@ if (p === 'site-settings') loadSettings();
     ].join('\n');
   }
 
+  function switchSeoTab(tab) {
+    const previewTab = document.getElementById('seo-preview-tab');
+    const editTab = document.getElementById('seo-edit-tab');
+    const previewBtn = document.getElementById('tab-preview-btn');
+    const editBtn = document.getElementById('tab-edit-btn');
+    if (tab === 'edit') {
+      if (!currentSeoDraft) { toast('Tạo bản nháp trước khi chỉnh sửa'); return; }
+      loadDraftToEditPanel();
+      previewTab.style.display = 'none';
+      editTab.classList.add('active');
+      previewBtn.classList.remove('active');
+      editBtn.classList.add('active');
+    } else {
+      previewTab.style.display = '';
+      editTab.classList.remove('active');
+      previewBtn.classList.add('active');
+      editBtn.classList.remove('active');
+    }
+  }
+
+  function loadDraftToEditPanel() {
+    if (!currentSeoDraft) return;
+    document.getElementById('edit-title').value = currentSeoDraft.title || '';
+    document.getElementById('edit-seo-title').value = currentSeoDraft.seo_title || '';
+    document.getElementById('edit-slug').value = currentSeoDraft.slug || '';
+    document.getElementById('edit-excerpt').value = currentSeoDraft.excerpt || '';
+    document.getElementById('edit-meta').value = currentSeoDraft.meta_description || '';
+    document.getElementById('edit-content').value = currentSeoDraft.content || '';
+  }
+
+  function saveDraftEdits() {
+    if (!currentSeoDraft) return;
+    currentSeoDraft.title = document.getElementById('edit-title').value.trim() || currentSeoDraft.title;
+    currentSeoDraft.seo_title = document.getElementById('edit-seo-title').value.trim() || currentSeoDraft.seo_title;
+    currentSeoDraft.slug = document.getElementById('edit-slug').value.trim() || currentSeoDraft.slug;
+    currentSeoDraft.excerpt = document.getElementById('edit-excerpt').value.trim() || currentSeoDraft.excerpt;
+    currentSeoDraft.meta_description = document.getElementById('edit-meta').value.trim() || currentSeoDraft.meta_description;
+    currentSeoDraft.content = document.getElementById('edit-content').value || currentSeoDraft.content;
+    document.getElementById('seo-output').value = formatSeoDraftText(currentSeoDraft);
+    renderSeoDraft(currentSeoDraft, null);
+    switchSeoTab('preview');
+    toast('Đã lưu chỉnh sửa');
+  }
+
   function renderSeoDraft(draft, warning) {
     currentSeoDraft = draft || null;
     const preview = document.getElementById('seo-preview');
@@ -3500,7 +3649,11 @@ if (p === 'site-settings') loadSettings();
       tone: document.getElementById('seo-tone').value,
       request: document.getElementById('seo-request').value.trim(),
       image_url: document.getElementById('seo-image-url').value.trim(),
-      section_images: Array.from(document.querySelectorAll('.section-img-input')).map(i=>i.value.trim()).filter(Boolean)
+      section_images: Array.from(document.querySelectorAll('.section-img-input')).map(i=>i.value.trim()).filter(Boolean),
+      secondary_keywords: document.getElementById('seo-secondary-kw').value.trim(),
+      preset_title: document.getElementById('seo-preset-title').value.trim(),
+      preset_meta: document.getElementById('seo-preset-meta').value.trim(),
+      internal_links: document.getElementById('seo-internal-links').value.trim()
     };
 
     if (!payload.keyword && !payload.topic && !payload.request) {
