@@ -153,10 +153,12 @@ function renderMarkdown(md, options = {}) {
 }
 
 async function renderSiteToolbar(active = '') {
-  // Load 4 blog mới nhất + ảnh để inject vào dropdown
-  let latestBlogs = [];
+  // Load 4 blog mới nhất + danh mục thực từ DB
+  let latestBlogs = [], blogCategories = [];
   try {
     latestBlogs = await db.prepare("SELECT title, category, slug, published_at, image_url FROM blog_posts WHERE active=1 ORDER BY published_at DESC LIMIT 4").all();
+    const catRows = await db.prepare("SELECT DISTINCT category FROM blog_posts WHERE active=1 AND category IS NOT NULL AND category != '' ORDER BY category ASC").all();
+    blogCategories = catRows.map(r => r.category).filter(Boolean);
   } catch {}
 
   const BLOG_IMG_POOL = [
@@ -206,17 +208,16 @@ async function renderSiteToolbar(active = '') {
         </div>
         <div class="nav-item"><a href="/#how" class="nav-link">Quy trình</a></div>
         <div class="nav-item"><a href="/#tech" class="nav-link">Công nghệ</a></div>
-        <div class="nav-item${active === 'blog' ? ' nav-active' : ''}">
+        <div class="nav-item ndm-wrap${active === 'blog' ? ' nav-active' : ''}">
           <a href="/blog" class="nav-link">Tin tức <span class="arrow">▾</span></a>
           <div class="dropdown news-mega-dropdown">
             <div class="ndm-inner">
               <div class="ndm-cats">
                 <div class="ndm-section-label">CHUYÊN MỤC</div>
-                <a href="/blog" class="ndm-cat-link"><span class="ndm-cat-icon">🤖</span> Kiến thức AI</a>
-                <a href="/blog" class="ndm-cat-link"><span class="ndm-cat-icon">🏆</span> Case Study</a>
-                <a href="/blog" class="ndm-cat-link"><span class="ndm-cat-icon">📖</span> Hướng dẫn triển khai</a>
-                <a href="/blog" class="ndm-cat-link"><span class="ndm-cat-icon">📢</span> Tin tức ngành</a>
-                <a href="/blog" class="ndm-cat-link"><span class="ndm-cat-icon">📊</span> Chuyển đổi số</a>
+                <a href="/blog" class="ndm-cat-link ndm-cat-all"><span class="ndm-cat-icon">📋</span> Tất cả bài viết</a>
+                ${blogCategories.length > 0
+                  ? blogCategories.map(cat => `<a href="/blog?cat=${encodeURIComponent(cat)}" class="ndm-cat-link"><span class="ndm-cat-icon">•</span> ${escapeHtml(cat)}</a>`).join('')
+                  : '<span style="font-size:.78rem;color:#94a3b8;padding:6px 10px;display:block">Chưa có danh mục</span>'}
               </div>
               <div class="ndm-divider"></div>
               <div class="ndm-posts">
@@ -552,7 +553,9 @@ async function renderProductDetailPage(product) {
     .nav-item:hover .dropdown,.nav-item:focus-within .dropdown{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
     .dropdown a{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;font-size:.85rem;font-weight:500;color:var(--gray-600);transition:all .18s ease}.dropdown a:hover{background:var(--gray-50);color:var(--primary);transform:translateX(3px)}
     .dropdown a .dd-icon{font-size:1.1rem;flex-shrink:0}.dropdown-mega{min-width:480px;display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:14px}.dropdown-mega::before{left:50%;transform:translateX(-50%) rotate(45deg)}.mega-title{grid-column:1/-1;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gray-300);padding:4px 14px 8px;border-bottom:1px solid var(--gray-100);margin-bottom:4px}
-    .news-mega-dropdown{min-width:660px!important;padding:0!important}
+    .ndm-wrap{position:static!important}
+    .news-mega-dropdown{min-width:660px!important;padding:0!important;left:50%!important;transform:translateX(-50%) translateY(-8px)!important}
+    .nav-item.ndm-wrap:hover .news-mega-dropdown,.nav-item.ndm-wrap:focus-within .news-mega-dropdown{transform:translateX(-50%) translateY(0)!important}
     .ndm-inner{display:flex;gap:0}
     .ndm-cats{width:190px;flex-shrink:0;padding:16px 12px;border-right:1px solid #f1f5f9}
     .ndm-section-label{font-size:.67rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;padding:0 8px;margin-bottom:8px}

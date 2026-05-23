@@ -501,7 +501,9 @@
       margin-bottom: 4px;
     }
 
-    .news-mega-dropdown{min-width:660px!important;padding:0!important}
+    .ndm-wrap{position:static!important}
+    .news-mega-dropdown{min-width:660px!important;padding:0!important;left:50%!important;transform:translateX(-50%) translateY(-8px)!important}
+    .nav-item.ndm-wrap:hover .news-mega-dropdown,.nav-item.ndm-wrap:focus-within .news-mega-dropdown{transform:translateX(-50%) translateY(0)!important}
     .ndm-inner{display:flex;gap:0}
     .ndm-cats{width:190px;flex-shrink:0;padding:16px 12px;border-right:1px solid #f1f5f9}
     .ndm-section-label{font-size:.67rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;padding:0 8px;margin-bottom:8px}
@@ -2892,17 +2894,14 @@
         </div>
         <div class="nav-item" data-section="how"><a href="#how" class="nav-link">Quy trình</a></div>
         <div class="nav-item" data-section="tech"><a href="#tech" class="nav-link">Công nghệ</a></div>
-        <div class="nav-item" data-section="blog">
+        <div class="nav-item ndm-wrap" data-section="blog">
           <a href="#blog" class="nav-link">Tin tức <span class="arrow">▾</span></a>
           <div class="dropdown news-mega-dropdown">
             <div class="ndm-inner">
               <div class="ndm-cats">
                 <div class="ndm-section-label">CHUYÊN MỤC</div>
-                <a href="/blog" class="ndm-cat-link"><span class="ndm-cat-icon">🤖</span> Kiến thức AI</a>
-                <a href="/blog" class="ndm-cat-link"><span class="ndm-cat-icon">🏆</span> Case Study</a>
-                <a href="/blog" class="ndm-cat-link"><span class="ndm-cat-icon">📖</span> Hướng dẫn triển khai</a>
-                <a href="/blog" class="ndm-cat-link"><span class="ndm-cat-icon">📢</span> Tin tức ngành</a>
-                <a href="/blog" class="ndm-cat-link"><span class="ndm-cat-icon">📊</span> Chuyển đổi số</a>
+                <a href="/blog" class="ndm-cat-link ndm-cat-all"><span class="ndm-cat-icon">📋</span> Tất cả bài viết</a>
+                <div id="nav-cat-list"><span style="font-size:.78rem;color:#94a3b8;padding:6px 10px;display:block">Đang tải...</span></div>
               </div>
               <div class="ndm-divider"></div>
               <div class="ndm-posts">
@@ -4141,28 +4140,40 @@
     (async () => {
       try {
         const blogRes = await fetch('/api/blog-posts').then(r=>r.json()).catch(()=>[]);
-        const el = document.getElementById('nav-news-content');
-        if (!el) return;
-        const imgPool = [
-          'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&q=70',
-          'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=400&q=70',
-          'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=70',
-          'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&q=70',
-        ];
-        const used = new Set();
         const posts = (blogRes||[]).slice(0, 4);
-        el.innerHTML = posts.map((b, i) => {
-          let img = b.image_url || '';
-          if (!img || used.has(img)) img = imgPool.find(u => !used.has(u)) || imgPool[i % 4];
-          used.add(img);
-          return `<a href="/blog/${b.slug||''}" class="ndm-post-item">
-            <img src="${img}" alt="${b.title||''}" loading="lazy" onerror="this.style.display='none'" />
-            <div class="ndm-post-info">
-              <div class="ndm-post-title">${b.title||''}</div>
-              <div class="ndm-post-date">${(b.published_at||'').slice(0,10)}</div>
-            </div>
-          </a>`;
-        }).join('') || '<div style="color:#94a3b8;font-size:.82rem;padding:8px">Chưa có bài viết</div>';
+
+        // Bài viết mới nhất
+        const elPosts = document.getElementById('nav-news-content');
+        if (elPosts) {
+          const imgPool = [
+            'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&q=70',
+            'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=400&q=70',
+            'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=70',
+            'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&q=70',
+          ];
+          const used = new Set();
+          elPosts.innerHTML = posts.map((b, i) => {
+            let img = b.image_url || '';
+            if (!img || used.has(img)) img = imgPool.find(u => !used.has(u)) || imgPool[i % 4];
+            used.add(img);
+            return `<a href="/blog/${b.slug||''}" class="ndm-post-item">
+              <img src="${img}" alt="${b.title||''}" loading="lazy" onerror="this.style.display='none'" />
+              <div class="ndm-post-info">
+                <div class="ndm-post-title">${b.title||''}</div>
+                <div class="ndm-post-date">${(b.published_at||'').slice(0,10)}</div>
+              </div>
+            </a>`;
+          }).join('') || '<div style="color:#94a3b8;font-size:.82rem;padding:8px">Chưa có bài viết</div>';
+        }
+
+        // Danh mục thật từ bài viết
+        const elCats = document.getElementById('nav-cat-list');
+        if (elCats) {
+          const cats = [...new Set((blogRes||[]).map(b => b.category).filter(Boolean))];
+          elCats.innerHTML = cats.length
+            ? cats.map(c => `<a href="/blog?cat=${encodeURIComponent(c)}" class="ndm-cat-link"><span class="ndm-cat-icon">•</span> ${c}</a>`).join('')
+            : '<span style="font-size:.78rem;color:#94a3b8;padding:6px 10px;display:block">Chưa có danh mục</span>';
+        }
       } catch {}
     })();
     loadHow();
