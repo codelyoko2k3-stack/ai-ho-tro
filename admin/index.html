@@ -6,6 +6,7 @@
   <title>VIAi CMS Admin</title>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -440,100 +441,159 @@
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(255,107,0,0.1);
     }
+    /* ── SEO DRAFT PREVIEW (blog-like) ───────────────────── */
     .seo-preview {
       width: 100%;
       min-height: 560px;
       border: 1.5px solid #e2e8f0;
       border-radius: 12px;
-      padding: 18px;
-      background: #fbfdff;
+      background: #f8fafc;
       overflow: auto;
-      max-height: 720px;
+      max-height: 820px;
     }
     .seo-empty {
       color: #94a3b8;
       font-size: 0.88rem;
-      padding: 40px 0;
+      padding: 60px 0;
       text-align: center;
     }
-    .draft-meta {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-      margin-bottom: 16px;
+    /* browser chrome bar */
+    .preview-browser-bar {
+      background: #e2e8f0;
+      border-radius: 12px 12px 0 0;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #cbd5e1;
     }
-    .draft-meta-item {
+    .preview-browser-bar span {
+      width: 10px; height: 10px; border-radius: 50%; display: inline-block;
+    }
+    .preview-browser-bar .dot-r { background: #fc5c65; }
+    .preview-browser-bar .dot-y { background: #fed330; }
+    .preview-browser-bar .dot-g { background: #26de81; }
+    .preview-browser-bar .url-bar {
+      flex: 1; background: white; border-radius: 20px;
+      padding: 3px 12px; font-size: 0.72rem; color: #64748b;
+      margin-left: 8px; border: 1px solid #e2e8f0; width: auto;
+    }
+    /* seo tag badges */
+    .preview-seo-tags {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      padding: 10px 16px 0;
+    }
+    .preview-seo-tag {
+      font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.04em; padding: 2px 8px; border-radius: 20px;
+    }
+    .tag-blue { background: #EEF3FF; color: #1A56DB; }
+    .tag-orange { background: #FFF3EC; color: #FF6B00; }
+    .tag-green { background: #e8fdf0; color: #00B341; }
+    .tag-warn { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
+    /* post article inside preview */
+    .preview-article {
       background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 8px 10px;
-      font-size: 0.78rem;
-      color: #475569;
-      overflow-wrap: anywhere;
-    }
-    .draft-meta-item strong {
-      display: block;
-      color: #1A56DB;
-      font-size: 0.72rem;
-      margin-bottom: 3px;
-      text-transform: uppercase;
-    }
-    .draft-title {
-      font-size: 1.25rem;
-      line-height: 1.35;
-      font-weight: 900;
-      color: #0F172A;
-      margin-bottom: 10px;
-    }
-    .draft-excerpt {
-      background: #EEF3FF;
-      border-left: 4px solid var(--primary);
-      border-radius: 0 8px 8px 0;
-      padding: 10px 12px;
-      color: #1E3A8A;
-      font-size: 0.86rem;
-      line-height: 1.65;
-      margin-bottom: 14px;
-    }
-    .draft-content {
-      background: white;
-      border: 1px solid #e2e8f0;
+      margin: 12px;
       border-radius: 10px;
-      padding: 16px;
-      white-space: pre-wrap;
-      font-size: 0.86rem;
-      line-height: 1.75;
-      color: #334155;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
     }
-    .draft-faq {
-      margin-top: 14px;
+    .preview-hero {
+      width: 100%; aspect-ratio: 16/7; object-fit: cover;
+      display: block; background: #e2e8f0;
     }
-    .draft-faq-title {
-      font-size: 0.86rem;
-      font-weight: 800;
-      color: #0F172A;
-      margin-bottom: 8px;
+    .preview-body {
+      padding: 20px 22px 24px;
     }
-    .draft-faq-item {
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 9px 10px;
-      margin-bottom: 8px;
-      font-size: 0.82rem;
-      line-height: 1.55;
+    .preview-cat-badge {
+      display: inline-block; font-size: 0.72rem; font-weight: 700;
+      background: #EEF3FF; color: #1A56DB; padding: 3px 10px;
+      border-radius: 20px; margin-bottom: 10px; text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
+    .preview-post-title {
+      font-size: 1.3rem; font-weight: 900; color: #0F172A;
+      line-height: 1.35; margin-bottom: 12px;
+    }
+    .preview-excerpt-box {
+      background: #EEF3FF; border-left: 4px solid #1A56DB;
+      border-radius: 0 8px 8px 0; padding: 10px 14px;
+      color: #1E3A8A; font-size: 0.86rem; line-height: 1.65;
+      margin-bottom: 18px;
+    }
+    /* rendered markdown content */
+    .preview-md {
+      font-size: 0.88rem; line-height: 1.8; color: #334155;
+    }
+    .preview-md h1, .preview-md h2 {
+      font-size: 1.05rem; font-weight: 800; color: #0F172A;
+      margin: 20px 0 8px; padding-bottom: 4px;
+      border-bottom: 2px solid #EEF3FF;
+    }
+    .preview-md h3 {
+      font-size: 0.95rem; font-weight: 700; color: #1A56DB;
+      margin: 16px 0 6px;
+    }
+    .preview-md p { margin-bottom: 12px; }
+    .preview-md strong { color: #0F172A; font-weight: 700; }
+    .preview-md ul, .preview-md ol {
+      padding-left: 20px; margin-bottom: 12px;
+    }
+    .preview-md li { margin-bottom: 4px; }
+    .preview-md img {
+      width: 100%; border-radius: 8px; margin: 12px 0;
+      object-fit: cover; max-height: 260px; display: block;
+    }
+    .preview-md blockquote {
+      border-left: 4px solid #1A56DB; background: #EEF3FF;
+      padding: 10px 14px; border-radius: 0 8px 8px 0;
+      color: #1E3A8A; margin: 12px 0; font-style: italic;
+    }
+    .preview-md table {
+      width: 100%; border-collapse: collapse; font-size: 0.82rem;
+      margin: 12px 0;
+    }
+    .preview-md th {
+      background: #1A56DB; color: white; padding: 7px 10px;
+      text-align: left; font-weight: 700;
+    }
+    .preview-md td {
+      padding: 6px 10px; border-bottom: 1px solid #e2e8f0;
+    }
+    .preview-md tr:nth-child(even) td { background: #f8faff; }
+    /* FAQ */
+    .preview-faq { margin-top: 20px; }
+    .preview-faq-title {
+      font-size: 1rem; font-weight: 800; color: #0F172A;
+      margin-bottom: 10px; padding-top: 16px;
+      border-top: 2px solid #EEF3FF;
+    }
+    .preview-faq-item {
+      background: #f8faff; border: 1px solid #e2e8f0;
+      border-radius: 8px; padding: 10px 12px; margin-bottom: 8px;
+      font-size: 0.83rem; line-height: 1.6;
+    }
+    .preview-faq-item strong { color: #0F172A; display: block; margin-bottom: 4px; }
+    /* meta info bar */
+    .preview-meta-bar {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      padding: 8px 16px 10px;
+      border-top: 1px solid #f1f5f9;
+      background: #f8fafc;
+    }
+    .preview-meta-chip {
+      font-size: 0.68rem; background: white; border: 1px solid #e2e8f0;
+      border-radius: 6px; padding: 3px 8px; color: #64748b;
+    }
+    .preview-meta-chip b { color: #1A56DB; }
     .seo-hint {
-      font-size: 0.78rem;
-      color: #64748b;
-      line-height: 1.6;
-      margin-top: 10px;
+      font-size: 0.78rem; color: #64748b; line-height: 1.6; margin-top: 10px;
     }
     @media (max-width: 980px) {
       .seo-layout { grid-template-columns: 1fr; }
       .seo-output { min-height: 360px; }
       .seo-preview { min-height: 360px; }
-      .draft-meta { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -3385,35 +3445,47 @@ if (p === 'site-settings') loadSettings();
     const output = document.getElementById('seo-output');
     const publishBtn = document.getElementById('btn-seo-publish');
     if (!draft) {
-      preview.innerHTML = '<div class="seo-empty">Bản nháp AI sẽ hiện ở đây sau khi bấm Tạo bản nháp.</div>';
+      preview.innerHTML = '<div class="seo-empty"><i class="fas fa-robot" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:10px"></i>Bản nháp AI sẽ hiện ở đây sau khi bấm Tạo bản nháp.</div>';
       output.value = '';
       publishBtn.disabled = true;
       return;
     }
     output.value = formatSeoDraftText(draft);
     publishBtn.disabled = false;
+
+    const mdHtml = typeof marked !== 'undefined' ? marked.parse(draft.content || '') : `<pre style="white-space:pre-wrap">${escapeHtml(draft.content || '')}</pre>`;
+    const faqHtml = (draft.faq || []).length ? `
+      <div class="preview-faq">
+        <div class="preview-faq-title">Câu hỏi thường gặp</div>
+        ${(draft.faq).map(f => `
+          <div class="preview-faq-item">
+            <strong>${escapeHtml(f.question)}</strong>
+            ${escapeHtml(f.answer || '')}
+          </div>`).join('')}
+      </div>` : '';
+
     preview.innerHTML = `
-      ${warning ? `<div class="draft-excerpt" style="background:#fff7ed;border-left-color:#FF6B00;color:#9a3412">${escapeHtml(warning)}</div>` : ''}
-      <div class="draft-title">${escapeHtml(draft.title)}</div>
-      <div class="draft-meta">
-        <div class="draft-meta-item"><strong>SEO Title</strong>${escapeHtml(draft.seo_title)}</div>
-        <div class="draft-meta-item"><strong>Slug</strong>${escapeHtml(draft.slug)}</div>
-        <div class="draft-meta-item"><strong>Danh mục</strong>${escapeHtml(draft.category || 'Kiến thức AI')}</div>
-        <div class="draft-meta-item"><strong>Ảnh</strong>${escapeHtml(draft.image_url || 'Ảnh mặc định')}</div>
+      <div class="preview-browser-bar">
+        <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
+        <div class="url-bar">phanmemaiagent.net/blog/${escapeHtml(draft.slug || '')}</div>
       </div>
-      <div class="draft-excerpt">${escapeHtml(draft.excerpt)}</div>
-      <div class="draft-meta-item" style="margin-bottom:14px"><strong>Meta Description</strong>${escapeHtml(draft.meta_description)}</div>
-      <div class="draft-content">${escapeHtml(draft.content)}</div>
-      ${(draft.faq || []).length ? `
-        <div class="draft-faq">
-          <div class="draft-faq-title">FAQ</div>
-          ${(draft.faq || []).map(f => `
-            <div class="draft-faq-item">
-              <strong>${escapeHtml(f.question)}</strong><br>
-              ${escapeHtml(f.answer || '')}
-            </div>`).join('')}
-        </div>` : ''}
-      <div class="draft-meta-item" style="margin-top:14px"><strong>Prompt ảnh</strong>${escapeHtml(draft.image_prompt || '')}</div>
+      ${warning ? `<div class="preview-seo-tags"><span class="preview-seo-tag tag-warn"><i class="fas fa-exclamation-triangle"></i> ${escapeHtml(warning)}</span></div>` : ''}
+      <div class="preview-article">
+        ${draft.image_url ? `<img class="preview-hero" src="${escapeHtml(draft.image_url)}" alt="${escapeHtml(draft.image_alt || draft.title)}" onerror="this.style.display='none'" />` : ''}
+        <div class="preview-body">
+          <span class="preview-cat-badge">${escapeHtml(draft.category || 'Kiến thức AI')}</span>
+          <div class="preview-post-title">${escapeHtml(draft.title)}</div>
+          <div class="preview-excerpt-box">${escapeHtml(draft.excerpt)}</div>
+          <div class="preview-md">${mdHtml}</div>
+          ${faqHtml}
+        </div>
+      </div>
+      <div class="preview-meta-bar">
+        <div class="preview-meta-chip"><b>SEO Title</b> ${escapeHtml(draft.seo_title || '')}</div>
+        <div class="preview-meta-chip"><b>Slug</b> ${escapeHtml(draft.slug || '')}</div>
+        <div class="preview-meta-chip"><b>Meta</b> ${escapeHtml((draft.meta_description || '').substring(0, 60))}...</div>
+        ${draft.image_prompt ? `<div class="preview-meta-chip"><b>Prompt ảnh</b> ${escapeHtml(draft.image_prompt.substring(0, 50))}...</div>` : ''}
+      </div>
     `;
   }
 
