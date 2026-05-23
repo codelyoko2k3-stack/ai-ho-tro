@@ -1209,7 +1209,8 @@ router.post('/ai-blog-draft', auth, async (req, res) => {
     intent: clean(req.body.intent) || 'tìm hiểu và cân nhắc giải pháp',
     tone: clean(req.body.tone) || 'chuyên nghiệp, rõ ràng, dễ hiểu',
     request: clean(req.body.request).slice(0, 4000),
-    image_url: clean(req.body.image_url)
+    image_url: clean(req.body.image_url),
+    section_images: Array.isArray(req.body.section_images) ? req.body.section_images.map(u => String(u || '').trim()).filter(Boolean) : []
   };
 
   if (!input.keyword && !input.topic && !input.request) {
