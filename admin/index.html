@@ -1074,6 +1074,30 @@
                 </div>
               </details>
 
+              <!-- Tạo ảnh AI thumbnail -->
+              <div class="field">
+                <label style="display:flex;align-items:center;gap:6px">
+                  <i class="fas fa-image" style="color:#1A56DB"></i>
+                  Tạo ảnh thumbnail bằng AI
+                  <span style="font-size:.7rem;background:#e8fdf0;color:#00B341;padding:2px 7px;border-radius:20px;font-weight:700">FREE</span>
+                </label>
+                <div style="display:flex;gap:8px;margin-bottom:8px">
+                  <input id="ai-img-prompt" type="text" placeholder="VD: doanh nghiệp Việt Nam dùng AI, màu xanh hiện đại" style="flex:1" />
+                  <button type="button" onclick="genAiImg()" id="btn-gen-img"
+                    style="padding:8px 14px;background:#1A56DB;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px;flex-shrink:0">
+                    <i class="fas fa-wand-magic-sparkles"></i> Tạo ảnh
+                  </button>
+                </div>
+                <div id="ai-img-result" style="display:none">
+                  <img id="ai-img-preview" src="" alt="" style="width:100%;border-radius:8px;border:1px solid #e2e8f0;max-height:160px;object-fit:cover;display:block;margin-bottom:8px" />
+                  <button type="button" onclick="useAiImg()"
+                    style="width:100%;padding:8px;background:#00B341;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">
+                    <i class="fas fa-check"></i> Dùng ảnh này làm thumbnail
+                  </button>
+                </div>
+                <div id="ai-img-status" style="font-size:11px;color:#64748b;margin-top:4px"></div>
+              </div>
+
               <div class="field">
                 <label>Ảnh thumbnail (tùy chọn)</label>
                 <div style="display:flex;gap:8px;margin-bottom:6px">
@@ -3554,6 +3578,43 @@ if (p === 'site-settings') loadSettings();
       draft.content || '',
       faqText ? `\nFAQ\n${faqText}` : ''
     ].join('\n');
+  }
+
+  async function genAiImg() {
+    const prompt = document.getElementById('ai-img-prompt').value.trim();
+    if (!prompt) { toast('Nhập mô tả ảnh trước'); return; }
+    const btn = document.getElementById('btn-gen-img');
+    const status = document.getElementById('ai-img-status');
+    const result = document.getElementById('ai-img-result');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
+    status.textContent = 'Đang tạo ảnh, chờ 5-15 giây...';
+    result.style.display = 'none';
+    try {
+      const encoded = encodeURIComponent(prompt + ', professional, high quality, 16:9');
+      const url = `https://image.pollinations.ai/prompt/${encoded}?width=1280&height=720&nologo=true&model=flux&seed=${Date.now()}`;
+      const img = document.getElementById('ai-img-preview');
+      img.src = url;
+      await new Promise((res, rej) => {
+        img.onload = res;
+        img.onerror = rej;
+        setTimeout(rej, 30000);
+      });
+      result.style.display = 'block';
+      status.textContent = 'Ảnh đã sẵn sàng!';
+    } catch {
+      status.textContent = 'Tạo ảnh thất bại. Thử lại hoặc đổi prompt.';
+    }
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Tạo ảnh';
+  }
+
+  function useAiImg() {
+    const img = document.getElementById('ai-img-preview');
+    if (!img.src) return;
+    document.getElementById('seo-image-url').value = img.src;
+    updateSeoImgPreview(img.src);
+    toast('Đã đặt làm ảnh thumbnail');
   }
 
   function onSeoModeChange() {
