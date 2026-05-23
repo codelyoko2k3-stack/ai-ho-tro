@@ -1217,37 +1217,42 @@ router.post('/ai-blog-draft', auth, async (req, res) => {
     return res.status(400).json({ error: 'Vui lòng nhập yêu cầu, từ khóa hoặc chủ đề bài viết' });
   }
 
-  const prompt = `Bạn là chuyên gia viết blog cho VIAi — nền tảng AI Agent dành cho doanh nghiệp SME Việt Nam.
-Phong cách viết: HubSpot / Notion blog — hiện đại, dễ đọc, thực chiến. KHÔNG viết như textbook hay bài SEO nhàm.
+  const prompt = `Bạn là chuyên gia Content Website với 7 năm kinh nghiệm thực chiến, chuyên viết nội dung cho lĩnh vực phần mềm, công nghệ và dịch vụ Digital Marketing — hiện đang viết cho VIAi, nền tảng AI Agent dành cho doanh nghiệp SME Việt Nam.
 
-Thông tin bài viết:
+Vai trò: Tạo bài blog chất lượng cao, chuẩn SEO, đúng insight khách hàng, hỗ trợ tăng tỷ lệ chuyển đổi.
+Phong cách: HubSpot / Notion blog — hiện đại, dễ đọc, thực chiến. KHÔNG viết như textbook hay bài SEO nhàm, không lan man, không nhồi nhét từ khóa, không dùng văn phong máy móc.
+
+THÔNG TIN BÀI VIẾT:
 - Từ khóa chính: ${input.keyword || input.topic}
 - Chủ đề: ${input.topic || input.keyword}
-- Đối tượng: ${input.audience} — chủ doanh nghiệp/người mới, KHÔNG giả định họ hiểu AI
-- Giọng văn: ${input.tone} — gần gũi, thực chiến, không corporate
-- Search intent: ${input.intent}
+- Đối tượng: ${input.audience} — KHÔNG giả định họ hiểu kỹ thuật AI, giải thích thuật ngữ ngắn gọn nếu cần
+- Mục tiêu content: ${input.intent} (SEO / lead gen / chuyển đổi)
+- Giọng văn: ${input.tone} — chuyên nghiệp nhưng gần gũi, tránh corporate cứng nhắc
 - Yêu cầu thêm: ${input.request || '(không có)'}
 
-CHUẨN VIẾT BẮT BUỘC (8 tiêu chí):
+CẤU TRÚC NỘI DUNG CHUẨN (theo framework service content):
+  Vấn đề khách hàng đang gặp → Giải pháp VIAi cung cấp → Lợi ích cụ thể → Quy trình triển khai → Lý do nên chọn VIAi → CTA rõ ràng
+
+CHUẨN VIẾT BẮT BUỘC:
 
 1. HOOK MỞ ĐẦU = CÂU HỎI GÂY ĐAU
    - Dòng đầu PHẢI là câu hỏi chỉ ra vấn đề thực tế của độc giả
    - VD: "Bạn đang mất bao nhiêu giờ mỗi ngày chỉ để trả lời tin nhắn Zalo?"
    - KHÔNG bắt đầu bằng định nghĩa như "AI Agent là..."
 
-2. CẤU TRÚC RÕ RÀNG
-   - Paragraph tối đa 3 câu — ngắn, dễ scan
-   - Dùng **bold** cho từ quan trọng
-   - Có bullet points, ordered list, checklist (- [ ])
+2. CẤU TRÚC RÕ RÀNG — DỄ ĐỌC LƯỚT
+   - Paragraph tối đa 3 câu — ngắn, dễ scan trên mobile
+   - Dùng **bold** cho từ quan trọng, điểm mạnh dịch vụ, con số nổi bật
+   - Có bullet points, ordered list, checklist (- [ ] Việc cần làm)
    - Có ít nhất 1 bảng so sánh markdown: | Tiêu chí | Thủ công | VIAi |
-   - Có ít nhất 1 checklist actionable (- [ ] Việc cần làm)
+   - Heading H2/H3 rõ ràng, bám sát lợi ích — không đặt heading chung chung
 
 3. ẢNH SAU MỖI H2 SECTION (BẮT BUỘC)
    - Mỗi H2 PHẢI có 1 ảnh ngay sau heading hoặc sau đoạn đầu của section đó
    - Cú pháp: ![Mô tả tiếng Việt phù hợp section](URL)
    - Dùng ảnh Unsplash khác nhau, không lặp lại:
 ${input.section_images && input.section_images.length > 0
-  ? `   QUAN TRỌNG — Dùng ĐÚ CÁC ẢNH NÀY theo thứ tự cho từng section:
+  ? `   QUAN TRỌNG — Dùng ĐÚNG CÁC ẢNH NÀY theo thứ tự cho từng section:
 ${input.section_images.map((u,i) => `     * Section ${i+1}: ${u}`).join('\n')}`
   : `   * AI/tech: https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&q=80
      * Robot: https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=900&q=80
@@ -1261,30 +1266,38 @@ ${input.section_images.map((u,i) => `     * Section ${i+1}: ${u}`).join('\n')}`
      * Business: https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=900&q=80
      * Tech2: https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=900&q=80`}
 
-4. VÍ DỤ THỰC TẾ (1 case study bắt buộc)
-   - Dùng tên doanh nghiệp Việt Nam cụ thể (shop thời trang, phòng khám, F&B...)
-   - Có số liệu trước/sau rõ ràng (VD: từ 2 tiếng → 3 giây)
+4. VÍ DỤ THỰC TẾ — CASE STUDY (bắt buộc 1 case)
+   - Dùng tên doanh nghiệp Việt Nam cụ thể: shop thời trang, phòng khám, F&B, logistics...
+   - Có số liệu trước/sau rõ ràng (VD: từ 2 tiếng phản hồi → dưới 5 giây)
    - Có quote thực tế: > "Câu nói của người dùng..." — Tên, chức danh
+   - KHÔNG bịa số liệu phi thực tế, KHÔNG dùng ngôn từ cường điệu quá mức
 
 5. SEO TỰ NHIÊN
    - SEO title 50-60 ký tự, có từ khóa + VIAi
-   - Meta description 140-160 ký tự
-   - Từ khóa xuất hiện tự nhiên, KHÔNG nhồi nhét
+   - Meta description 140-160 ký tự, kết thúc bằng câu đầy đủ
+   - Từ khóa xuất hiện tự nhiên ở tiêu đề, đoạn mở, ít nhất 1 H2 — KHÔNG nhồi nhét
    - Có 2 internal link: /san-pham.html và /dung-thu.html
 
 6. CTA CUỐI BÀI
-   - Link rõ ràng đến /dung-thu.html hoặc sản phẩm cụ thể
-   - Tự nhiên, không ép buộc
+   - Lời kêu gọi hành động cụ thể, tự nhiên, không ép buộc
+   - Link rõ ràng đến /dung-thu.html hoặc sản phẩm phù hợp
+
+TUYỆT ĐỐI TRÁNH:
+- Bịa thông tin kỹ thuật, số liệu hoặc case study không có cơ sở
+- Dùng từ ngữ cường điệu quá mức, thiếu thực tế
+- Viết nội dung chung chung, giống hàng loạt website khác
+- Lạm dụng thuật ngữ chuyên ngành mà không giải thích
+- Viết đoạn văn dài quá 4 câu, khó đọc lướt
 
 Chỉ trả về JSON hợp lệ, không thêm text ngoài JSON:
 {
-  "title": "Tiêu đề bài viết (có từ khóa, hấp dẫn)",
+  "title": "Tiêu đề bài viết (có từ khóa, hấp dẫn, phản ánh lợi ích thực tế)",
   "seo_title": "SEO title tối đa 60 ký tự | VIAi",
   "slug": "slug-khong-dau-viet-hoa",
   "meta_description": "140-160 ký tự, có từ khóa, kết thúc bằng câu đầy đủ",
-  "excerpt": "2-3 câu tóm tắt, hấp dẫn, có pain point",
-  "content": "Nội dung markdown đầy đủ: hook câu hỏi → vấn đề → giải pháp (mỗi H2 có ảnh) → ví dụ thực tế → checklist → CTA. Tối thiểu 1200 từ.",
-  "faq": [{"question":"Câu hỏi thực tế độc giả hay hỏi","answer":"Câu trả lời ngắn gọn, hữu ích"}],
+  "excerpt": "2-3 câu tóm tắt, có pain point, nêu lợi ích chính",
+  "content": "Nội dung markdown đầy đủ: hook câu hỏi → vấn đề → giải pháp (mỗi H2 có ảnh) → lợi ích cụ thể → quy trình → ví dụ thực tế → checklist → lý do chọn VIAi → CTA. Tối thiểu 1200 từ.",
+  "faq": [{"question":"Câu hỏi thực tế độc giả hay hỏi về chủ đề này","answer":"Câu trả lời ngắn gọn, hữu ích, không lan man"}],
   "image_alt": "Mô tả ảnh thumbnail phù hợp chủ đề",
   "category": "Kiến thức AI",
   "author": "VIAi Team"
