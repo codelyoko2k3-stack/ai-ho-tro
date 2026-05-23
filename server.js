@@ -215,9 +215,9 @@ async function renderSiteToolbar(active = '') {
             <div class="ndm-inner">
               <div class="ndm-cats">
                 <div class="ndm-section-label">CHUYÊN MỤC</div>
-                <a href="/blog" class="ndm-cat-link ndm-cat-active" data-ddcat="all" onmouseenter="__ddHover(this)"><span class="ndm-cat-icon">📋</span> Tất cả bài viết</a>
+                <a href="javascript:void(0)" class="ndm-cat-link ndm-cat-active" data-ddcat="all" onclick="__ddHover(this)" onmouseenter="__ddHover(this)"><span class="ndm-cat-icon">📋</span> Tất cả bài viết</a>
                 ${blogCategories.length > 0
-                  ? blogCategories.map(cat => `<a href="/blog?cat=${encodeURIComponent(cat)}" onclick="if(window.__blogFilterCat)return window.__blogFilterCat(event,'${escapeHtml(cat).replace(/'/g,"\\'")}');" class="ndm-cat-link" data-ddcat="${escapeHtml(cat)}" onmouseenter="__ddHover(this)"><span class="ndm-cat-icon">•</span> ${escapeHtml(cat)}</a>`).join('')
+                  ? blogCategories.map(cat => `<a href="javascript:void(0)" class="ndm-cat-link" data-ddcat="${escapeHtml(cat)}" onclick="__ddHover(this)" onmouseenter="__ddHover(this)"><span class="ndm-cat-icon">•</span> ${escapeHtml(cat)}</a>`).join('')
                   : ''}
               </div>
               <div class="ndm-divider"></div>

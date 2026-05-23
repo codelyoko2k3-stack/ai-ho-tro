@@ -4171,7 +4171,7 @@
         if (elCats) {
           const cats = [...new Set((blogRes||[]).map(b => b.category).filter(Boolean))];
           elCats.innerHTML = cats.length
-            ? cats.map(c => `<a href="/blog?cat=${encodeURIComponent(c)}" onclick="if(window.__blogFilterCat)return window.__blogFilterCat(event,'${c.replace(/'/g,"\\'")}');" class="ndm-cat-link"><span class="ndm-cat-icon">•</span> ${c}</a>`).join('')
+            ? cats.map(c => `<a href="javascript:void(0)" class="ndm-cat-link" data-ddcat="${c}" onclick="__ddHover(this)" onmouseenter="__ddHover(this)"><span class="ndm-cat-icon">•</span> ${c}</a>`).join('')
             : '<span style="font-size:.78rem;color:#94a3b8;padding:6px 10px;display:block">Chưa có danh mục</span>';
         }
       } catch {}
