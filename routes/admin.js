@@ -1356,12 +1356,29 @@ Chỉ trả về JSON hợp lệ, không thêm text ngoài JSON:
     res.json({ draft, fallback: false });
   } catch (e) {
     if (shouldUseTemplateFallback(e)) {
-      const draft = buildTemplateBlogDraft(input);
+      let draft;
+      // Nếu mode improve + có nội dung gốc → dùng nội dung anh paste, không tạo template mới
+      if (input.mode === 'improve' && input.existing_content) {
+        const mainTopic = input.topic || input.keyword || 'VIAi AI Agent';
+        draft = normalizeBlogDraft({
+          title: buildSeoTitleFromTopic(mainTopic, 'doanh nghiệp'),
+          seo_title: ensureSeoTitle('', mainTopic),
+          slug: toSlug(mainTopic),
+          meta_description: ensureMetaDescription('', input.keyword || mainTopic, mainTopic),
+          excerpt: `${mainTopic} — bài viết được cải thiện cấu trúc và SEO bởi VIAi.`,
+          content: ensureBlogContent(input.existing_content, mainTopic, input.keyword, input.topic, input.audience),
+          faq: [],
+          category: 'Kiến thức AI',
+          author: 'VIAi Team'
+        }, input);
+      } else {
+        draft = buildTemplateBlogDraft(input);
+      }
       if (input.image_url) draft.image_url = input.image_url;
       return res.json({
         draft,
         fallback: true,
-        warning: e.message || 'Đang dùng bản nháp mẫu vì chưa cấu hình AI'
+        warning: 'Đang dùng bản nháp từ nội dung của bạn. Thêm Anthropic key để AI cải thiện tốt hơn.'
       });
     }
     res.status(e.statusCode || 500).json({ error: e.message || 'Lỗi AI' });
