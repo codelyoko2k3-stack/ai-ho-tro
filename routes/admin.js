@@ -195,7 +195,7 @@ function ensureBlogContent(content, title, keyword, topic, audience) {
     value = buildTemplateBlogDraft({ keyword, topic, audience }).content;
   }
   const wordCount = value.split(/\s+/).filter(Boolean).length;
-  if (wordCount < 850) {
+  if (wordCount < 1200) {
     const extraImg1 = IMG_POOL[Math.floor(Math.random() * 10) + 10];
     const extraImg2 = IMG_POOL[Math.floor(Math.random() * 10) + 20];
     value += `
@@ -451,24 +451,32 @@ function buildTemplateBlogDraft(input) {
 
   const content = `Mỗi ngày doanh nghiệp của bạn đang mất bao nhiêu giờ cho những công việc lặp đi lặp lại — trả lời tin nhắn, xử lý đơn hàng, tổng hợp báo cáo? Nếu câu trả lời là hơn 3 tiếng, **${mainKeyword}** chính là giải pháp bạn cần đọc hôm nay.
 
+Nhiều chủ doanh nghiệp vừa và nhỏ tại Việt Nam đang đối mặt với bài toán quen thuộc: đội ngũ không đủ, lượng công việc ngày càng tăng, nhưng chi phí tuyển dụng lại vượt quá khả năng. Trong bối cảnh đó, ứng dụng AI vào vận hành không còn là xa xỉ — mà là lựa chọn thực tế để giữ tốc độ tăng trưởng mà không cần nhân sự thêm.
+
 ![Doanh nghiệp ứng dụng AI để tăng hiệu quả vận hành](${imgs[0]||IMG_POOL[0]})
 
 ## ${mainTopic} là gì và tại sao quan trọng?
 
 ![AI Agent hoạt động trong doanh nghiệp](${imgs[1]||IMG_POOL[1]})
 
-**${mainTopic}** không phải chatbot trả lời theo kịch bản cố định. Đây là hệ thống AI có khả năng:
+**${mainTopic}** không phải chatbot trả lời theo kịch bản cố định. Đây là hệ thống AI thế hệ mới, có khả năng hiểu ngữ cảnh, học từ dữ liệu thực tế và thực hiện hành động thay con người trong quy trình kinh doanh.
 
-- Hiểu ngữ cảnh hội thoại và phản hồi linh hoạt
+Khác với các công cụ tự động hóa truyền thống chỉ làm theo luật cứng nhắc, AI Agent có thể:
+
+- Hiểu ngữ cảnh hội thoại và phản hồi linh hoạt theo từng khách hàng
 - Tự động thực hiện hành động: tạo đơn, gửi báo cáo, cập nhật CRM
-- Kết nối đồng thời nhiều kênh: Zalo, Facebook, Website
-- Hoạt động 24/7 không cần người trực
+- Kết nối đồng thời nhiều kênh: Zalo, Facebook, Website, email
+- Hoạt động 24/7 không cần người trực, không mệt mỏi, không sai sót
 
-> Theo khảo sát McKinsey, **70% công việc lặp lại** trong doanh nghiệp SME có thể được tự động hóa bằng AI Agent.
+Điều khiến AI Agent trở nên quan trọng là khả năng **học và cải thiện theo thời gian**. Càng nhiều dữ liệu tương tác, hệ thống càng phản hồi chính xác và phù hợp hơn với đặc thù ngành của từng doanh nghiệp.
+
+> Theo khảo sát McKinsey, **70% công việc lặp lại** trong doanh nghiệp SME có thể được tự động hóa bằng AI Agent, giải phóng nhân sự để tập trung vào các công việc sáng tạo và có giá trị cao hơn.
 
 ## Doanh nghiệp được gì khi ứng dụng ${mainTopic}?
 
 ![Kết quả kinh doanh sau khi dùng AI Agent VIAi](${imgs[2]||IMG_POOL[2]})
+
+Lợi ích không chỉ dừng lại ở tiết kiệm thời gian. Khi AI đảm nhận phần việc lặp lại, toàn bộ đội ngũ có thêm bandwidth để tập trung vào chiến lược, sáng tạo và xây dựng quan hệ khách hàng sâu hơn.
 
 | Tiêu chí | Trước khi dùng AI | Sau khi dùng VIAi |
 |----------|-------------------|-------------------|
@@ -478,38 +486,70 @@ function buildTemplateBlogDraft(input) {
 | Chi phí nhân sự | 100% | Giảm 30-50% |
 | Tỷ lệ bỏ lỡ khách | Cao | Gần bằng 0 |
 
+Bên cạnh hiệu quả vận hành, doanh nghiệp còn có thêm **dữ liệu khách hàng chất lượng cao**: mỗi cuộc hội thoại được ghi lại, phân tích và chuyển thành insight giúp cải thiện sản phẩm, dịch vụ và chiến lược marketing.
+
 ## Ví dụ thực tế: Shop Thời Trang Minh Anh
 
 ![Chủ doanh nghiệp sử dụng AI Agent VIAi](${imgs[3]||IMG_POOL[3]})
 
-Chị Minh Anh — chủ shop thời trang online tại TP.HCM — nhận **150-200 tin nhắn Zalo mỗi ngày**. Trước đây chị mất 5-6 tiếng chỉ để trả lời khách hỏi giá, hỏi size và xác nhận đơn.
+Chị Minh Anh — chủ shop thời trang online tại TP.HCM — nhận **150-200 tin nhắn Zalo mỗi ngày**. Trước đây chị mất 5-6 tiếng chỉ để trả lời khách hỏi giá, hỏi size và xác nhận đơn. Vào mùa cao điểm như lễ Tết hay 11/11, số tin nhắn tăng gấp đôi khiến chị gần như không thể nghỉ ngơi.
 
-Sau khi triển khai VIAi Zalo Sales Agent:
-- ⏱ Tiết kiệm **5 giờ/ngày**
-- 📦 Đơn hàng tăng **35%** nhờ không bỏ lỡ khách đêm
-- 😴 Chị có thể nghỉ ngơi mà doanh thu vẫn chạy
+Sau khi triển khai VIAi Zalo Sales Agent chỉ trong một buổi sáng, toàn bộ quy trình tư vấn và chốt đơn được tự động hóa. Kết quả sau 30 ngày đầu:
 
-> *"Giờ khách nhắn lúc 2 giờ sáng cũng được trả lời ngay. Tháng đầu doanh thu tăng gần 30%."* — Chị Minh Anh, chủ shop thời trang
+- ⏱ Tiết kiệm **5 giờ/ngày** — tương đương 1 nhân viên bán thời gian
+- 📦 Đơn hàng tăng **35%** nhờ không bỏ lỡ khách nhắn đêm hoặc giờ nghỉ trưa
+- 😴 Chị có thể nghỉ ngơi đúng giờ mà doanh thu vẫn tiếp tục chạy
+- 📊 Dữ liệu hội thoại giúp chị biết khách hay hỏi gì và điều chỉnh kho hàng phù hợp hơn
+
+> *"Giờ khách nhắn lúc 2 giờ sáng cũng được trả lời ngay. Tháng đầu doanh thu tăng gần 30%, quan trọng hơn là tôi không còn cảm giác bị 'dính điện thoại' suốt ngày."* — Chị Minh Anh, chủ shop thời trang
+
+## Lợi ích khi triển khai đúng cách
+
+![Lợi ích triển khai AI Agent đúng cách](${imgs[4]||IMG_POOL[4]})
+
+Để AI tạo ra kết quả thực tế, doanh nghiệp nên bắt đầu từ **một quy trình cụ thể** thay vì triển khai dàn trải. Điểm khởi đầu phù hợp với hầu hết doanh nghiệp SME thường là:
+
+- Tư vấn và phản hồi khách hàng tự động qua Zalo hoặc Facebook
+- Nhắc lịch chăm sóc sau bán và thu thập đánh giá
+- Tổng hợp báo cáo doanh thu hàng ngày gửi tự động cho quản lý
+
+Khi quy trình đầu tiên vận hành ổn định — thường sau 2-4 tuần — mở rộng dần sang marketing tự động, vận hành kho và báo cáo quản trị. Đây là cách **giảm rủi ro** và dễ đo hiệu quả hơn so với triển khai toàn bộ cùng lúc. Quan trọng là luôn có người theo dõi kết quả và điều chỉnh kịch bản AI theo phản hồi thực tế từ khách.
+
+## Doanh nghiệp nên chuẩn bị gì?
+
+![Chuẩn bị trước khi triển khai AI Agent VIAi](${imgs[5]||IMG_POOL[5]})
+
+Một trong những lý do khiến nhiều doanh nghiệp triển khai AI không hiệu quả là thiếu dữ liệu đầu vào rõ ràng. AI chỉ phản hồi tốt khi được cung cấp đủ thông tin về sản phẩm, quy trình và khách hàng. Trước khi bắt đầu, hãy chuẩn bị:
+
+- [ ] Danh sách sản phẩm/dịch vụ đầy đủ và bảng giá cập nhật
+- [ ] 10-20 câu hỏi khách hàng hay hỏi nhất kèm câu trả lời chuẩn
+- [ ] Chính sách bán hàng, đổi trả, bảo hành chi tiết
+- [ ] Quy trình xử lý đơn hàng hiện tại từng bước
+- [ ] Tài khoản Zalo OA, Facebook Page hoặc Website đã hoạt động
+
+Khi dữ liệu đầu vào rõ ràng và nhất quán, AI phản hồi chính xác hơn ngay từ tuần đầu, giảm đáng kể thời gian tinh chỉnh và chi phí vận hành.
 
 ## Checklist: Bắt Đầu Với ${mainTopic} Trong 24 Giờ
-
-![Hướng dẫn triển khai AI Agent cho doanh nghiệp](${imgs[4]||IMG_POOL[4]})
 
 - [ ] Xác định 1 quy trình lặp lại tốn thời gian nhất
 - [ ] Đăng ký dùng thử VIAi miễn phí 14 ngày
 - [ ] Kết nối kênh Zalo OA hoặc Website (mất 15 phút)
-- [ ] Cài đặt kịch bản phản hồi cơ bản
-- [ ] Chạy thử 7 ngày và đo kết quả
+- [ ] Cài đặt kịch bản phản hồi cơ bản với dữ liệu sản phẩm
+- [ ] Chạy thử 7 ngày và đo kết quả: số tin nhắn xử lý, tỷ lệ chuyển đổi
+- [ ] Đánh giá và tinh chỉnh kịch bản dựa trên phản hồi thực tế
 - [ ] Mở rộng sang quy trình tiếp theo
 
 ## Vì Sao Chọn VIAi Thay Vì Tự Xây?
 
-Tự xây hệ thống AI tốn 6-12 tháng và hàng trăm triệu đồng. VIAi triển khai trong **24 giờ**, không cần đội kỹ thuật riêng.
+Tự xây hệ thống AI tốn 6-12 tháng và hàng trăm triệu đồng chi phí kỹ thuật, chưa kể thời gian đào tạo và bảo trì. VIAi triển khai trong **24 giờ**, không cần đội kỹ thuật riêng, không cần kiến thức lập trình.
 
-- ✅ Hỗ trợ 1-1 từ đội ngũ VIAi
-- ✅ Tích hợp 50+ ứng dụng phổ biến
+- ✅ Hỗ trợ 1-1 từ đội ngũ VIAi trong suốt quá trình triển khai
+- ✅ Tích hợp 50+ ứng dụng phổ biến: Zalo, Facebook, Google Sheets, CRM
+- ✅ Cập nhật tính năng liên tục, không mất phí nâng cấp
 - ✅ Hoàn tiền 100% trong 7 ngày nếu không hài lòng
-- ✅ Không ràng buộc hợp đồng dài hạn
+- ✅ Không ràng buộc hợp đồng dài hạn, linh hoạt theo quy mô doanh nghiệp
+
+Với doanh nghiệp SME Việt Nam đang cần tăng tốc mà không muốn gánh thêm rủi ro kỹ thuật, VIAi là con đường ngắn nhất từ ý tưởng đến kết quả thực tế.
 
 ---
 
