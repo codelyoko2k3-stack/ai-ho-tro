@@ -385,19 +385,61 @@ function normalizeBlogDraft(raw, fallbackInput = {}) {
   };
 }
 
+// Pool 30 ảnh đa dạng để không bị trùng
+const IMG_POOL = [
+  'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&q=80',
+  'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=900&q=80',
+  'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=80',
+  'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&q=80',
+  'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&q=80',
+  'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=900&q=80',
+  'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=900&q=80',
+  'https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=900&q=80',
+  'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=900&q=80',
+  'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=900&q=80',
+  'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=900&q=80',
+  'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=900&q=80',
+  'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=900&q=80',
+  'https://images.unsplash.com/photo-1664575602554-2087b04935a5?w=900&q=80',
+  'https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&q=80',
+  'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=900&q=80',
+  'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=900&q=80',
+  'https://images.unsplash.com/photo-1579389083078-4e7018379f7e?w=900&q=80',
+  'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=900&q=80',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&q=80',
+  'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=900&q=80',
+  'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=900&q=80',
+  'https://images.unsplash.com/photo-1551434678-e076c223a692?w=900&q=80',
+  'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=900&q=80',
+  'https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?w=900&q=80',
+  'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=900&q=80',
+  'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=900&q=80',
+  'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=900&q=80',
+  'https://images.unsplash.com/photo-1555421689-491a97ff2040?w=900&q=80',
+  'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=900&q=80',
+];
+
 function buildTemplateBlogDraft(input) {
   const { keyword, topic, audience, intent, tone } = input;
   const mainKeyword = cleanRepeatedSeoText(keyword || topic || 'VIAi AI hỗ trợ');
   const mainTopic = cleanRepeatedSeoText(topic || keyword || 'AI hỗ trợ doanh nghiệp');
   const title = buildSeoTitleFromTopic(mainTopic, 'doanh nghiệp');
 
+  // Dùng ảnh anh cung cấp, hoặc random từ pool 30 ảnh không trùng
+  const userImgs = Array.isArray(input.section_images) && input.section_images.length > 0
+    ? input.section_images : [];
+  const shuffled = [...IMG_POOL].sort(() => Math.random() - 0.5);
+  const usedUrls = new Set(userImgs);
+  const freshPool = shuffled.filter(u => !usedUrls.has(u));
+  const imgs = [...userImgs, ...freshPool]; // ảnh anh upload ưu tiên trước
+
   const content = `Mỗi ngày doanh nghiệp của bạn đang mất bao nhiêu giờ cho những công việc lặp đi lặp lại — trả lời tin nhắn, xử lý đơn hàng, tổng hợp báo cáo? Nếu câu trả lời là hơn 3 tiếng, **${mainKeyword}** chính là giải pháp bạn cần đọc hôm nay.
 
-![Doanh nghiệp ứng dụng AI để tăng hiệu quả vận hành](https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&q=80)
+![Doanh nghiệp ứng dụng AI để tăng hiệu quả vận hành](${imgs[0]||IMG_POOL[0]})
 
 ## ${mainTopic} là gì và tại sao quan trọng?
 
-![AI Agent hoạt động trong doanh nghiệp](https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=900&q=80)
+![AI Agent hoạt động trong doanh nghiệp](${imgs[1]||IMG_POOL[1]})
 
 **${mainTopic}** không phải chatbot trả lời theo kịch bản cố định. Đây là hệ thống AI có khả năng:
 
@@ -410,7 +452,7 @@ function buildTemplateBlogDraft(input) {
 
 ## Doanh nghiệp được gì khi ứng dụng ${mainTopic}?
 
-![Kết quả kinh doanh sau khi dùng AI Agent VIAi](https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=80)
+![Kết quả kinh doanh sau khi dùng AI Agent VIAi](${imgs[2]||IMG_POOL[2]})
 
 | Tiêu chí | Trước khi dùng AI | Sau khi dùng VIAi |
 |----------|-------------------|-------------------|
@@ -422,7 +464,7 @@ function buildTemplateBlogDraft(input) {
 
 ## Ví dụ thực tế: Shop Thời Trang Minh Anh
 
-![Chủ doanh nghiệp sử dụng AI Agent VIAi](https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&q=80)
+![Chủ doanh nghiệp sử dụng AI Agent VIAi](${imgs[3]||IMG_POOL[3]})
 
 Chị Minh Anh — chủ shop thời trang online tại TP.HCM — nhận **150-200 tin nhắn Zalo mỗi ngày**. Trước đây chị mất 5-6 tiếng chỉ để trả lời khách hỏi giá, hỏi size và xác nhận đơn.
 
@@ -435,7 +477,7 @@ Sau khi triển khai VIAi Zalo Sales Agent:
 
 ## Checklist: Bắt Đầu Với ${mainTopic} Trong 24 Giờ
 
-![Hướng dẫn triển khai AI Agent cho doanh nghiệp](https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&q=80)
+![Hướng dẫn triển khai AI Agent cho doanh nghiệp](${imgs[4]||IMG_POOL[4]})
 
 - [ ] Xác định 1 quy trình lặp lại tốn thời gian nhất
 - [ ] Đăng ký dùng thử VIAi miễn phí 14 ngày
@@ -1147,15 +1189,20 @@ CHUẨN VIẾT BẮT BUỘC (8 tiêu chí):
    - Mỗi H2 PHẢI có 1 ảnh ngay sau heading hoặc sau đoạn đầu của section đó
    - Cú pháp: ![Mô tả tiếng Việt phù hợp section](URL)
    - Dùng ảnh Unsplash khác nhau, không lặp lại:
-     * AI/tech: https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&q=80
-     * Robot/automation: https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=900&q=80
-     * Analytics/data: https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=80
-     * Team/people: https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&q=80
-     * Laptop/work: https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&q=80
-     * Mobile/Zalo: https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=900&q=80
+${input.section_images && input.section_images.length > 0
+  ? `   QUAN TRỌNG — Dùng ĐÚ CÁC ẢNH NÀY theo thứ tự cho từng section:
+${input.section_images.map((u,i) => `     * Section ${i+1}: ${u}`).join('\n')}`
+  : `   * AI/tech: https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&q=80
+     * Robot: https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=900&q=80
+     * Analytics: https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=80
+     * Team: https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&q=80
+     * Laptop: https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&q=80
+     * Mobile: https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=900&q=80
      * Security: https://images.unsplash.com/photo-1563986768609-322da13575f3?w=900&q=80
      * Growth: https://images.unsplash.com/photo-1553877522-43269d4ea984?w=900&q=80
      * Meeting: https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=900&q=80
+     * Business: https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=900&q=80
+     * Tech2: https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=900&q=80`}
 
 4. VÍ DỤ THỰC TẾ (1 case study bắt buộc)
    - Dùng tên doanh nghiệp Việt Nam cụ thể (shop thời trang, phòng khám, F&B...)

@@ -960,6 +960,15 @@
                 <div id="seo-upload-status" style="font-size:11px;color:#64748b;margin-top:4px;display:none"></div>
               </div>
 
+              <div class="field">
+                <label style="display:flex;align-items:center;justify-content:space-between">
+                  <span>Ảnh cho từng section <span style="color:#94a3b8;font-weight:400">(AI sẽ đặt đúng vị trí)</span></span>
+                  <button type="button" onclick="addSectionImg()" style="padding:4px 10px;background:#EEF3FF;border:1.5px solid #dbe8ff;border-radius:6px;font-size:11px;font-weight:700;color:#1A56DB;cursor:pointer">+ Thêm ảnh</button>
+                </label>
+                <div id="section-imgs-list" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"></div>
+                <p style="font-size:11px;color:#94a3b8;margin-top:6px">Thêm 3-6 ảnh, AI sẽ phân bổ đúng từng section. Để trống = AI tự chọn ảnh.</p>
+              </div>
+
               <div class="seo-actions">
                 <button class="btn btn-add-bar" id="btn-seo-run" onclick="runSeoAssistant()">
                   <i class="fas fa-robot"></i> Tạo bản nháp
@@ -3418,7 +3427,8 @@ if (p === 'site-settings') loadSettings();
       intent: document.getElementById('seo-intent').value,
       tone: document.getElementById('seo-tone').value,
       request: document.getElementById('seo-request').value.trim(),
-      image_url: document.getElementById('seo-image-url').value.trim()
+      image_url: document.getElementById('seo-image-url').value.trim(),
+      section_images: Array.from(document.querySelectorAll('.section-img-input')).map(i=>i.value.trim()).filter(Boolean)
     };
 
     if (!payload.keyword && !payload.topic && !payload.request) {
@@ -3664,6 +3674,42 @@ if (p === 'site-settings') loadSettings();
     const img  = document.getElementById('seo-img-preview-el');
     if (src) { img.src = src; wrap.style.display = 'block'; }
     else      { wrap.style.display = 'none'; }
+  }
+
+  // Multi-image section
+  let sectionImgCount = 0;
+  function addSectionImg(url = '') {
+    const id = ++sectionImgCount;
+    const div = document.createElement('div');
+    div.id = `section-img-row-${id}`;
+    div.style.cssText = 'display:flex;gap:8px;align-items:center';
+    div.innerHTML = `
+      <span style="font-size:11px;font-weight:700;color:#64748b;white-space:nowrap;width:60px">Ảnh ${id}</span>
+      <input class="section-img-input" type="text" placeholder="URL ảnh hoặc upload" value="${url}"
+        style="flex:1;padding:7px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:12px;font-family:inherit;outline:none"
+        onfocus="this.style.borderColor='#1A56DB'" onblur="this.style.borderColor='#e2e8f0'" />
+      <label style="padding:6px 10px;background:#F0F7FF;border:1.5px solid #c7d9f5;border-radius:7px;cursor:pointer;font-size:11px;font-weight:700;color:#1A56DB;white-space:nowrap;display:flex;align-items:center;gap:4px;flex-shrink:0">
+        <i class="fas fa-upload"></i>
+        <input type="file" accept="image/*" style="display:none" onchange="uploadSectionImg(this, ${id})" />
+      </label>
+      <button type="button" onclick="document.getElementById('section-img-row-${id}').remove()" style="width:28px;height:28px;border:none;background:#fff0f0;border-radius:6px;cursor:pointer;color:#e52222;font-size:14px;flex-shrink:0">×</button>
+    `;
+    document.getElementById('section-imgs-list').appendChild(div);
+  }
+
+  async function uploadSectionImg(input, id) {
+    if (!input.files[0]) return;
+    const formData = new FormData();
+    formData.append('file', input.files[0]);
+    try {
+      const r = await fetch(`${API}/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData });
+      const data = await r.json();
+      if (data.url) {
+        const row = document.getElementById(`section-img-row-${id}`);
+        if (row) row.querySelector('.section-img-input').value = data.url;
+        toast('Đã upload ảnh!');
+      }
+    } catch { toast('Lỗi upload ảnh'); }
   }
 
   async function uploadSeoImg(input) {
