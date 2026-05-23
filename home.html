@@ -3498,13 +3498,6 @@
         <div style="grid-column:1/-1;text-align:center;padding:60px;color:#94a3b8">Đang tải...</div>
       </div>
 
-      <!-- Divider -->
-      <div style="border-top:1px solid #e2e8f0;margin-bottom:48px"></div>
-
-      <!-- Blog bài viết -->
-      <div id="blog-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px" class="reveal">
-        <div style="grid-column:1/-1;text-align:center;padding:60px;color:#94a3b8">Đang tải...</div>
-      </div>
 
     </div>
   </section>
@@ -4008,18 +4001,41 @@
       observeReveal();
     }
 
+    const NEWS_IMG_POOL = [
+      'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&q=80',
+      'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=900&q=80',
+      'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=80',
+      'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&q=80',
+      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&q=80',
+      'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=900&q=80',
+      'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=900&q=80',
+      'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=900&q=80',
+      'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=900&q=80',
+      'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=900&q=80',
+      'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=900&q=80',
+      'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=900&q=80',
+    ];
+    function getUniqueImg(url, usedSet, idx) {
+      if (url && !usedSet.has(url)) { usedSet.add(url); return url; }
+      const fallback = NEWS_IMG_POOL.find(u => !usedSet.has(u)) || NEWS_IMG_POOL[idx % NEWS_IMG_POOL.length];
+      usedSet.add(fallback);
+      return fallback;
+    }
+
     async function loadNews() {
       const list = await fetchList('/api/news', FALLBACK_NEWS);
       const grid = document.getElementById('news-grid');
+      const usedImgs = new Set();
       grid.innerHTML = list.map((n, i) => {
         const d = n.published_at ? new Date(n.published_at).toLocaleDateString('vi-VN') : '';
         const isFeatured = i === 0;
         const url = n.source_url || '#press';
+        const imgSrc = getUniqueImg(n.image_url, usedImgs, i);
         return `
         <div class="news-card ${isFeatured ? 'featured' : 'small'} reveal"
              onclick="window.open('${url}','_blank')" style="cursor:pointer;">
           <div class="news-thumb">
-            <img src="${n.image_url||''}" alt="${n.title}" loading="lazy" />
+            <img src="${imgSrc}" alt="${n.title}" loading="lazy" />
             <span class="news-source-tag ${n.source_tag||''}">${n.source_name||''}</span>
           </div>
           <div class="news-body">
@@ -4083,36 +4099,9 @@
       window.location.reload();
     }
 
-    async function loadBlogSection() {
-      const list = await fetchList('/api/blog-posts', FALLBACK_BLOG_POSTS);
-      const grid = document.getElementById('blog-grid');
-      const posts = list.filter(p => p.slug || p.title).slice(0, 3);
-      grid.innerHTML = posts.map(p => {
-        const d = p.published_at ? new Date(p.published_at).toLocaleDateString('vi-VN', {day:'2-digit',month:'2-digit',year:'numeric'}) : '';
-        const excerpt = (p.excerpt || '').replace(/<[^>]+>/g,'');
-        const href = p.slug ? `/blog/${p.slug}` : '#blog';
-        return `
-        <a href="${href}" class="blog-card reveal">
-          <div class="blog-card-thumb-wrap">
-            <img class="blog-card-thumb" src="${p.image_url||''}" alt="${p.title||''}" loading="lazy" />
-          </div>
-          <div class="blog-card-body">
-            <div class="blog-card-cat">${p.category||'Kiến thức AI'}</div>
-            <div class="blog-card-title">${p.title||''}</div>
-            <div class="blog-card-excerpt">${excerpt}</div>
-            <div class="blog-card-footer">
-              <span class="blog-card-date">📅 ${d}</span>
-              <span class="blog-card-read">Đọc thêm →</span>
-            </div>
-          </div>
-        </a>`;
-      }).join('');
-      observeReveal();
-    }
 
     loadProducts();
     loadNews();
-    loadBlogSection();
     // Load dropdown Tin tức động
     (async () => {
       try {
