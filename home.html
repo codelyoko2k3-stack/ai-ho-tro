@@ -585,7 +585,7 @@
       z-index: 1;
     }
 
-    .hero-left {}
+    .hero-left { display: flex; flex-direction: column; }
     .hero-tag {
       display: inline-flex;
       align-items: center;
@@ -1211,7 +1211,7 @@
       color: white;
     }
 
-    .hti-body {}
+    .hti-body { flex: 1; }
     .hti-title {
       font-size: 1.05rem;
       font-weight: 800;
@@ -1547,7 +1547,7 @@
       flex-shrink: 0;
     }
 
-    .sti-body {}
+    .sti-body { flex: 1; }
     .sti-title {
       font-size: 0.88rem;
       font-weight: 700;
@@ -2656,8 +2656,7 @@
       gap: 80px;
       align-items: center;
     }
-    .faq-left {
-    }
+    .faq-left { display: flex; flex-direction: column; }
     .faq-left h2 {
       font-size: clamp(1.8rem, 2.8vw, 2.6rem);
       font-weight: 900;
@@ -4140,6 +4139,7 @@
     (async () => {
       try {
         const blogRes = await fetch('/api/blog-posts').then(r=>r.json()).catch(()=>[]);
+        window.__DD_POSTS = blogRes || [];
         const posts = (blogRes||[]).slice(0, 4);
 
         // Bài viết mới nhất

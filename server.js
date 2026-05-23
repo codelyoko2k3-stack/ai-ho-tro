@@ -153,13 +153,14 @@ function renderMarkdown(md, options = {}) {
 }
 
 async function renderSiteToolbar(active = '') {
-  // Load 4 blog mới nhất + danh mục thực từ DB
-  let latestBlogs = [], blogCategories = [];
+  // Load tất cả blog posts cho dropdown interactive
+  let allDropdownPosts = [], blogCategories = [];
   try {
-    latestBlogs = await db.prepare("SELECT title, category, slug, published_at, image_url FROM blog_posts WHERE active=1 ORDER BY published_at DESC LIMIT 4").all();
+    allDropdownPosts = await db.prepare("SELECT title, category, slug, published_at, image_url FROM blog_posts WHERE active=1 ORDER BY published_at DESC LIMIT 30").all();
     const catRows = await db.prepare("SELECT DISTINCT category FROM blog_posts WHERE active=1 AND category IS NOT NULL AND category != '' ORDER BY category ASC").all();
     blogCategories = catRows.map(r => r.category).filter(Boolean);
   } catch {}
+  const latestBlogs = allDropdownPosts.slice(0, 4);
 
   const BLOG_IMG_POOL = [
     'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&q=70',
@@ -214,16 +215,16 @@ async function renderSiteToolbar(active = '') {
             <div class="ndm-inner">
               <div class="ndm-cats">
                 <div class="ndm-section-label">CHUYÊN MỤC</div>
-                <a href="/blog" class="ndm-cat-link ndm-cat-all"><span class="ndm-cat-icon">📋</span> Tất cả bài viết</a>
+                <a href="/blog" class="ndm-cat-link ndm-cat-active" data-ddcat="all" onmouseenter="__ddHover(this)"><span class="ndm-cat-icon">📋</span> Tất cả bài viết</a>
                 ${blogCategories.length > 0
-                  ? blogCategories.map(cat => `<a href="/blog?cat=${encodeURIComponent(cat)}" onclick="if(window.__blogFilterCat)return window.__blogFilterCat(event,'${escapeHtml(cat).replace(/'/g,"\\'")}');" class="ndm-cat-link"><span class="ndm-cat-icon">•</span> ${escapeHtml(cat)}</a>`).join('')
-                  : '<span style="font-size:.78rem;color:#94a3b8;padding:6px 10px;display:block">Chưa có danh mục</span>'}
+                  ? blogCategories.map(cat => `<a href="/blog?cat=${encodeURIComponent(cat)}" onclick="if(window.__blogFilterCat)return window.__blogFilterCat(event,'${escapeHtml(cat).replace(/'/g,"\\'")}');" class="ndm-cat-link" data-ddcat="${escapeHtml(cat)}" onmouseenter="__ddHover(this)"><span class="ndm-cat-icon">•</span> ${escapeHtml(cat)}</a>`).join('')
+                  : ''}
               </div>
               <div class="ndm-divider"></div>
               <div class="ndm-posts">
-                <div class="ndm-section-label">BÀI VIẾT MỚI NHẤT</div>
-                <div class="ndm-posts-grid">${blogPostCards || '<div style="color:#94a3b8;font-size:.82rem;padding:8px">Chưa có bài viết</div>'}</div>
-                <a href="/blog" class="ndm-view-all">Xem tất cả tin tức →</a>
+                <div class="ndm-section-label" id="ndm-right-label">BÀI VIẾT MỚI NHẤT</div>
+                <div class="ndm-posts-grid" id="ndm-posts-grid">${blogPostCards || '<div style="color:#94a3b8;font-size:.82rem;padding:8px">Chưa có bài viết</div>'}</div>
+                <a href="/blog" class="ndm-view-all" id="ndm-view-all-link">Xem tất cả tin tức →</a>
               </div>
             </div>
           </div>
@@ -282,7 +283,8 @@ async function renderSiteToolbar(active = '') {
       <a href="/login.html" class="btn-login">Đăng nhập</a>
       <a href="/dung-thu.html" class="btn-register">🚀 Dùng thử FREE</a>
     </div>
-  </div>`;
+  </div>
+  <script>window.__DD_POSTS = ${JSON.stringify(allDropdownPosts)};</script>`;
 }
 
 function renderSiteToolbarScript() {
@@ -372,6 +374,43 @@ function renderSiteToolbarScript() {
     window.addEventListener('resize', () => {
       if (window.innerWidth > 960) closeMobileMenu();
     });
+
+    // ── Dropdown Tin tức: hover danh mục → cập nhật bài viết bên phải ──
+    const __DD_IMG_POOL = [
+      'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&q=70',
+      'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=400&q=70',
+      'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=70',
+      'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&q=70',
+      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=70',
+      'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=70',
+    ];
+    function __ddRenderPosts(posts) {
+      const used = new Set();
+      return posts.slice(0, 4).map((p, i) => {
+        let img = p.image_url || '';
+        if (!img || used.has(img)) img = __DD_IMG_POOL.find(u => !used.has(u)) || __DD_IMG_POOL[i % __DD_IMG_POOL.length];
+        used.add(img);
+        return '<a href="/blog/' + (p.slug||'') + '" class="ndm-post-item">' +
+          '<img src="' + img + '" alt="" loading="lazy" onerror="this.style.display=\'none\'" />' +
+          '<div class="ndm-post-info">' +
+            '<div class="ndm-post-title">' + (p.title||'') + '</div>' +
+            '<div class="ndm-post-date">' + (p.published_at||'').slice(0,10) + '</div>' +
+          '</div></a>';
+      }).join('') || '<div style="color:#94a3b8;font-size:.82rem;padding:8px">Chưa có bài viết</div>';
+    }
+    function __ddHover(el) {
+      document.querySelectorAll('.ndm-cat-link').forEach(a => a.classList.remove('ndm-cat-active'));
+      el.classList.add('ndm-cat-active');
+      const cat = el.dataset.ddcat;
+      const grid = document.getElementById('ndm-posts-grid');
+      const label = document.getElementById('ndm-right-label');
+      const viewAll = document.getElementById('ndm-view-all-link');
+      if (!grid || !window.__DD_POSTS) return;
+      const filtered = cat === 'all' ? window.__DD_POSTS : window.__DD_POSTS.filter(p => p.category === cat);
+      grid.innerHTML = __ddRenderPosts(filtered);
+      if (label) label.textContent = cat === 'all' ? 'BÀI VIẾT MỚI NHẤT' : cat.toUpperCase();
+      if (viewAll) viewAll.href = cat === 'all' ? '/blog' : '/blog?cat=' + encodeURIComponent(cat);
+    }
   </script>`;
 }
 
@@ -559,8 +598,8 @@ async function renderProductDetailPage(product) {
     .ndm-inner{display:flex;gap:0}
     .ndm-cats{width:190px;flex-shrink:0;padding:16px 12px;border-right:1px solid #f1f5f9}
     .ndm-section-label{font-size:.67rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;padding:0 8px;margin-bottom:8px}
-    .ndm-cat-link{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:8px;font-size:.84rem;font-weight:600;color:#334155;transition:all .15s;text-decoration:none}
-    .ndm-cat-link:hover{background:#EEF3FF;color:#1A56DB;transform:translateX(2px)}
+    .ndm-cat-link{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:8px;font-size:.84rem;font-weight:600;color:#334155;transition:all .15s;text-decoration:none;cursor:pointer}
+    .ndm-cat-link:hover,.ndm-cat-link.ndm-cat-active{background:#EEF3FF;color:#1A56DB;transform:translateX(2px)}
     .ndm-cat-icon{font-size:1rem;width:20px;text-align:center;flex-shrink:0}
     .ndm-divider{width:1px;background:#f1f5f9;flex-shrink:0}
     .ndm-posts{flex:1;padding:16px 14px;display:flex;flex-direction:column;gap:10px;min-width:0}
