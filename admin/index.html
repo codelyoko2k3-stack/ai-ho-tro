@@ -994,17 +994,18 @@
 
               <div class="field">
                 <label>Chế độ</label>
-                <select id="seo-mode" disabled>
-                  <option value="generate">Viết bài SEO mới</option>
+                <select id="seo-mode" onchange="onSeoModeChange()">
+                  <option value="generate">✍️ Viết bài SEO mới</option>
+                  <option value="improve">✨ Cải thiện bài có sẵn</option>
                 </select>
               </div>
 
-              <div class="field">
+              <div class="field" id="field-keyword">
                 <label>Từ khóa chính</label>
                 <input id="seo-keyword" type="text" placeholder="VD: AI Agent cho doanh nghiệp" />
               </div>
 
-              <div class="field">
+              <div class="field" id="field-topic">
                 <label>Chủ đề bài viết</label>
                 <input id="seo-topic" type="text" placeholder="VD: Ứng dụng AI Agent trong bán hàng" />
               </div>
@@ -1033,9 +1034,20 @@
                 </select>
               </div>
 
-              <div class="field">
-                <label>Yêu cầu thêm cho AI</label>
-                <textarea id="seo-request" placeholder="VD: Viết theo hướng VIAi hỗ trợ chủ shop online chốt đơn nhanh hơn, có CTA đăng ký dùng thử..." style="min-height:120px"></textarea>
+              <!-- Viết mới: yêu cầu thêm -->
+              <div class="field" id="field-request">
+                <label>Yêu cầu thêm cho AI <span style="color:#94a3b8;font-weight:400">(tùy chọn)</span></label>
+                <textarea id="seo-request" placeholder="VD: Viết theo hướng VIAi hỗ trợ chủ shop online chốt đơn nhanh hơn, có CTA đăng ký dùng thử..." style="min-height:100px"></textarea>
+              </div>
+
+              <!-- Cải thiện bài có sẵn -->
+              <div class="field" id="field-existing" style="display:none">
+                <label>Dán bài viết có sẵn vào đây <span style="color:#94a3b8;font-weight:400">(AI sẽ cải thiện SEO, thêm ảnh, cấu trúc lại)</span></label>
+                <textarea id="seo-existing-content" placeholder="Dán toàn bộ nội dung bài viết vào đây..." style="min-height:260px;font-size:0.82rem;line-height:1.7"></textarea>
+                <div style="margin-top:8px">
+                  <label style="font-size:0.78rem;font-weight:700;color:#1A56DB;display:block;margin-bottom:5px">Hướng dẫn cải thiện <span style="color:#94a3b8;font-weight:400">(tùy chọn)</span></label>
+                  <textarea id="seo-improve-request" placeholder="VD: Thêm ảnh cho từng section, viết lại đoạn mở đầu hấp dẫn hơn, thêm bảng so sánh..." style="min-height:70px;font-size:0.82rem"></textarea>
+                </div>
               </div>
 
               <details style="margin-bottom:14px">
@@ -3544,6 +3556,18 @@ if (p === 'site-settings') loadSettings();
     ].join('\n');
   }
 
+  function onSeoModeChange() {
+    const mode = document.getElementById('seo-mode').value;
+    const isImprove = mode === 'improve';
+    document.getElementById('field-request').style.display = isImprove ? 'none' : '';
+    document.getElementById('field-existing').style.display = isImprove ? '' : 'none';
+    // ẩn/hiện các trường không cần thiết khi cải thiện
+    ['field-keyword','field-topic'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.opacity = isImprove ? '0.5' : '1';
+    });
+  }
+
   function switchSeoTab(tab) {
     const previewTab = document.getElementById('seo-preview-tab');
     const editTab = document.getElementById('seo-edit-tab');
@@ -3653,10 +3677,16 @@ if (p === 'site-settings') loadSettings();
       secondary_keywords: document.getElementById('seo-secondary-kw').value.trim(),
       preset_title: document.getElementById('seo-preset-title').value.trim(),
       preset_meta: document.getElementById('seo-preset-meta').value.trim(),
-      internal_links: document.getElementById('seo-internal-links').value.trim()
+      internal_links: document.getElementById('seo-internal-links').value.trim(),
+      existing_content: document.getElementById('seo-existing-content').value.trim(),
+      improve_request: document.getElementById('seo-improve-request').value.trim()
     };
 
-    if (!payload.keyword && !payload.topic && !payload.request) {
+    if (payload.mode === 'improve' && !payload.existing_content) {
+      toast('Dán bài viết có sẵn vào ô bên dưới trước');
+      return;
+    }
+    if (payload.mode !== 'improve' && !payload.keyword && !payload.topic && !payload.request) {
       toast('Nhập yêu cầu, từ khóa hoặc chủ đề bài viết trước');
       return;
     }

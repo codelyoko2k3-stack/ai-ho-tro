@@ -1214,14 +1214,53 @@ router.post('/ai-blog-draft', auth, async (req, res) => {
     secondary_keywords: clean(req.body.secondary_keywords),
     preset_title: clean(req.body.preset_title),
     preset_meta: clean(req.body.preset_meta),
-    internal_links: clean(req.body.internal_links) || '/san-pham.html, /dung-thu.html'
+    internal_links: clean(req.body.internal_links) || '/san-pham.html, /dung-thu.html',
+    existing_content: clean(req.body.existing_content).slice(0, 8000),
+    improve_request: clean(req.body.improve_request).slice(0, 1000),
+    mode: clean(req.body.mode) === 'improve' ? 'improve' : 'generate'
   };
 
   if (!input.keyword && !input.topic && !input.request) {
     return res.status(400).json({ error: 'Vui lòng nhập yêu cầu, từ khóa hoặc chủ đề bài viết' });
   }
 
-  const prompt = `Bạn là chuyên gia Content Website với 7 năm kinh nghiệm thực chiến, chuyên viết nội dung cho lĩnh vực phần mềm, công nghệ và dịch vụ Digital Marketing — hiện đang viết cho VIAi, nền tảng AI Agent dành cho doanh nghiệp SME Việt Nam.
+  const prompt = input.mode === 'improve' ? `Bạn là chuyên gia Content Website với 7 năm kinh nghiệm thực chiến, chuyên cải thiện và tối ưu bài viết cho VIAi — nền tảng AI Agent dành cho doanh nghiệp SME Việt Nam.
+
+NHIỆM VỤ: Cải thiện bài viết có sẵn dưới đây. GIỮ NGUYÊN ý chính, chỉ nâng cấp về:
+- Cấu trúc (thêm H2/H3 rõ ràng nếu thiếu)
+- SEO (hook mạnh hơn, từ khóa tự nhiên, meta chuẩn)
+- Hình ảnh (thêm ảnh sau mỗi H2 nếu chưa có)
+- Bảng so sánh hoặc checklist nếu phù hợp
+- CTA cuối bài rõ ràng
+- Đoạn văn dài → tách nhỏ ≤3 câu, dễ đọc lướt
+
+Từ khóa chính: ${input.keyword || input.topic || '(trích từ bài)'}
+${input.secondary_keywords ? `Từ khóa phụ: ${input.secondary_keywords}` : ''}
+Hướng dẫn cải thiện: ${input.improve_request || 'Chuẩn SEO, thêm ảnh, cải thiện hook và CTA'}
+Internal links cần chèn: ${input.internal_links}
+
+${input.section_images && input.section_images.length > 0
+  ? `Ảnh để dùng cho các section (theo thứ tự):\n${input.section_images.map((u,i) => `  * Section ${i+1}: ${u}`).join('\n')}`
+  : `Ảnh mặc định:\n  * https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&q=80\n  * https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=900&q=80\n  * https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=80`}
+
+BÀI VIẾT GỐC:
+---
+${input.existing_content}
+---
+
+Chỉ trả về JSON hợp lệ, không thêm text ngoài JSON:
+{
+  "title": "Tiêu đề cải thiện (có từ khóa, hấp dẫn hơn bản gốc)",
+  "seo_title": "SEO title tối đa 60 ký tự | VIAi",
+  "slug": "slug-khong-dau",
+  "meta_description": "140-160 ký tự",
+  "excerpt": "2-3 câu tóm tắt hấp dẫn",
+  "content": "Nội dung markdown đã cải thiện — giữ ý chính, thêm ảnh, cấu trúc rõ, CTA cuối bài",
+  "faq": [{"question":"Câu hỏi thực tế","answer":"Câu trả lời ngắn gọn"}],
+  "image_alt": "Mô tả ảnh thumbnail",
+  "category": "Kiến thức AI",
+  "author": "VIAi Team"
+}` : `Bạn là chuyên gia Content Website với 7 năm kinh nghiệm thực chiến, chuyên viết nội dung cho lĩnh vực phần mềm, công nghệ và dịch vụ Digital Marketing — hiện đang viết cho VIAi, nền tảng AI Agent dành cho doanh nghiệp SME Việt Nam.
 
 Vai trò: Tạo bài blog chất lượng cao, chuẩn SEO, đúng insight khách hàng, hỗ trợ tăng tỷ lệ chuyển đổi.
 Phong cách: HubSpot / Notion blog — hiện đại, dễ đọc, thực chiến. KHÔNG viết như textbook hay bài SEO nhàm, không lan man, không nhồi nhét từ khóa, không dùng văn phong máy móc.
