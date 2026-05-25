@@ -2946,9 +2946,9 @@
     <div class="hero-inner">
       <div class="hero-left">
         <h1>
-          Tự động hóa công việc,<br>
+          Tự động hóa công&nbsp;việc,<br>
           tăng hiệu suất bằng<br>
-          <em>AI Agent thông minh</em>
+          <em>AI Agent thông&nbsp;minh</em>
         </h1>
         <p class="hero-desc">
           ViAI giúp doanh nghiệp tự động hóa bán hàng, vận hành và chăm sóc khách hàng 24/7. Triển khai nhanh, dễ tích hợp, không cần đội kỹ thuật riêng.
@@ -3055,10 +3055,6 @@
           <div class="client-logo-icon" style="background:#e8eaf6">🏋️</div>
           <div><div class="client-logo-name">California Fitness</div><div class="client-logo-sub">Thể thao</div></div>
         </div>
-        <div class="client-logo">
-          <div class="client-logo-icon" style="background:#e0f7fa">🛒</div>
-          <div><div class="client-logo-name">Hasaki</div><div class="client-logo-sub">Beauty</div></div>
-        </div>
         <div class="client-logo" style="border-style:dashed">
           <div class="client-logo-icon" style="background:#f8faff">➕</div>
           <div><div class="client-logo-name" style="color:#94a3b8">490+ doanh nghiệp</div><div class="client-logo-sub">khác</div></div>
@@ -3076,36 +3072,36 @@
       </div>
       <div class="solution-grid">
         <a href="/phan-mem" class="solution-card reveal">
-          <div class="solution-media">
-            <img src="anhlogo/dung.png" alt="Phần mềm AI Agent ViAI" loading="lazy" />
+          <div class="solution-icon-area">
+            <img src="anhlogo/anh3.png" alt="Phần mềm AI Agent ViAI" class="sol-img" loading="lazy" />
           </div>
           <div class="solution-body">
             <span class="solution-kicker">Phần mềm</span>
             <h3>AI Agent đóng gói sẵn</h3>
             <p>Tự động hóa bán hàng, CSKH, marketing và báo cáo với các Agent triển khai nhanh.</p>
-            <span class="solution-link">Xem chi tiết</span>
+            <span class="solution-link">Xem chi tiết →</span>
           </div>
         </a>
         <a href="/dich-vu" class="solution-card reveal">
-          <div class="solution-media">
-            <img src="anhlogo/trinhbay.png" alt="Dịch vụ triển khai AI Agent" loading="lazy" />
+          <div class="solution-icon-area">
+            <img src="anhlogo/anh1.png" alt="Dịch vụ triển khai AI Agent" class="sol-img" loading="lazy" />
           </div>
           <div class="solution-body">
             <span class="solution-kicker">Dịch vụ</span>
             <h3>Triển khai AI trọn gói</h3>
             <p>Chuyên gia ViAI tư vấn, cấu hình, tích hợp và bàn giao để đội ngũ dùng được ngay.</p>
-            <span class="solution-link">Xem chi tiết</span>
+            <span class="solution-link">Xem chi tiết →</span>
           </div>
         </a>
         <a href="/dao-tao" class="solution-card reveal">
-          <div class="solution-media">
-            <img src="anhlogo/chay.png" alt="Khóa học AI Agent thực chiến" loading="lazy" />
+          <div class="solution-icon-area">
+            <img src="anhlogo/anh2.png" alt="Khóa học AI Agent thực chiến" class="sol-img" loading="lazy" />
           </div>
           <div class="solution-body">
             <span class="solution-kicker">Đào tạo</span>
             <h3>Khóa học AI Agent</h3>
             <p>Huấn luyện đội ngũ tự vận hành, đo lường và tối ưu AI Agent theo quy trình thực tế.</p>
-            <span class="solution-link">Xem chi tiết</span>
+            <span class="solution-link">Xem chi tiết →</span>
           </div>
         </a>
       </div>
@@ -4285,6 +4281,7 @@
     window.addEventListener('scroll', () => {
       if (window.scrollY < 200) setActiveNav(null);
     }, { passive: true });
+
     // ─────────────────────────────────────────────────────────────
 
     // Stats interactive tab (reversed layout)
@@ -4970,10 +4967,10 @@
     }
 
     header {
-      background: rgba(255,255,255,0.92) !important;
+      background: #ffffff !important;
       border-bottom: 1px solid rgba(15,23,42,0.08) !important;
-      box-shadow: 0 8px 28px rgba(15,23,42,0.06) !important;
-      backdrop-filter: blur(16px);
+      box-shadow: 0 2px 16px rgba(15,23,42,0.07) !important;
+      backdrop-filter: none !important;
     }
 
     .header-inner {
@@ -5223,11 +5220,16 @@
     .hero {
       min-height: 640px;
       padding: 82px 20px 44px !important;
-      background: linear-gradient(90deg, #dce8ff 0%, #d4e2ff 46%, #c8daff 100%) !important;
-      border-bottom: 1px solid #e8eef8;
+      background: linear-gradient(135deg, #06112a 0%, #0d2459 45%, #1240a8 80%, #1a56db 100%) !important;
+      border-bottom: none;
     }
 
-    .hero::before,
+    .hero::before {
+      display: block !important;
+      background: radial-gradient(ellipse 60% 50% at 80% 20%, rgba(255,107,74,0.15) 0%, transparent 60%),
+                  radial-gradient(ellipse 40% 40% at 10% 80%, rgba(26,86,219,0.2) 0%, transparent 60%) !important;
+    }
+
     .hero::after,
     .hero > canvas {
       display: none !important;
@@ -5246,7 +5248,7 @@
 
 
     .hero h1 {
-      color: #0f172a !important;
+      color: #ffffff !important;
       font-size: clamp(1.75rem, 2.8vw, 3.2rem) !important;
       line-height: 1.12 !important;
       letter-spacing: 0 !important;
@@ -5254,21 +5256,21 @@
     }
 
     .hero h1 em {
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent !important;
+      background: none !important;
+      -webkit-background-clip: unset !important;
+      background-clip: unset !important;
+      color: var(--accent) !important;
     }
 
     .hero-desc {
       max-width: 590px !important;
-      color: #475569 !important;
+      color: rgba(255,255,255,0.78) !important;
       font-size: clamp(1rem, 1.4vw, 1.18rem) !important;
       line-height: 1.72 !important;
       margin-bottom: 30px !important;
     }
 
-    .hero-desc strong { color: var(--primary) !important; }
+    .hero-desc strong { color: var(--yellow) !important; }
 
     .hero-btns {
       gap: 14px !important;
@@ -5276,25 +5278,26 @@
     }
 
     .hbtn-main {
-      background: var(--primary) !important;
-      box-shadow: 0 14px 32px rgba(26,86,219,0.22) !important;
+      background: var(--accent) !important;
+      box-shadow: 0 6px 24px rgba(255,107,74,0.4) !important;
       animation: none !important;
     }
 
     .hbtn-main:hover {
-      background: #1040b0 !important;
+      background: #e85a28 !important;
+      transform: translateY(-2px);
     }
 
     .hbtn-outline {
-      background: #fff !important;
-      color: var(--primary) !important;
-      border: 1.5px solid #dbe8ff !important;
-      box-shadow: 0 10px 28px rgba(15,23,42,0.06);
+      background: rgba(255,255,255,0.1) !important;
+      color: #ffffff !important;
+      border: 1.5px solid rgba(255,255,255,0.25) !important;
+      box-shadow: none !important;
     }
 
     .hbtn-outline:hover {
-      background: #eef4ff !important;
-      color: var(--primary) !important;
+      background: rgba(255,255,255,0.18) !important;
+      color: #ffffff !important;
     }
 
     .hero-trust {
@@ -5302,11 +5305,12 @@
       display: grid !important;
       grid-template-columns: repeat(3, 1fr);
       gap: 0 !important;
-      background: #fff;
-      border: 1px solid #e8eef8;
+      background: rgba(255,255,255,0.07) !important;
+      border: 1px solid rgba(255,255,255,0.14) !important;
       border-radius: 8px;
-      box-shadow: 0 18px 50px rgba(15,23,42,0.08);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
       overflow: hidden;
+      backdrop-filter: blur(8px);
     }
 
     .trust-item {
@@ -5315,14 +5319,14 @@
     }
 
     .trust-num {
-      color: #0f172a !important;
+      color: #ffffff !important;
       font-size: 1.55rem !important;
     }
 
     .trust-num span { color: var(--accent) !important; }
 
     .trust-label {
-      color: #64748b !important;
+      color: rgba(255,255,255,0.6) !important;
       font-size: 0.76rem !important;
       line-height: 1.45;
     }
@@ -5330,7 +5334,7 @@
     .trust-divider {
       width: 1px !important;
       height: auto;
-      background: #e8eef8 !important;
+      background: rgba(255,255,255,0.15) !important;
     }
 
     .hero-right {
@@ -5382,6 +5386,17 @@
       box-shadow: 0 18px 50px rgba(15,23,42,0.08);
     }
 
+    .logo-wall-track {
+      flex-wrap: nowrap !important;
+      overflow: hidden;
+    }
+
+    .logo-wall-track .client-logo {
+      padding: 8px 16px !important;
+      flex-shrink: 1;
+      min-width: 0;
+    }
+
     .logo-wall-label {
       margin-bottom: 18px !important;
       color: #64748b !important;
@@ -5429,24 +5444,30 @@
     }
 
     .solution-media {
-      height: 210px;
+      display: none;
+    }
+
+    .solution-icon-area {
+      height: 260px;
       background: linear-gradient(180deg, #eef4ff, #fff);
       display: flex;
       align-items: flex-end;
       justify-content: center;
       overflow: hidden;
+      padding-top: 48px;
     }
 
-    .solution-media img {
-      width: auto;
-      height: 92%;
+    .sol-img {
+      width: 92%;
+      height: auto;
       object-fit: contain;
-      filter: drop-shadow(0 16px 32px rgba(15,23,42,0.16));
+      mix-blend-mode: multiply;
+      margin-bottom: -8px;
       transition: transform 0.35s ease;
     }
 
-    .solution-card:hover .solution-media img {
-      transform: scale(1.04);
+    .solution-card:hover .sol-img {
+      transform: scale(1.06);
     }
 
     .solution-body {
@@ -5510,13 +5531,21 @@
 
 
     .sec-title {
+      font-size: clamp(2rem, 3.2vw, 2.9rem) !important;
+      font-weight: 900 !important;
       color: #0f172a !important;
-      letter-spacing: 0 !important;
+      letter-spacing: -0.3px !important;
       line-height: 1.16 !important;
     }
 
     .sec-desc {
-      color: #64748b !important;
+      font-size: 1.05rem !important;
+      color: #475569 !important;
+    }
+
+    .services-intro-section,
+    .why-section {
+      background: #f0f5ff !important;
     }
 
     .products-grid {
@@ -5597,7 +5626,7 @@
       .hamburger-btn { display: flex !important; }
       .hero {
         min-height: auto;
-        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%) !important;
+        background: linear-gradient(155deg, #06112a 0%, #0d2459 45%, #1240a8 80%, #1a56db 100%) !important;
       }
       .hero-inner {
         grid-template-columns: 1fr !important;
