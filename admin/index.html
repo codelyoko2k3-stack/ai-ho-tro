@@ -888,6 +888,9 @@
         <a class="nav-sub-item" onclick="showPage('gallery',this,'Thư viện ảnh')">
           <i class="fas fa-images"></i> Media
         </a>
+        <a class="nav-sub-item" onclick="showPage('pages',this,'Trang')">
+          <i class="fas fa-file-alt"></i> Trang
+        </a>
       </div>
 
       <!-- GROUP: CÀI ĐẶT TRANG CHỦ -->
@@ -1898,6 +1901,69 @@
             <table><thead><tr><th>Ảnh</th><th>Tiêu đề</th><th>Mô tả</th><th>Link</th><th>Thứ tự</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
             <tbody id="feature-cards-tbody"></tbody></table>
           </div>
+        </div>
+      </div>
+
+      <!-- ── PAGES PAGE ── -->
+      <div id="page-pages" style="display:none">
+        <div class="content-topbar">
+          <div class="content-title">Trang</div>
+          <div class="breadcrumb-inner"><i class="fas fa-home"></i> › Nội dung › <span>Trang</span></div>
+        </div>
+        <div class="content-body">
+          <p class="page-subtitle">Quản lý các trang được tạo tự động khi thêm thẻ Giải pháp / Thẻ tính năng — hoặc tạo thủ công</p>
+          <div class="filter-bar">
+            <i class="fas fa-search" style="color:#94a3b8;font-size:12px"></i>
+            <input type="text" placeholder="Tìm theo tiêu đề hoặc slug..." oninput="filterTable('pages-tbody',this.value)" />
+            <button class="btn btn-refresh" onclick="loadPages()"><i class="fas fa-sync-alt"></i></button>
+            <span class="filter-count" id="pages-count"></span>
+            <button class="btn btn-add-bar" onclick="openPageEditor()"><i class="fas fa-plus"></i> Tạo trang mới</button>
+          </div>
+          <div class="table-wrap">
+            <table><thead><tr><th>Tiêu đề</th><th>Slug (URL)</th><th>Nguồn</th><th>Trạng thái</th><th>Ngày tạo</th><th>Thao tác</th></tr></thead>
+            <tbody id="pages-tbody"></tbody></table>
+          </div>
+
+          <!-- PAGE INLINE EDITOR -->
+          <div id="page-inline-editor" style="display:none;margin-top:16px;border:1.5px solid #1A56DB;border-radius:12px;overflow:hidden;background:white">
+            <div class="bie-topbar">
+              <div class="bie-topbar-left"><i class="fas fa-file-alt"></i><span id="pie2-title-label">Tạo trang mới</span></div>
+              <div class="bie-topbar-right">
+                <button class="btn btn-refresh" onclick="closePagesEditor()" style="height:30px">✕ Đóng</button>
+                <button class="btn btn-add-bar" onclick="savePage()" style="height:30px"><i class="fas fa-save"></i> Lưu trang</button>
+              </div>
+            </div>
+            <div style="padding:20px 24px;display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <span id="pie2-id" style="display:none"></span>
+                <div class="field" style="margin:0"><label>Tiêu đề trang *</label>
+                  <input id="pie2-title" type="text" placeholder="VD: Phần mềm AI Agent đóng gói sẵn" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;outline:none" onfocus="this.style.borderColor='#1A56DB'" onblur="this.style.borderColor='#e2e8f0'" /></div>
+                <div class="field" style="margin:0"><label>Slug (URL: /slug) *</label>
+                  <input id="pie2-slug" type="text" placeholder="phan-mem-ai-agent" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;outline:none" onfocus="this.style.borderColor='#1A56DB'" onblur="this.style.borderColor='#e2e8f0'" /></div>
+                <div class="field" style="margin:0"><label>SEO Title</label>
+                  <input id="pie2-seo-title" type="text" placeholder="Tự động theo tiêu đề nếu để trống" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;outline:none" onfocus="this.style.borderColor='#1A56DB'" onblur="this.style.borderColor='#e2e8f0'" /></div>
+                <div class="field" style="margin:0"><label>Meta Description</label>
+                  <textarea id="pie2-meta" rows="2" placeholder="Mô tả SEO..." style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;outline:none;resize:vertical" onfocus="this.style.borderColor='#1A56DB'" onblur="this.style.borderColor='#e2e8f0'"></textarea></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                  <div class="field" style="margin:0"><label>Trạng thái</label>
+                    <select id="pie2-active" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;outline:none"><option value="true">Hiển thị</option><option value="false">Ẩn</option></select></div>
+                  <div style="display:flex;align-items:flex-end">
+                    <button onclick="aiGeneratePage()" style="width:100%;padding:9px;background:#f5f3ff;border:1.5px solid #c4b5fd;border-radius:8px;font-size:.82rem;font-weight:700;color:#7c3aed;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">
+                      <i class="fas fa-wand-magic-sparkles"></i> AI tạo nội dung
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <label style="font-size:.75rem;font-weight:700;color:#64748b">Nội dung trang (HTML)</label>
+                <div id="pie2-ai-loading" style="display:none;background:#f5f3ff;border-radius:8px;padding:12px;text-align:center;font-size:.82rem;color:#7c3aed;font-weight:700">
+                  <i class="fas fa-spinner fa-spin"></i> AI đang tạo nội dung...
+                </div>
+                <textarea id="pie2-content" rows="18" placeholder="Nhập HTML hoặc để AI tạo tự động..." style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.78rem;font-family:monospace;outline:none;resize:vertical;line-height:1.5" onfocus="this.style.borderColor='#1A56DB'" onblur="this.style.borderColor='#e2e8f0'"></textarea>
+              </div>
+            </div>
+          </div>
+          <!-- END PAGE INLINE EDITOR -->
         </div>
       </div>
 
@@ -3222,7 +3288,7 @@
   }
 
   function showPage(p, el, title) {
-    ['dashboard','products','news','seo','blog-posts','why','how','tech','solutions','feature-cards','gallery','customers','web-users','analytics','site-settings','security'].forEach(n => {
+    ['dashboard','products','news','seo','blog-posts','why','how','tech','solutions','feature-cards','gallery','pages','customers','web-users','analytics','site-settings','security'].forEach(n => {
       const pg = document.getElementById(`page-${n}`);
       if (pg) pg.style.display = n === p ? '' : 'none';
     });
@@ -3238,6 +3304,7 @@
     if (p === 'tech')          loadTech();
     if (p === 'solutions')     loadSolutions();
     if (p === 'feature-cards') loadFeatureCards();
+    if (p === 'pages')         loadPages();
     if (p === 'gallery')       loadGallery();
 if (p === 'site-settings') loadSettings();
     if (p === 'security')    load2FAStatus();
@@ -4427,8 +4494,12 @@ if (p === 'site-settings') loadSettings();
     if (!validate([{ id:'sol-title', label:'Tiêu đề' }, { id:'sol-img', label:'URL ảnh' }])) return;
     const id = document.getElementById('sol-id').value;
     const body = { kicker:document.getElementById('sol-kicker').value, image_url:document.getElementById('sol-img').value, title:document.getElementById('sol-title').value, description:document.getElementById('sol-desc').value, link_url:document.getElementById('sol-link').value||'/', order_index:+document.getElementById('sol-order').value||0, active:document.getElementById('sol-active').value==='true' };
-    await safeFetch(id?`${API}/solution-cards/${id}`:`${API}/solution-cards`, { method:id?'PUT':'POST', headers:hdr(), body:JSON.stringify(body) });
-    closeModal('solution-modal'); loadSolutions(); toast(id?'Đã cập nhật':'Đã thêm thẻ mới');
+    const r = await safeFetch(id?`${API}/solution-cards/${id}`:`${API}/solution-cards`, { method:id?'PUT':'POST', headers:hdr(), body:JSON.stringify(body) });
+    closeModal('solution-modal'); loadSolutions();
+    if (!id && r) {
+      const data = await r.json();
+      toast(data._page ? `Đã tạo thẻ + trang /${data._page.slug} ✨` : 'Đã thêm thẻ mới');
+    } else { toast(id?'Đã cập nhật':'Đã thêm thẻ mới'); }
   }
   async function delSolution(id) { if(!confirm('Xoá thẻ này?'))return; await safeFetch(`${API}/solution-cards/${id}`,{method:'DELETE',headers:hdr()}); loadSolutions(); toast('Đã xoá'); }
 
@@ -4471,10 +4542,94 @@ if (p === 'site-settings') loadSettings();
     if (!validate([{ id:'fc-title', label:'Tiêu đề' }, { id:'fc-img', label:'URL ảnh' }])) return;
     const id = document.getElementById('fc-id').value;
     const body = { image_url:document.getElementById('fc-img').value, title:document.getElementById('fc-title').value, description:document.getElementById('fc-desc').value, link_url:document.getElementById('fc-link').value||'/', order_index:+document.getElementById('fc-order').value||0, active:document.getElementById('fc-active').value==='true' };
-    await safeFetch(id?`${API}/feature-cards/${id}`:`${API}/feature-cards`, { method:id?'PUT':'POST', headers:hdr(), body:JSON.stringify(body) });
-    closeModal('feature-card-modal'); loadFeatureCards(); toast(id?'Đã cập nhật':'Đã thêm thẻ mới');
+    const r2 = await safeFetch(id?`${API}/feature-cards/${id}`:`${API}/feature-cards`, { method:id?'PUT':'POST', headers:hdr(), body:JSON.stringify(body) });
+    closeModal('feature-card-modal'); loadFeatureCards();
+    if (!id && r2) {
+      const data = await r2.json();
+      toast(data._page ? `Đã tạo thẻ + trang /${data._page.slug} ✨` : 'Đã thêm thẻ mới');
+    } else { toast(id?'Đã cập nhật':'Đã thêm thẻ mới'); }
   }
   async function delFeatureCard(id) { if(!confirm('Xoá thẻ này?'))return; await safeFetch(`${API}/feature-cards/${id}`,{method:'DELETE',headers:hdr()}); loadFeatureCards(); toast('Đã xoá'); }
+
+  // ── PAGES ─────────────────────────────────────────────
+  let pagesList = [];
+  const SOURCE_LABEL = { solution:'Giải pháp', feature:'Thẻ tính năng', manual:'Thủ công' };
+  async function loadPages() {
+    const r = await safeFetch(`${API}/pages`, { headers: hdr() });
+    if (!r) return;
+    const data = await r.json();
+    pagesList = Array.isArray(data) ? data : [];
+    document.getElementById('pages-count').textContent = `${pagesList.length} trang`;
+    if (!pagesList.length) { document.getElementById('pages-tbody').innerHTML = '<tr class="empty-row"><td colspan="6">Chưa có trang nào</td></tr>'; return; }
+    document.getElementById('pages-tbody').innerHTML = pagesList.map(p => `
+      <tr>
+        <td><strong>${p.title}</strong></td>
+        <td><a href="/${p.slug}" target="_blank" style="color:#1A56DB;font-size:11px">/${p.slug} ↗</a></td>
+        <td><span style="background:#EEF3FF;color:#1A56DB;padding:2px 8px;border-radius:4px;font-size:11px">${SOURCE_LABEL[p.source_type]||p.source_type}</span></td>
+        <td><span class="badge badge-${p.active?'active':'inactive'}">${p.active?'Hiển thị':'Ẩn'}</span></td>
+        <td style="font-size:11px;color:#94a3b8">${(p.created_at||'').slice(0,10)}</td>
+        <td class="actions">
+          <button class="btn-edit" onclick="editPage(${p.id})"><i class="fas fa-edit"></i> Sửa</button>
+          <button class="btn-del"  onclick="delPage(${p.id})"><i class="fas fa-times"></i> Xoá</button>
+        </td>
+      </tr>`).join('');
+  }
+  function openPageEditor(p) {
+    document.getElementById('pie2-title-label').textContent = p ? `Đang sửa: ${p.title}` : 'Tạo trang mới';
+    document.getElementById('pie2-id').textContent    = p?.id || '';
+    document.getElementById('pie2-title').value       = p?.title || '';
+    document.getElementById('pie2-slug').value        = p?.slug || '';
+    document.getElementById('pie2-seo-title').value   = p?.seo_title || '';
+    document.getElementById('pie2-meta').value        = p?.meta_desc || '';
+    document.getElementById('pie2-content').value     = p?.content || '';
+    document.getElementById('pie2-active').value      = p?.active!==0 ? 'true' : 'false';
+    document.getElementById('page-inline-editor').style.display = 'block';
+    setTimeout(() => document.getElementById('page-inline-editor').scrollIntoView({ behavior:'smooth', block:'start' }), 50);
+  }
+  async function editPage(id) {
+    const r = await safeFetch(`${API}/pages/${id}`, { headers: hdr() });
+    if (!r) return;
+    const p = await r.json();
+    openPageEditor(p);
+  }
+  function closePagesEditor() { document.getElementById('page-inline-editor').style.display = 'none'; }
+  async function savePage() {
+    const title = document.getElementById('pie2-title').value.trim();
+    const slug  = document.getElementById('pie2-slug').value.trim();
+    if (!title) { toast('⚠️ Vui lòng nhập tiêu đề'); return; }
+    if (!slug)  { toast('⚠️ Vui lòng nhập slug'); return; }
+    const id = document.getElementById('pie2-id').textContent.trim();
+    const body = { title, slug, content:document.getElementById('pie2-content').value, seo_title:document.getElementById('pie2-seo-title').value||title, meta_desc:document.getElementById('pie2-meta').value, active:document.getElementById('pie2-active').value==='true' };
+    const r = await safeFetch(id ? `${API}/pages/${id}` : `${API}/pages`, { method:id?'PUT':'POST', headers:hdr(), body:JSON.stringify(body) });
+    if (r) { closePagesEditor(); loadPages(); toast(id ? 'Đã cập nhật trang' : 'Đã tạo trang mới ✅'); }
+  }
+  async function delPage(id) {
+    if (!confirm('Xoá trang này? URL sẽ trả về 404.')) return;
+    await safeFetch(`${API}/pages/${id}`, { method:'DELETE', headers:hdr() });
+    loadPages(); toast('Đã xoá trang');
+  }
+  async function aiGeneratePage() {
+    const title = document.getElementById('pie2-title').value.trim();
+    if (!title) { toast('Nhập tiêu đề trước để AI tạo nội dung'); return; }
+    document.getElementById('pie2-ai-loading').style.display = 'block';
+    document.getElementById('pie2-content').style.display = 'none';
+    const r = await safeFetch(`${API}/pages/ai-generate`, {
+      method:'POST', headers:hdr(),
+      body: JSON.stringify({ title, description: document.getElementById('pie2-meta').value })
+    });
+    document.getElementById('pie2-ai-loading').style.display = 'none';
+    document.getElementById('pie2-content').style.display = 'block';
+    if (r) {
+      const data = await r.json();
+      if (data.content) document.getElementById('pie2-content').value = data.content;
+      if (data.seo_title && !document.getElementById('pie2-seo-title').value) document.getElementById('pie2-seo-title').value = data.seo_title;
+      if (data.meta_desc && !document.getElementById('pie2-meta').value) document.getElementById('pie2-meta').value = data.meta_desc;
+      toast('AI đã tạo nội dung ✨');
+    }
+  }
+
+  // Cập nhật saveSolution để show thông báo khi trang được tạo
+  const _origSaveSolution = typeof saveSolution !== 'undefined' ? saveSolution : null;
 
   // ── GALLERY ───────────────────────────────────────────
   let galleryList = [];

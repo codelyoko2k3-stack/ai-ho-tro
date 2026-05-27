@@ -273,6 +273,11 @@ router.get('/gallery', async (req, res) => {
   catch (err) { res.status(500).json({ error: 'Lỗi máy chủ, vui lòng thử lại.' }); }
 });
 
+router.get('/pages', async (req, res) => {
+  try { res.json(await db.prepare('SELECT id,title,slug,seo_title,meta_desc,source_type,active,created_at FROM pages WHERE active=1 ORDER BY created_at DESC').all()); }
+  catch (err) { res.status(500).json({ error: 'Lỗi máy chủ' }); }
+});
+
 router.get('/solution-cards', async (req, res) => {
   try { res.json(await db.prepare('SELECT * FROM solution_cards WHERE active=1 ORDER BY order_index ASC').all()); }
   catch (err) { res.status(500).json({ error: 'Lỗi máy chủ, vui lòng thử lại.' }); }

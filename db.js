@@ -215,6 +215,19 @@ async function initDb() {
       updated_at TEXT DEFAULT TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS')
     );
 
+    CREATE TABLE IF NOT EXISTS pages (
+      id          SERIAL PRIMARY KEY,
+      title       TEXT NOT NULL,
+      slug        TEXT UNIQUE NOT NULL,
+      content     TEXT DEFAULT '',
+      seo_title   TEXT,
+      meta_desc   TEXT,
+      source_type TEXT DEFAULT 'manual',
+      source_id   INTEGER,
+      active      INTEGER DEFAULT 1,
+      created_at  TEXT DEFAULT TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS')
+    );
+
     CREATE TABLE IF NOT EXISTS solution_cards (
       id          SERIAL PRIMARY KEY,
       kicker      TEXT DEFAULT '',

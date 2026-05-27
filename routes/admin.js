@@ -1162,12 +1162,119 @@ router.put('/tech/:id', auth, async (req, res) => {
 
 router.delete('/tech/:id', auth, async (req, res) => { await db.prepare('DELETE FROM tech_items WHERE id=?').run(req.params.id); res.json({success:true}); });
 
+// ── Pages ──────────────────────────────────────────────
+router.get('/pages', auth, async (req, res) => res.json(await db.prepare('SELECT * FROM pages ORDER BY created_at DESC').all()));
+router.get('/pages/:id', auth, async (req, res) => {
+  const p = await db.prepare('SELECT * FROM pages WHERE id=?').get(req.params.id);
+  if (!p) return res.status(404).json({ error: 'Không tìm thấy' });
+  res.json(p);
+});
+
+router.post('/pages', auth, async (req, res) => {
+  const { title, slug, content, seo_title, meta_desc, source_type, source_id, active } = req.body;
+  if (!title || !slug) return res.status(400).json({ error: 'Thiếu title hoặc slug' });
+  try {
+    const r = await db.prepare('INSERT INTO pages (title,slug,content,seo_title,meta_desc,source_type,source_id,active) VALUES (?,?,?,?,?,?,?,?)').run(title, slug, content||'', seo_title||title, meta_desc||'', source_type||'manual', source_id||null, active!==false?1:0);
+    res.json(await db.prepare('SELECT * FROM pages WHERE id=?').get(r.lastInsertRowid));
+  } catch(e) {
+    if (e.message && e.message.includes('unique')) return res.status(409).json({ error: 'Slug đã tồn tại' });
+    throw e;
+  }
+});
+
+router.put('/pages/:id', auth, async (req, res) => {
+  const { title, slug, content, seo_title, meta_desc, active } = req.body;
+  try {
+    await db.prepare('UPDATE pages SET title=?,slug=?,content=?,seo_title=?,meta_desc=?,active=? WHERE id=?').run(title, slug, content||'', seo_title||title, meta_desc||'', active!==false?1:0, req.params.id);
+    res.json(await db.prepare('SELECT * FROM pages WHERE id=?').get(req.params.id));
+  } catch(e) {
+    if (e.message && e.message.includes('unique')) return res.status(409).json({ error: 'Slug đã tồn tại' });
+    throw e;
+  }
+});
+
+router.delete('/pages/:id', auth, async (req, res) => {
+  await db.prepare('DELETE FROM pages WHERE id=?').run(req.params.id);
+  res.json({ success: true });
+});
+
+// Tạo nội dung trang bằng AI
+router.post('/pages/ai-generate', auth, async (req, res) => {
+  const { title, kicker, description, slug } = req.body;
+  if (!title) return res.status(400).json({ error: 'Thiếu title' });
+  const prompt = `Bạn là chuyên gia nội dung cho công ty ViAI (cung cấp AI Agent cho doanh nghiệp Việt Nam).
+Hãy viết nội dung trang giới thiệu cho: "${title}" (${kicker||'Giải pháp'})
+Mô tả ngắn: "${description||''}"
+
+Viết bằng HTML (chỉ phần body content, không có <html><head><body>).
+Cấu trúc gồm:
+1. Section hero: h1 tiêu đề hấp dẫn, đoạn intro 2-3 câu
+2. Section lợi ích: 3 lợi ích chính (dùng <div class="benefit-grid">)
+3. Section tính năng: danh sách 4-5 tính năng (dùng <ul class="feature-list">)
+4. Section CTA: nút "Dùng thử miễn phí" trỏ tới /dung-thu.html
+
+Dùng class CSS sẵn có: .page-hero, .page-section, .benefit-grid, .benefit-card, .feature-list, .cta-section, .cta-btn
+Viết ngắn gọn, chuyên nghiệp, tiếng Việt. Chỉ trả về HTML, không giải thích.`;
+
+  try {
+    const content = await runAnthropicPrompt(prompt, 1200);
+    const seoPrompt = `Tạo SEO title (50-60 ký tự) và meta description (140-155 ký tự) cho trang "${title}" của ViAI — AI Agent doanh nghiệp Việt.
+Chỉ trả về JSON: {"seo_title":"...","meta_desc":"..."}`;
+    let seo_title = `${title} | ViAI`, meta_desc = description || '';
+    try {
+      const seoText = await runAnthropicPrompt(seoPrompt, 150);
+      const m = seoText.match(/\{[\s\S]*?\}/);
+      if (m) { const d = JSON.parse(m[0]); seo_title = d.seo_title || seo_title; meta_desc = d.meta_desc || meta_desc; }
+    } catch(_) {}
+    res.json({ content, seo_title, meta_desc });
+  } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Helper: auto tạo page từ card
+async function autoCreatePage(title, kicker, description, linkUrl, sourceType, sourceId) {
+  const slug = (linkUrl || '').replace(/^\//, '').trim() ||
+    title.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60);
+  if (!slug) return null;
+  const existing = await db.prepare('SELECT id FROM pages WHERE slug=?').get(slug);
+  if (existing) return existing;
+
+  const prompt = `Bạn là chuyên gia nội dung cho ViAI (AI Agent cho doanh nghiệp Việt).
+Viết nội dung HTML cho trang giới thiệu: "${title}" (${kicker||'Giải pháp'})
+Mô tả: "${description||''}"
+
+Chỉ trả về HTML body content (không có html/head/body tags).
+Dùng các class: .page-hero, .page-section, .benefit-grid, .benefit-card, .feature-list, .cta-section, .cta-btn
+Cấu trúc:
+1. <section class="page-hero"> — h1 + intro 2 câu
+2. <section class="page-section"> — 3 benefit-card (icon + tiêu đề + mô tả)
+3. <section class="page-section"> — <ul class="feature-list"> 4-5 tính năng
+4. <section class="cta-section"> — <a href="/dung-thu.html" class="cta-btn">Dùng thử miễn phí →</a>
+Tiếng Việt, chuyên nghiệp, ngắn gọn.`;
+
+  let content = '', seo_title = `${title} | ViAI`, meta_desc = description || '';
+  try {
+    content = await runAnthropicPrompt(prompt, 1200);
+    const seoText = await runAnthropicPrompt(`SEO title 50-60 ký tự và meta desc 140-155 ký tự cho trang "${title}" của ViAI. JSON: {"seo_title":"...","meta_desc":"..."}`, 120);
+    const m = seoText.match(/\{[\s\S]*?\}/);
+    if (m) { const d = JSON.parse(m[0]); if(d.seo_title) seo_title=d.seo_title; if(d.meta_desc) meta_desc=d.meta_desc; }
+  } catch(_) {}
+
+  const r = await db.prepare('INSERT INTO pages (title,slug,content,seo_title,meta_desc,source_type,source_id,active) VALUES (?,?,?,?,?,?,?,1)')
+    .run(title, slug, content, seo_title, meta_desc, sourceType, sourceId);
+  return await db.prepare('SELECT * FROM pages WHERE id=?').get(r.lastInsertRowid);
+}
+
 // ── Solution Cards ─────────────────────────────────────
 router.get('/solution-cards', auth, async (req, res) => res.json(await db.prepare('SELECT * FROM solution_cards ORDER BY order_index ASC').all()));
 router.post('/solution-cards', auth, async (req, res) => {
   const { kicker, image_url, title, description, link_url, order_index, active } = req.body;
   const r = await db.prepare('INSERT INTO solution_cards (kicker,image_url,title,description,link_url,order_index,active) VALUES (?,?,?,?,?,?,?)').run(kicker||'',image_url||'',title,description||'',link_url||'/',order_index||0,active?1:0);
-  res.json(await db.prepare('SELECT * FROM solution_cards WHERE id=?').get(r.lastInsertRowid));
+  const card = await db.prepare('SELECT * FROM solution_cards WHERE id=?').get(r.lastInsertRowid);
+  let page = null;
+  try { page = await autoCreatePage(title, kicker, description, link_url, 'solution', card.id); } catch(_) {}
+  res.json({ ...card, _page: page });
 });
 router.put('/solution-cards/:id', auth, async (req, res) => {
   const { kicker, image_url, title, description, link_url, order_index, active } = req.body;
@@ -1181,7 +1288,10 @@ router.get('/feature-cards', auth, async (req, res) => res.json(await db.prepare
 router.post('/feature-cards', auth, async (req, res) => {
   const { image_url, title, description, link_url, order_index, active } = req.body;
   const r = await db.prepare('INSERT INTO feature_cards (image_url,title,description,link_url,order_index,active) VALUES (?,?,?,?,?,?)').run(image_url||'',title,description||'',link_url||'/',order_index||0,active?1:0);
-  res.json(await db.prepare('SELECT * FROM feature_cards WHERE id=?').get(r.lastInsertRowid));
+  const card = await db.prepare('SELECT * FROM feature_cards WHERE id=?').get(r.lastInsertRowid);
+  let page = null;
+  try { page = await autoCreatePage(title, '', description, link_url, 'feature', card.id); } catch(_) {}
+  res.json({ ...card, _page: page });
 });
 router.put('/feature-cards/:id', auth, async (req, res) => {
   const { image_url, title, description, link_url, order_index, active } = req.body;
