@@ -1162,6 +1162,34 @@ router.put('/tech/:id', auth, async (req, res) => {
 
 router.delete('/tech/:id', auth, async (req, res) => { await db.prepare('DELETE FROM tech_items WHERE id=?').run(req.params.id); res.json({success:true}); });
 
+// ── Solution Cards ─────────────────────────────────────
+router.get('/solution-cards', auth, async (req, res) => res.json(await db.prepare('SELECT * FROM solution_cards ORDER BY order_index ASC').all()));
+router.post('/solution-cards', auth, async (req, res) => {
+  const { kicker, image_url, title, description, link_url, order_index, active } = req.body;
+  const r = await db.prepare('INSERT INTO solution_cards (kicker,image_url,title,description,link_url,order_index,active) VALUES (?,?,?,?,?,?,?)').run(kicker||'',image_url||'',title,description||'',link_url||'/',order_index||0,active?1:0);
+  res.json(await db.prepare('SELECT * FROM solution_cards WHERE id=?').get(r.lastInsertRowid));
+});
+router.put('/solution-cards/:id', auth, async (req, res) => {
+  const { kicker, image_url, title, description, link_url, order_index, active } = req.body;
+  await db.prepare('UPDATE solution_cards SET kicker=?,image_url=?,title=?,description=?,link_url=?,order_index=?,active=? WHERE id=?').run(kicker||'',image_url||'',title,description||'',link_url||'/',order_index||0,active?1:0,req.params.id);
+  res.json(await db.prepare('SELECT * FROM solution_cards WHERE id=?').get(req.params.id));
+});
+router.delete('/solution-cards/:id', auth, async (req, res) => { await db.prepare('DELETE FROM solution_cards WHERE id=?').run(req.params.id); res.json({success:true}); });
+
+// ── Feature Cards ──────────────────────────────────────
+router.get('/feature-cards', auth, async (req, res) => res.json(await db.prepare('SELECT * FROM feature_cards ORDER BY order_index ASC').all()));
+router.post('/feature-cards', auth, async (req, res) => {
+  const { image_url, title, description, link_url, order_index, active } = req.body;
+  const r = await db.prepare('INSERT INTO feature_cards (image_url,title,description,link_url,order_index,active) VALUES (?,?,?,?,?,?)').run(image_url||'',title,description||'',link_url||'/',order_index||0,active?1:0);
+  res.json(await db.prepare('SELECT * FROM feature_cards WHERE id=?').get(r.lastInsertRowid));
+});
+router.put('/feature-cards/:id', auth, async (req, res) => {
+  const { image_url, title, description, link_url, order_index, active } = req.body;
+  await db.prepare('UPDATE feature_cards SET image_url=?,title=?,description=?,link_url=?,order_index=?,active=? WHERE id=?').run(image_url||'',title,description||'',link_url||'/',order_index||0,active?1:0,req.params.id);
+  res.json(await db.prepare('SELECT * FROM feature_cards WHERE id=?').get(req.params.id));
+});
+router.delete('/feature-cards/:id', auth, async (req, res) => { await db.prepare('DELETE FROM feature_cards WHERE id=?').run(req.params.id); res.json({success:true}); });
+
 // ── Gallery ───────────────────────────────────────────
 router.get('/gallery', auth, async (req, res) => res.json(await db.prepare('SELECT * FROM gallery_images ORDER BY order_index ASC').all()));
 

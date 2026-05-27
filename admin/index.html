@@ -902,6 +902,12 @@
         <a class="nav-sub-item" onclick="showPage('tech',this,'Công nghệ')">
           <i class="fas fa-microchip"></i> Công nghệ
         </a>
+        <a class="nav-sub-item" onclick="showPage('solutions',this,'Giải pháp')">
+          <i class="fas fa-th-large"></i> Giải pháp
+        </a>
+        <a class="nav-sub-item" onclick="showPage('feature-cards',this,'Thẻ tính năng')">
+          <i class="fas fa-images"></i> Thẻ tính năng
+        </a>
       </div>
 
       <!-- GROUP: NGƯỜI DÙNG -->
@@ -1851,6 +1857,46 @@
           <div class="table-wrap">
             <table><thead><tr><th>Ảnh</th><th>Tiêu đề</th><th>Mô tả</th><th>Nổi bật</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
             <tbody id="tech-tbody"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SOLUTIONS PAGE ── -->
+      <div id="page-solutions" style="display:none">
+        <div class="content-topbar">
+          <div class="content-title">Giải pháp AI Agent</div>
+          <div class="breadcrumb-inner"><i class="fas fa-home"></i> › Trang chủ › <span>Giải pháp</span></div>
+        </div>
+        <div class="content-body">
+          <p class="page-subtitle">Quản lý 3 thẻ giải pháp (Phần mềm · Dịch vụ · Đào tạo) hiển thị trên trang chủ</p>
+          <div class="filter-bar">
+            <button class="btn btn-refresh" onclick="loadSolutions()"><i class="fas fa-sync-alt"></i></button>
+            <span class="filter-count" id="solutions-count"></span>
+            <button class="btn btn-add-bar" onclick="openSolutionModal()"><i class="fas fa-plus"></i> Thêm thẻ</button>
+          </div>
+          <div class="table-wrap">
+            <table><thead><tr><th>Ảnh</th><th>Nhãn</th><th>Tiêu đề</th><th>Mô tả</th><th>Link</th><th>Thứ tự</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+            <tbody id="solutions-tbody"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── FEATURE CARDS PAGE ── -->
+      <div id="page-feature-cards" style="display:none">
+        <div class="content-topbar">
+          <div class="content-title">Thẻ tính năng</div>
+          <div class="breadcrumb-inner"><i class="fas fa-home"></i> › Trang chủ › <span>Thẻ tính năng</span></div>
+        </div>
+        <div class="content-body">
+          <p class="page-subtitle">Quản lý 3 thẻ tính năng có ảnh lớn (Nền tảng · Tích hợp · Bảo mật) bên dưới section robot</p>
+          <div class="filter-bar">
+            <button class="btn btn-refresh" onclick="loadFeatureCards()"><i class="fas fa-sync-alt"></i></button>
+            <span class="filter-count" id="feature-cards-count"></span>
+            <button class="btn btn-add-bar" onclick="openFeatureCardModal()"><i class="fas fa-plus"></i> Thêm thẻ</button>
+          </div>
+          <div class="table-wrap">
+            <table><thead><tr><th>Ảnh</th><th>Tiêu đề</th><th>Mô tả</th><th>Link</th><th>Thứ tự</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+            <tbody id="feature-cards-tbody"></tbody></table>
           </div>
         </div>
       </div>
@@ -2898,6 +2944,47 @@
   </div>
 </div>
 
+<!-- SOLUTION MODAL -->
+<div class="modal-overlay" id="solution-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="solution-modal-title">Thêm thẻ giải pháp</div>
+    <input type="hidden" id="sol-id" />
+    <div class="field-row">
+      <div class="field"><label>Nhãn (Kicker)</label><input id="sol-kicker" type="text" placeholder="Phần mềm / Dịch vụ / Đào tạo" /></div>
+      <div class="field"><label>Thứ tự</label><input id="sol-order" type="number" min="0" /></div>
+    </div>
+    <div class="field"><label>URL ảnh *</label><input id="sol-img" type="text" placeholder="anhlogo/anh1.png hoặc /uploads/..." /></div>
+    <div class="field"><label>Tiêu đề *</label><input id="sol-title" type="text" /></div>
+    <div class="field"><label>Mô tả</label><textarea id="sol-desc" rows="2" placeholder="Mô tả ngắn hiển thị trên thẻ..."></textarea></div>
+    <div class="field"><label>Link (href)</label><input id="sol-link" type="text" placeholder="/phan-mem" /></div>
+    <div class="field"><label>Trạng thái</label><select id="sol-active"><option value="true">Hiển thị</option><option value="false">Ẩn</option></select></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('solution-modal')">Huỷ</button>
+      <button class="btn-save" onclick="saveSolution()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURE CARD MODAL -->
+<div class="modal-overlay" id="feature-card-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="feature-card-modal-title">Thêm thẻ tính năng</div>
+    <input type="hidden" id="fc-id" />
+    <div class="field"><label>URL ảnh *</label><input id="fc-img" type="text" placeholder="anhlogo/congnghe4.png hoặc /uploads/..." /></div>
+    <div class="field"><label>Tiêu đề *</label><input id="fc-title" type="text" /></div>
+    <div class="field"><label>Mô tả</label><textarea id="fc-desc" rows="2" placeholder="Mô tả ngắn hiển thị trên thẻ..."></textarea></div>
+    <div class="field"><label>Link (href)</label><input id="fc-link" type="text" placeholder="/nen-tang-ai-agent" /></div>
+    <div class="field-row">
+      <div class="field"><label>Thứ tự</label><input id="fc-order" type="number" min="0" /></div>
+      <div class="field"><label>Trạng thái</label><select id="fc-active"><option value="true">Hiển thị</option><option value="false">Ẩn</option></select></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('feature-card-modal')">Huỷ</button>
+      <button class="btn-save" onclick="saveFeatureCard()">Lưu</button>
+    </div>
+  </div>
+</div>
+
 <!-- WHY MODAL -->
 <div class="modal-overlay" id="why-modal">
   <div class="modal-box">
@@ -3148,8 +3235,10 @@
     if (p === 'blog-posts')  loadBlogPosts();
     if (p === 'why')         loadWhy();
     if (p === 'how')         loadHow();
-    if (p === 'tech')        loadTech();
-    if (p === 'gallery')     loadGallery();
+    if (p === 'tech')          loadTech();
+    if (p === 'solutions')     loadSolutions();
+    if (p === 'feature-cards') loadFeatureCards();
+    if (p === 'gallery')       loadGallery();
 if (p === 'site-settings') loadSettings();
     if (p === 'security')    load2FAStatus();
     if (p === 'customers')   loadCustomers();
@@ -4296,6 +4385,96 @@ if (p === 'site-settings') loadSettings();
     closeModal('tech-modal'); loadTech(); toast(id?'Đã cập nhật':'Đã thêm mới');
   }
   async function delTech(id) { if(!confirm('Xoá mục này?'))return; await fetch(`${API}/tech/${id}`,{method:'DELETE',headers:hdr()}); loadTech(); toast('Đã xoá'); }
+
+  // ── SOLUTIONS ─────────────────────────────────────────
+  let solutionList = [];
+  async function loadSolutions() {
+    const r = await safeFetch(`${API}/solution-cards`, { headers: hdr() });
+    if (!r) return;
+    const data = await r.json();
+    solutionList = Array.isArray(data) ? data : [];
+    document.getElementById('solutions-count').textContent = `${solutionList.length} thẻ`;
+    if (!solutionList.length) { document.getElementById('solutions-tbody').innerHTML = '<tr class="empty-row"><td colspan="8">Chưa có thẻ nào</td></tr>'; return; }
+    document.getElementById('solutions-tbody').innerHTML = solutionList.map(s => `
+      <tr>
+        <td><img src="/${s.image_url}" style="height:40px;object-fit:contain;border-radius:6px" onerror="this.style.display='none'" /></td>
+        <td><span style="background:#EEF3FF;color:#1A56DB;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">${s.kicker||''}</span></td>
+        <td><strong>${s.title}</strong></td>
+        <td style="font-size:11px;color:#64748b;max-width:180px">${(s.description||'').slice(0,60)}...</td>
+        <td style="font-size:11px;color:#64748b">${s.link_url||''}</td>
+        <td>${s.order_index}</td>
+        <td><span class="badge badge-${s.active?'active':'inactive'}">${s.active?'Hiển thị':'Ẩn'}</span></td>
+        <td class="actions">
+          <button class="btn-edit" onclick="editSolution(${s.id})"><i class="fas fa-edit"></i> Sửa</button>
+          <button class="btn-del"  onclick="delSolution(${s.id})"><i class="fas fa-times"></i> Xoá</button>
+        </td>
+      </tr>`).join('');
+  }
+  function openSolutionModal(s) {
+    document.getElementById('solution-modal-title').textContent = s ? 'Sửa thẻ giải pháp' : 'Thêm thẻ giải pháp';
+    document.getElementById('sol-id').value     = s?.id||'';
+    document.getElementById('sol-kicker').value = s?.kicker||'';
+    document.getElementById('sol-img').value    = s?.image_url||'';
+    document.getElementById('sol-title').value  = s?.title||'';
+    document.getElementById('sol-desc').value   = s?.description||'';
+    document.getElementById('sol-link').value   = s?.link_url||'/';
+    document.getElementById('sol-order').value  = s?.order_index||0;
+    document.getElementById('sol-active').value = s?.active!==0?'true':'false';
+    openModal('solution-modal');
+  }
+  function editSolution(id) { openSolutionModal(solutionList.find(s=>s.id===id)); }
+  async function saveSolution() {
+    if (!validate([{ id:'sol-title', label:'Tiêu đề' }, { id:'sol-img', label:'URL ảnh' }])) return;
+    const id = document.getElementById('sol-id').value;
+    const body = { kicker:document.getElementById('sol-kicker').value, image_url:document.getElementById('sol-img').value, title:document.getElementById('sol-title').value, description:document.getElementById('sol-desc').value, link_url:document.getElementById('sol-link').value||'/', order_index:+document.getElementById('sol-order').value||0, active:document.getElementById('sol-active').value==='true' };
+    await safeFetch(id?`${API}/solution-cards/${id}`:`${API}/solution-cards`, { method:id?'PUT':'POST', headers:hdr(), body:JSON.stringify(body) });
+    closeModal('solution-modal'); loadSolutions(); toast(id?'Đã cập nhật':'Đã thêm thẻ mới');
+  }
+  async function delSolution(id) { if(!confirm('Xoá thẻ này?'))return; await safeFetch(`${API}/solution-cards/${id}`,{method:'DELETE',headers:hdr()}); loadSolutions(); toast('Đã xoá'); }
+
+  // ── FEATURE CARDS ─────────────────────────────────────
+  let featureCardList = [];
+  async function loadFeatureCards() {
+    const r = await safeFetch(`${API}/feature-cards`, { headers: hdr() });
+    if (!r) return;
+    const data = await r.json();
+    featureCardList = Array.isArray(data) ? data : [];
+    document.getElementById('feature-cards-count').textContent = `${featureCardList.length} thẻ`;
+    if (!featureCardList.length) { document.getElementById('feature-cards-tbody').innerHTML = '<tr class="empty-row"><td colspan="7">Chưa có thẻ nào</td></tr>'; return; }
+    document.getElementById('feature-cards-tbody').innerHTML = featureCardList.map(f => `
+      <tr>
+        <td><img src="/${f.image_url}" style="height:40px;object-fit:contain;border-radius:6px" onerror="this.style.display='none'" /></td>
+        <td><strong>${f.title}</strong></td>
+        <td style="font-size:11px;color:#64748b;max-width:200px">${(f.description||'').slice(0,60)}...</td>
+        <td style="font-size:11px;color:#64748b">${f.link_url||''}</td>
+        <td>${f.order_index}</td>
+        <td><span class="badge badge-${f.active?'active':'inactive'}">${f.active?'Hiển thị':'Ẩn'}</span></td>
+        <td class="actions">
+          <button class="btn-edit" onclick="editFeatureCard(${f.id})"><i class="fas fa-edit"></i> Sửa</button>
+          <button class="btn-del"  onclick="delFeatureCard(${f.id})"><i class="fas fa-times"></i> Xoá</button>
+        </td>
+      </tr>`).join('');
+  }
+  function openFeatureCardModal(f) {
+    document.getElementById('feature-card-modal-title').textContent = f ? 'Sửa thẻ tính năng' : 'Thêm thẻ tính năng';
+    document.getElementById('fc-id').value     = f?.id||'';
+    document.getElementById('fc-img').value    = f?.image_url||'';
+    document.getElementById('fc-title').value  = f?.title||'';
+    document.getElementById('fc-desc').value   = f?.description||'';
+    document.getElementById('fc-link').value   = f?.link_url||'/';
+    document.getElementById('fc-order').value  = f?.order_index||0;
+    document.getElementById('fc-active').value = f?.active!==0?'true':'false';
+    openModal('feature-card-modal');
+  }
+  function editFeatureCard(id) { openFeatureCardModal(featureCardList.find(f=>f.id===id)); }
+  async function saveFeatureCard() {
+    if (!validate([{ id:'fc-title', label:'Tiêu đề' }, { id:'fc-img', label:'URL ảnh' }])) return;
+    const id = document.getElementById('fc-id').value;
+    const body = { image_url:document.getElementById('fc-img').value, title:document.getElementById('fc-title').value, description:document.getElementById('fc-desc').value, link_url:document.getElementById('fc-link').value||'/', order_index:+document.getElementById('fc-order').value||0, active:document.getElementById('fc-active').value==='true' };
+    await safeFetch(id?`${API}/feature-cards/${id}`:`${API}/feature-cards`, { method:id?'PUT':'POST', headers:hdr(), body:JSON.stringify(body) });
+    closeModal('feature-card-modal'); loadFeatureCards(); toast(id?'Đã cập nhật':'Đã thêm thẻ mới');
+  }
+  async function delFeatureCard(id) { if(!confirm('Xoá thẻ này?'))return; await safeFetch(`${API}/feature-cards/${id}`,{method:'DELETE',headers:hdr()}); loadFeatureCards(); toast('Đã xoá'); }
 
   // ── GALLERY ───────────────────────────────────────────
   let galleryList = [];

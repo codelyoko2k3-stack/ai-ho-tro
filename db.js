@@ -1,4 +1,4 @@
-const { Pool } = require('pg');
+﻿const { Pool } = require('pg');
 const bcrypt   = require('bcryptjs');
 
 const pool = new Pool({
@@ -150,7 +150,7 @@ async function initDb() {
       image_alt        TEXT,
       image_url        TEXT,
       category         TEXT DEFAULT 'Tin tức',
-      author           TEXT DEFAULT 'VIAi Team',
+      author           TEXT DEFAULT 'ViAI Team',
       slug             TEXT,
       published_at     TEXT DEFAULT TO_CHAR(NOW(), 'YYYY-MM-DD'),
       active           INTEGER DEFAULT 1,
@@ -197,10 +197,43 @@ async function initDb() {
       created_at TEXT DEFAULT TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS')
     );
 
+    CREATE TABLE IF NOT EXISTS otp_verifications (
+      id          SERIAL PRIMARY KEY,
+      token       TEXT UNIQUE NOT NULL,
+      target      TEXT NOT NULL,
+      target_type TEXT NOT NULL,
+      otp         TEXT NOT NULL,
+      user_data   TEXT NOT NULL,
+      attempts    INTEGER DEFAULT 0,
+      expires_at  BIGINT NOT NULL,
+      created_at  TEXT DEFAULT TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS')
+    );
+
     CREATE TABLE IF NOT EXISTS site_settings (
       key        TEXT PRIMARY KEY,
       value      TEXT,
       updated_at TEXT DEFAULT TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS')
+    );
+
+    CREATE TABLE IF NOT EXISTS solution_cards (
+      id          SERIAL PRIMARY KEY,
+      kicker      TEXT DEFAULT '',
+      image_url   TEXT,
+      title       TEXT NOT NULL,
+      description TEXT,
+      link_url    TEXT DEFAULT '/',
+      order_index INTEGER DEFAULT 0,
+      active      INTEGER DEFAULT 1
+    );
+
+    CREATE TABLE IF NOT EXISTS feature_cards (
+      id          SERIAL PRIMARY KEY,
+      image_url   TEXT,
+      title       TEXT NOT NULL,
+      description TEXT,
+      link_url    TEXT DEFAULT '/',
+      order_index INTEGER DEFAULT 0,
+      active      INTEGER DEFAULT 1
     );
 
     CREATE TABLE IF NOT EXISTS pricing_plans (
@@ -222,14 +255,14 @@ async function initDb() {
 
   // ── Seed site_settings ──────────────────────────────
   const settingsDefaults = {
-    seo_title:       'VIAi – Phần mềm AI Agent cho doanh nghiệp Việt Nam',
-    seo_description: 'VIAi cung cấp AI Agent tự động hóa bán hàng, vận hành và chăm sóc khách hàng 24/7. Triển khai trong 24 giờ, kết nối 100+ ứng dụng, không cần lập trình.',
+    seo_title:       'ViAI – Phần mềm AI Agent cho doanh nghiệp Việt Nam',
+    seo_description: 'ViAI cung cấp AI Agent tự động hóa bán hàng, vận hành và chăm sóc khách hàng 24/7. Triển khai trong 24 giờ, kết nối 100+ ứng dụng, không cần lập trình.',
     seo_keywords:    'AI Agent, tự động hóa doanh nghiệp, Zalo Agent, chatbot doanh nghiệp Việt Nam',
-    og_title:        'VIAi – Phần mềm AI Agent cho doanh nghiệp Việt Nam',
+    og_title:        'ViAI – Phần mềm AI Agent cho doanh nghiệp Việt Nam',
     og_description:  'Tự động hóa toàn bộ quy trình bán hàng, vận hành và chăm sóc khách hàng bằng AI Agent. Triển khai trong 24 giờ, không cần lập trình.',
     hero_badge:      'AI Agent Platform • Đang hoạt động',
     hero_title:      'Tự động hóa toàn bộ quy trình bằng AI Agent thông minh',
-    hero_desc:       'VIAi cung cấp các AI Agent sẵn sàng triển khai – kết nối đa nền tảng, xử lý tự động 24/7.',
+    hero_desc:       'ViAI cung cấp các AI Agent sẵn sàng triển khai – kết nối đa nền tảng, xử lý tự động 24/7.',
     hero_cta1_text:  '🚀 Dùng thử miễn phí 14 ngày',
     hero_cta1_url:   'dung-thu.html',
     hero_cta2_text:  '▶ Xem demo thực tế',
@@ -241,11 +274,11 @@ async function initDb() {
     cta_btn1_text:'🚀 Bắt đầu miễn phí ngay',
     cta_btn2_text:'📞 Tư vấn ngay hôm nay',
     homepage_faq: JSON.stringify([
-      { q: 'VIAi khác gì so với chatbot thông thường?', a: 'Chatbot chỉ trả lời theo kịch bản cố định. AI Agent của VIAi hiểu ngữ cảnh, tự ra quyết định và thực hiện hành động — tạo đơn, cập nhật CRM, gửi báo cáo — hoàn toàn tự động 24/7.' },
-      { q: 'Tôi không biết lập trình, có dùng được không?', a: 'Hoàn toàn không cần kỹ năng kỹ thuật. Giao diện tiếng Việt, đội ngũ VIAi hỗ trợ 1-1 từ đầu đến cuối trong 24 giờ.' },
-      { q: 'Dữ liệu khách hàng của tôi có an toàn không?', a: 'Dữ liệu mã hóa end-to-end, lưu tại máy chủ Việt Nam, tuân thủ ISO 27001. VIAi không chia sẻ dữ liệu với bên thứ ba.' },
-      { q: 'Triển khai mất bao lâu?', a: 'Trong vòng 24 giờ làm việc kể từ khi ký hợp đồng. Đội ngũ VIAi cài đặt, kết nối và chạy thử nghiệm — bạn chỉ cần cấp quyền truy cập.' },
-      { q: 'VIAi kết nối được với những nền tảng nào?', a: 'Zalo OA, Facebook Messenger, Shopee, Lazada, Google Sheets, MISA, Base.vn và 50+ nền tảng khác.' },
+      { q: 'ViAI khác gì so với chatbot thông thường?', a: 'Chatbot chỉ trả lời theo kịch bản cố định. AI Agent của ViAI hiểu ngữ cảnh, tự ra quyết định và thực hiện hành động — tạo đơn, cập nhật CRM, gửi báo cáo — hoàn toàn tự động 24/7.' },
+      { q: 'Tôi không biết lập trình, có dùng được không?', a: 'Hoàn toàn không cần kỹ năng kỹ thuật. Giao diện tiếng Việt, đội ngũ ViAI hỗ trợ 1-1 từ đầu đến cuối trong 24 giờ.' },
+      { q: 'Dữ liệu khách hàng của tôi có an toàn không?', a: 'Dữ liệu mã hóa end-to-end, lưu tại máy chủ Việt Nam, tuân thủ ISO 27001. ViAI không chia sẻ dữ liệu với bên thứ ba.' },
+      { q: 'Triển khai mất bao lâu?', a: 'Trong vòng 24 giờ làm việc kể từ khi ký hợp đồng. Đội ngũ ViAI cài đặt, kết nối và chạy thử nghiệm — bạn chỉ cần cấp quyền truy cập.' },
+      { q: 'ViAI kết nối được với những nền tảng nào?', a: 'Zalo OA, Facebook Messenger, Shopee, Lazada, Google Sheets, MISA, Base.vn và 50+ nền tảng khác.' },
       { q: 'Nếu không hài lòng thì sao?', a: 'Hoàn tiền 100% trong 14 ngày, không hỏi lý do.' },
     ]),
   };
@@ -285,8 +318,8 @@ async function initDb() {
   if (parseInt(newsCount) === 0) {
     const ins = `INSERT INTO news_posts (title,excerpt,image_url,source_name,source_tag,source_url,published_at) VALUES ($1,$2,$3,$4,$5,$6,$7)`;
     const news = [
-      ['VIAi cam kết hiệu quả AI Agent cho doanh nghiệp Việt','VIAi mang đến giải pháp AI Agent đóng gói sẵn, giúp doanh nghiệp tự động hóa vận hành mà không cần đội kỹ thuật chuyên sâu.','anhlogo/a.jpg','genk.vn','genk','#press','2026-05-15'],
-      ['VIAi đồng hành cùng cộng đồng doanh nghiệp SME','Mở rộng cơ hội tiếp cận AI Agent cho các doanh nghiệp vừa và nhỏ tại Việt Nam.','anhlogo/b.jpg','cand.com.vn','tienpb','#press','2026-05-12'],
+      ['ViAI cam kết hiệu quả AI Agent cho doanh nghiệp Việt','ViAI mang đến giải pháp AI Agent đóng gói sẵn, giúp doanh nghiệp tự động hóa vận hành mà không cần đội kỹ thuật chuyên sâu.','anhlogo/a.jpg','genk.vn','genk','#press','2026-05-15'],
+      ['ViAI đồng hành cùng cộng đồng doanh nghiệp SME','Mở rộng cơ hội tiếp cận AI Agent cho các doanh nghiệp vừa và nhỏ tại Việt Nam.','anhlogo/b.jpg','cand.com.vn','tienpb','#press','2026-05-12'],
       ['AI Agent trở thành xu hướng vận hành năm 2026','Doanh nghiệp bắt đầu đưa trợ lý AI vào bán hàng, chăm sóc khách hàng và báo cáo.','anhlogo/d.png','cafebiz.vn','cafebiz','#press','2026-05-08'],
     ];
     for (const n of news) await pool.query(ins, n);
@@ -313,7 +346,7 @@ async function initDb() {
     const ins = `INSERT INTO how_steps (step_number,title,short_desc,panel_title,panel_desc,features,mockup_bars,order_index) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`;
     const steps = [
       [1,'Chọn AI Agent phù hợp','Thư viện Agent đa dạng theo từng nghiệp vụ','Chọn AI Agent phù hợp với bạn','Từ thư viện hơn 10 AI Agent chuyên biệt, bạn chọn Agent phù hợp với nghiệp vụ.','["Thư viện Agent phân loại theo ngành","Xem demo trực tiếp trước khi triển khai","Tư vấn 1-1 miễn phí với chuyên gia AI"]','[{"label":"Zalo Sales Agent","value":"⭐ Phù hợp nhất","color":"blue"}]',1],
-      [2,'Kết nối hệ thống hiện tại','Tích hợp 100+ ứng dụng không cần code','Kết nối với hệ thống bạn đang dùng','VIAi tích hợp với hầu hết các công cụ phổ biến tại Việt Nam.','["Kết nối Zalo OA, Facebook, Website","Tích hợp Google Sheets, MISA, Shopee","Webhook & API mở cho hệ thống nội bộ"]','[{"label":"Zalo OA","value":"✓ Đã kết nối","color":"green"}]',2],
+      [2,'Kết nối hệ thống hiện tại','Tích hợp 100+ ứng dụng không cần code','Kết nối với hệ thống bạn đang dùng','ViAI tích hợp với hầu hết các công cụ phổ biến tại Việt Nam.','["Kết nối Zalo OA, Facebook, Website","Tích hợp Google Sheets, MISA, Shopee","Webhook & API mở cho hệ thống nội bộ"]','[{"label":"Zalo OA","value":"✓ Đã kết nối","color":"green"}]',2],
       [3,'Agent tự động chạy 24/7','Xử lý công việc liên tục, không nghỉ','AI Agent tự động xử lý mọi thứ 24/7','Sau khi thiết lập, Agent hoạt động liên tục không cần giám sát.','["Hoạt động 24/7, 365 ngày","Xử lý hàng trăm yêu cầu cùng lúc","Tự học và cải thiện theo dữ liệu thực tế"]','[{"label":"Tin nhắn hôm nay","value":"128 tin","color":"green"}]',3],
       [4,'Theo dõi & tối ưu kết quả','Dashboard và báo cáo tự động mỗi sáng','Theo dõi hiệu suất & tối ưu liên tục','Dashboard trực quan cập nhật thời gian thực. Báo cáo tự động lúc 8 giờ sáng.','["Dashboard realtime","Báo cáo tự động qua Zalo hoặc Email","Gợi ý tối ưu từ AI"]','[{"label":"Thời gian tiết kiệm","value":"4.2 giờ/ngày","color":"blue"}]',4],
     ];
@@ -337,9 +370,9 @@ async function initDb() {
   if (parseInt(blogCount) === 0) {
     const ins = `INSERT INTO blog_posts (title,excerpt,content,image_url,category,author,slug,published_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`;
     const posts = [
-      ['5 cách AI Agent giúp doanh nghiệp SME tiết kiệm 4 giờ mỗi ngày','Thay vì thuê thêm nhân sự, hàng trăm doanh nghiệp đang ứng dụng AI Agent để tự động hóa tác vụ lặp lại.','## Doanh nghiệp SME đang mất bao nhiêu thời gian?\n\nTheo khảo sát, mỗi nhân viên mất 4-5 giờ/ngày cho công việc lặp lại. AI Agent có thể làm thay.\n\n## 5 cách tiết kiệm\n\n### 1. Tự động trả lời Zalo 24/7\n### 2. Xử lý đơn hàng tự động\n### 3. Gửi báo cáo lúc 8 giờ sáng\n### 4. Nhắc lịch chăm sóc khách\n### 5. Phân loại và chuyển tiếp yêu cầu\n\n[Dùng thử miễn phí](/dung-thu.html)','https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80','Hướng dẫn','VIAi Team','5-cach-ai-agent-giup-doanh-nghiep-sme-tiet-kiem-4-gio-moi-ngay','2026-05-10'],
-      ['Hướng dẫn chọn AI Agent phù hợp cho đội sales','Cách xác định quy trình cần tự động hóa trước khi triển khai AI Agent.','## Tại sao cần chọn đúng Agent?\n\nMỗi doanh nghiệp có quy trình khác nhau. Chọn sai Agent sẽ lãng phí thời gian và tiền bạc.\n\n## Các tiêu chí lựa chọn\n\n1. Xác định tác vụ lặp lại nhiều nhất\n2. Đo thời gian tiết kiệm được\n3. Chi phí vs lợi ích\n\n[Tư vấn miễn phí](/dung-thu.html)','https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80','Hướng dẫn','VIAi Team','huong-dan-chon-ai-agent-cho-sales','2026-05-05'],
-      ['Checklist bảo mật khi đưa AI vào dữ liệu khách hàng','Những điểm cần kiểm tra về phân quyền, mã hóa và lưu trữ dữ liệu.','## Bảo mật dữ liệu là ưu tiên hàng đầu\n\nKhi đưa AI vào hệ thống, cần đảm bảo dữ liệu khách hàng được bảo vệ.\n\n## Checklist\n\n- [ ] Mã hóa dữ liệu đầu cuối\n- [ ] Kiểm soát phân quyền truy cập\n- [ ] Backup dữ liệu định kỳ\n- [ ] Tuân thủ quy định PDPA\n\n[Tìm hiểu thêm](/san-pham.html)','https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&q=80','Bảo mật','VIAi Team','checklist-bao-mat-ai-du-lieu-khach-hang','2026-05-01'],
+      ['5 cách AI Agent giúp doanh nghiệp SME tiết kiệm 4 giờ mỗi ngày','Thay vì thuê thêm nhân sự, hàng trăm doanh nghiệp đang ứng dụng AI Agent để tự động hóa tác vụ lặp lại.','## Doanh nghiệp SME đang mất bao nhiêu thời gian?\n\nTheo khảo sát, mỗi nhân viên mất 4-5 giờ/ngày cho công việc lặp lại. AI Agent có thể làm thay.\n\n## 5 cách tiết kiệm\n\n### 1. Tự động trả lời Zalo 24/7\n### 2. Xử lý đơn hàng tự động\n### 3. Gửi báo cáo lúc 8 giờ sáng\n### 4. Nhắc lịch chăm sóc khách\n### 5. Phân loại và chuyển tiếp yêu cầu\n\n[Dùng thử miễn phí](/dung-thu.html)','https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80','Hướng dẫn','ViAI Team','5-cach-ai-agent-giup-doanh-nghiep-sme-tiet-kiem-4-gio-moi-ngay','2026-05-10'],
+      ['Hướng dẫn chọn AI Agent phù hợp cho đội sales','Cách xác định quy trình cần tự động hóa trước khi triển khai AI Agent.','## Tại sao cần chọn đúng Agent?\n\nMỗi doanh nghiệp có quy trình khác nhau. Chọn sai Agent sẽ lãng phí thời gian và tiền bạc.\n\n## Các tiêu chí lựa chọn\n\n1. Xác định tác vụ lặp lại nhiều nhất\n2. Đo thời gian tiết kiệm được\n3. Chi phí vs lợi ích\n\n[Tư vấn miễn phí](/dung-thu.html)','https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80','Hướng dẫn','ViAI Team','huong-dan-chon-ai-agent-cho-sales','2026-05-05'],
+      ['Checklist bảo mật khi đưa AI vào dữ liệu khách hàng','Những điểm cần kiểm tra về phân quyền, mã hóa và lưu trữ dữ liệu.','## Bảo mật dữ liệu là ưu tiên hàng đầu\n\nKhi đưa AI vào hệ thống, cần đảm bảo dữ liệu khách hàng được bảo vệ.\n\n## Checklist\n\n- [ ] Mã hóa dữ liệu đầu cuối\n- [ ] Kiểm soát phân quyền truy cập\n- [ ] Backup dữ liệu định kỳ\n- [ ] Tuân thủ quy định PDPA\n\n[Tìm hiểu thêm](/san-pham.html)','https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&q=80','Bảo mật','ViAI Team','checklist-bao-mat-ai-du-lieu-khach-hang','2026-05-01'],
     ];
     for (const p of posts) await pool.query(ins, p);
   }
@@ -349,11 +382,35 @@ async function initDb() {
   if (parseInt(galleryCount) === 0) {
     const ins = `INSERT INTO gallery_images (image_url,alt_text,caption,order_index) VALUES ($1,$2,$3,$4)`;
     const imgs = [
-      ['anhthucte/MIE_7791.jpg','VIAi Event','Sự kiện VIAi',1],
-      ['anhthucte/MIE_7723.jpg','VIAi Workshop','Workshop VIAi',2],
+      ['anhthucte/MIE_7791.jpg','ViAI Event','Sự kiện ViAI',1],
+      ['anhthucte/MIE_7723.jpg','ViAI Workshop','Workshop ViAI',2],
       ['anhthucte/workshop-don-song-facebook-reel-tiktok-16.jpg','Workshop Facebook Reel TikTok','Workshop thực chiến',3],
     ];
     for (const i of imgs) await pool.query(ins, i);
+  }
+
+  // ── Seed solution_cards ─────────────────────────────
+  const { rows: [{ c: solCount }] } = await pool.query('SELECT COUNT(*) as c FROM solution_cards');
+  if (parseInt(solCount) === 0) {
+    const ins = `INSERT INTO solution_cards (kicker,image_url,title,description,link_url,order_index) VALUES ($1,$2,$3,$4,$5,$6)`;
+    const items = [
+      ['Phần mềm','anhlogo/anh3.png','AI Agent đóng gói sẵn','Tự động hóa bán hàng, CSKH, marketing và báo cáo với các Agent triển khai nhanh.','/phan-mem',1],
+      ['Dịch vụ','anhlogo/anh1.png','Triển khai AI trọn gói','Chuyên gia ViAI tư vấn, cấu hình, tích hợp và bàn giao để đội ngũ dùng được ngay.','/dich-vu',2],
+      ['Đào tạo','anhlogo/anh2.png','Khóa học AI Agent','Huấn luyện đội ngũ tự vận hành, đo lường và tối ưu AI Agent theo quy trình thực tế.','/dao-tao',3],
+    ];
+    for (const i of items) await pool.query(ins, i);
+  }
+
+  // ── Seed feature_cards ──────────────────────────────
+  const { rows: [{ c: featCount }] } = await pool.query('SELECT COUNT(*) as c FROM feature_cards');
+  if (parseInt(featCount) === 0) {
+    const ins = `INSERT INTO feature_cards (image_url,title,description,link_url,order_index) VALUES ($1,$2,$3,$4,$5)`;
+    const items = [
+      ['anhlogo/congnghe4.png','Nền tảng AI Agent','AI Brain trung tâm xử lý dữ liệu — tự động hóa toàn bộ quy trình từ đầu đến cuối 24/7.','/nen-tang-ai-agent',1],
+      ['anhlogo/congnghe5.png','Tích hợp 50+ nền tảng','Zalo, Facebook, Website, CRM, ERP — kết nối chỉ vài phút, không cần lập trình.','/tich-hop-50-nen-tang',2],
+      ['anhlogo/congnghe6.png','Bảo mật chuẩn doanh nghiệp','ISO 27001, mã hóa 256-bit, lưu trữ tại Việt Nam — dữ liệu luôn an toàn tuyệt đối.','/bao-mat-doanh-nghiep',3],
+    ];
+    for (const i of items) await pool.query(ins, i);
   }
 
   console.log('✅ Database initialized');
