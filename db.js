@@ -426,6 +426,32 @@ async function initDb() {
     for (const i of items) await pool.query(ins, i);
   }
 
+  // ── Sync pages từ solution_cards & feature_cards ───────
+  const { rows: solCards } = await pool.query('SELECT * FROM solution_cards WHERE active=1 ORDER BY order_index');
+  for (const card of solCards) {
+    const slug = (card.link_url || '').replace(/^\//, '').trim();
+    if (!slug) continue;
+    const { rows: ex } = await pool.query('SELECT id FROM pages WHERE slug=$1', [slug]);
+    if (ex.length === 0) {
+      await pool.query(
+        `INSERT INTO pages (title,slug,content,seo_title,meta_desc,source_type,source_id,active) VALUES ($1,$2,$3,$4,$5,$6,$7,1)`,
+        [card.title, slug, '', `${card.title} | ViAI`, card.description || '', 'solution', card.id]
+      );
+    }
+  }
+  const { rows: featCards } = await pool.query('SELECT * FROM feature_cards WHERE active=1 ORDER BY order_index');
+  for (const card of featCards) {
+    const slug = (card.link_url || '').replace(/^\//, '').trim();
+    if (!slug) continue;
+    const { rows: ex } = await pool.query('SELECT id FROM pages WHERE slug=$1', [slug]);
+    if (ex.length === 0) {
+      await pool.query(
+        `INSERT INTO pages (title,slug,content,seo_title,meta_desc,source_type,source_id,active) VALUES ($1,$2,$3,$4,$5,$6,$7,1)`,
+        [card.title, slug, '', `${card.title} | ViAI`, card.description || '', 'feature', card.id]
+      );
+    }
+  }
+
   console.log('✅ Database initialized');
 }
 
