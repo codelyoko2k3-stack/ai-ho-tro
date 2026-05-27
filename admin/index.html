@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VIAi CMS Admin</title>
+  <title>ViAI CMS Admin</title>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -393,12 +393,15 @@
     }
     .toast.show { opacity: 1; transform: translateY(0); }
 
-    .seo-layout {
-      display: grid;
-      grid-template-columns: minmax(280px, 390px) minmax(0, 1fr);
-      gap: 16px;
-      align-items: start;
-    }
+    .seo-layout { display: flex; flex-direction: column; gap: 14px; }
+    /* Top form — 3 cột */
+    .seo-top-form { background:white;border:1.5px solid #e2e8f0;border-radius:14px;padding:18px 20px }
+    .seo-form-grid { display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;align-items:start }
+    .seo-form-col { display:flex;flex-direction:column;gap:0 }
+    .seo-form-col .field { margin-bottom:10px }
+    /* Improve mode: full width textarea */
+    .seo-improve-row { margin-top:14px;padding-top:14px;border-top:1px solid #f1f5f9 }
+    /* Panel title */
     .seo-panel {
       background: white;
       border: 1.5px solid #e2e8f0;
@@ -406,22 +409,141 @@
       padding: 18px;
     }
     .seo-panel-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: #0F172A;
-      margin-bottom: 14px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.95rem; font-weight: 800; color: #0F172A; margin-bottom: 14px;
     }
     .seo-panel-title i { color: var(--primary); }
     .seo-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 14px;
+      display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px;
     }
     .seo-actions .btn { height: 38px; }
+    /* SEO Workflow panel (SEO page) */
+    .seo-wf-panel { background:#F0F7FF;border:1.5px solid #c7d9f5;border-radius:12px;padding:14px 18px;display:none }
+    .seo-wf-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:10px }
+    .seo-wf-title { font-size:11px;font-weight:800;color:#1A56DB;text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;gap:6px }
+    .seo-wf-badge { padding:2px 10px;border-radius:20px;font-size:11px;font-weight:800 }
+    .seo-wf-badge.great { background:#DCFCE7;color:#16A34A } .seo-wf-badge.good { background:#FEF9C3;color:#CA8A04 } .seo-wf-badge.poor { background:#FEE2E2;color:#DC2626 }
+    .seo-wf-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:5px }
+    .seo-wf-item { display:flex;align-items:flex-start;gap:5px;font-size:10.5px;color:#334155;line-height:1.4 }
+    .seo-wf-readtime { font-size:10.5px;color:#64748b;text-align:right;margin-top:7px }
+    /* Draft section */
+    .seo-draft-section { background:white;border:1.5px solid #e2e8f0;border-radius:14px;padding:18px }
+    .seo-draft-title { font-size:.95rem;font-weight:800;color:#0F172A;display:flex;align-items:center;gap:8px;margin-bottom:12px }
+    /* SEO Metadata collapsible */
+    .seo-meta-collapse { border:1.5px solid #e2e8f0;border-radius:10px;margin-bottom:10px;overflow:hidden }
+    .seo-meta-toggle { display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;background:#F8FAFF;font-size:.82rem;font-weight:700;color:#1A56DB;user-select:none;transition:background .15s }
+    .seo-meta-toggle:hover { background:#EEF3FF }
+    .seo-meta-toggle .fa-chevron-down { margin-left:auto;transition:transform .2s;color:#94a3b8 }
+    .seo-meta-fields { padding:14px;border-top:1px solid #e2e8f0;display:none }
+    .seo-meta-collapse.open .seo-meta-fields { display:block }
+    .seo-meta-collapse.open .fa-chevron-down { transform:rotate(180deg) }
+    /* Article canvas */
+    .seo-article-canvas { border:1.5px solid #e2e8f0;border-top:none;border-radius:0 0 12px 12px;background:white;padding:28px 36px;min-height:600px }
+    .article-canvas-meta { display:flex;align-items:center;gap:12px;margin-bottom:20px }
+    .article-url-hint { font-size:.75rem;color:#94a3b8 }
+    .article-edit-title { font-size:1.7rem;font-weight:800;color:#0F172A;line-height:1.35;outline:none;padding:4px 0;border-bottom:2px solid transparent;transition:border-color .2s;cursor:text;margin-bottom:4px }
+    .article-edit-title:focus { border-bottom-color:var(--accent) }
+    .article-edit-title:empty:before { content:attr(data-placeholder);color:#cbd5e1;font-weight:400;font-size:1.4rem }
+    .article-edit-excerpt { font-size:.97rem;color:#475569;line-height:1.7;padding:10px 0;border-bottom:1px dashed #e2e8f0;margin-bottom:1.4em;outline:none;cursor:text;font-style:italic }
+    .article-edit-excerpt:empty:before { content:attr(data-placeholder);color:#cbd5e1;font-style:italic }
+    .article-edit-excerpt:focus { border-bottom-color:#94a3b8 }
+    /* Edit toolbar */
+    .seo-edit-tb { display:flex;align-items:center;gap:2px;padding:7px 10px;background:#F8FAFF;border:1.5px solid #e2e8f0;border-bottom:none;border-radius:10px 10px 0 0;flex-wrap:wrap }
+    .seo-edit-tb .tb-btn { width:auto;padding:3px 8px;font-size:11px;font-weight:700;height:auto;min-width:26px }
+    .seo-edit-tb .tb-h { color:#1A56DB;font-size:10px }
+    .seo-edit-tb-sep { width:1px;height:16px;background:#cbd5e1;margin:0 3px;flex-shrink:0 }
+    #edit-content { border-radius:0 0 10px 10px!important;border-top:none!important;min-height:520px!important }
+    /* WYSIWYG editor nhìn như bài thật */
+    .seo-wysiwyg { min-height:520px;padding:20px 24px;border:1.5px solid #e2e8f0;border-top:none;border-radius:0 0 10px 10px;outline:none;font-size:.93rem;line-height:1.8;color:#1e293b;overflow-y:auto;background:white;font-family:'Be Vietnam Pro',sans-serif;cursor:text }
+    .seo-wysiwyg:empty:before { content:attr(data-placeholder);color:#94a3b8;pointer-events:none }
+    .seo-wysiwyg:focus { border-color:#1A56DB;box-shadow:0 0 0 3px rgba(26,86,219,0.08) }
+    .seo-wysiwyg h1 { font-size:1.55rem;font-weight:800;margin:1em 0 .4em;color:#0F172A;padding-bottom:.3em;border-bottom:2px solid #f1f5f9 }
+    .seo-wysiwyg h2 { font-size:1.25rem;font-weight:800;margin:1.2em 0 .4em;color:#0F172A;border-top:1px solid #f1f5f9;padding-top:.8em }
+    .seo-wysiwyg h3 { font-size:1.05rem;font-weight:700;margin:1em 0 .4em;color:#1e293b }
+    .seo-wysiwyg h4 { font-size:.95rem;font-weight:700;margin:.8em 0 .3em;color:#334155 }
+    .seo-wysiwyg p { margin-bottom:.8em }
+    .seo-wysiwyg ul,.seo-wysiwyg ol { padding-left:1.5em;margin-bottom:.8em }
+    .seo-wysiwyg li { margin-bottom:.25em }
+    .seo-wysiwyg blockquote { border-left:3px solid var(--accent);padding:8px 14px;margin:.8em 0;background:#FFF8F3;border-radius:0 8px 8px 0 }
+    .seo-wysiwyg code { background:#F1F5F9;padding:2px 6px;border-radius:4px;font-size:.84em;font-family:monospace }
+    .seo-wysiwyg hr { border:none;border-top:2px solid #e2e8f0;margin:1.2em 0 }
+    .seo-wysiwyg a { color:var(--primary);text-decoration:underline }
+    .seo-wysiwyg strong { color:#0F172A }
+    /* Blog Inline Editor */
+    #blog-inline-editor,#news-inline-editor { display:none;margin-top:16px;border:1.5px solid #1A56DB;border-radius:12px;overflow:hidden;background:white }
+    #blog-inline-editor.open,#news-inline-editor.open {
+      display:flex;flex-direction:column;
+      position:sticky;top:var(--header-h);z-index:90;
+      height:calc(100vh - var(--header-h) - 16px);
+      border-radius:12px;overflow:hidden;
+    }
+    .bie-head { flex-shrink:0;background:white;border-bottom:1.5px solid #e2e8f0 }
+    .bie-topbar { display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#EEF3FF;border-bottom:1.5px solid #c7d9f5 }
+    .bie-topbar-left { font-weight:700;font-size:.93rem;color:#1A56DB;display:flex;align-items:center;gap:8px }
+    .bie-topbar-right { display:flex;gap:8px }
+    .bie-scroll-area { flex:1;overflow-y:auto }
+    /* Toolbar button with label */
+    .bie-tb-wrap { display:inline-flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer }
+    .bie-tb-wrap .tb-btn { margin:0 }
+    .bie-tb-label { font-size:9px;color:#94a3b8;font-weight:600;line-height:1;pointer-events:none;white-space:nowrap }
+
+    /* Nhãn loại block trong editor — chỉ admin, không ra web */
+    /* Dùng display:block thay vì absolute để không bị clipped bởi overflow */
+    #bie-content h1::before,#bie-content h2::before,#bie-content h3::before,#bie-content h4::before,
+    #bie-content blockquote::before,#bie-content ul::before,#bie-content ol::before,
+    #edit-content h1::before,#edit-content h2::before,#edit-content h3::before,#edit-content h4::before,
+    #edit-content blockquote::before,#edit-content ul::before,#edit-content ol::before {
+      display:block;
+      font-size:9px;font-weight:700;font-style:normal;font-family:'Be Vietnam Pro',sans-serif;
+      color:#1A56DB;background:#EEF3FF;border:1px solid #c7d9f5;border-radius:4px;
+      padding:1px 7px;white-space:nowrap;pointer-events:none;user-select:none;line-height:1.8;
+      width:fit-content;margin-bottom:4px;
+    }
+    #bie-content h1::before,#edit-content h1::before { content:'H1 · Tiêu đề lớn nhất (nên dùng ở ô tiêu đề trên)';color:#d97706;background:#fffbeb;border-color:#fde68a }
+    #bie-content h2::before,#edit-content h2::before { content:'H2 · Mục lớn' }
+    #bie-content h3::before,#edit-content h3::before { content:'H3 · Mục nhỏ';color:#0891b2;background:#ecfeff;border-color:#a5f3fc }
+    #bie-content h4::before,#edit-content h4::before { content:'H4 · Phụ đề';color:#7c3aed;background:#f5f3ff;border-color:#c4b5fd }
+    #bie-content blockquote::before,#edit-content blockquote::before { content:'❝ Trích dẫn';color:#d97706;background:#fffbeb;border-color:#fde68a }
+    #bie-content ul::before,#edit-content ul::before { content:'• Danh sách';color:#059669;background:#ecfdf5;border-color:#a7f3d0 }
+    #bie-content ol::before,#edit-content ol::before { content:'1. Đánh số';color:#059669;background:#ecfdf5;border-color:#a7f3d0 }
+    /* Label H1 cho ô tiêu đề bài viết */
+    #bie-title::before, #edit-title::before {
+      display:block;content:'H1 · Tiêu đề bài viết (tự động)';
+      font-size:9px;font-weight:700;font-style:normal;font-family:'Be Vietnam Pro',sans-serif;
+      color:#059669;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:4px;
+      padding:1px 7px;white-space:nowrap;pointer-events:none;user-select:none;line-height:1.8;
+      width:fit-content;margin-bottom:6px;
+    }
+    /* Product Inline Editor */
+    #prod-inline-editor { display:none;margin-top:16px;border:1.5px solid #1A56DB;border-radius:12px;overflow:hidden;background:white }
+    #prod-inline-editor.open { display:block }
+    .pie-head { display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:#EEF3FF;border-bottom:1.5px solid #c7d9f5 }
+    .pie-head-title { font-weight:700;font-size:.95rem;color:#1A56DB;display:flex;align-items:center;gap:8px }
+    .pie-body { padding:20px 24px }
+    .pie-section { margin-bottom:18px }
+    .pie-label { font-size:.78rem;font-weight:700;color:#475569;margin-bottom:6px;display:flex;align-items:center;gap:6px }
+    .pie-hint { font-size:.72rem;color:#94a3b8;font-weight:400;margin-top:3px }
+    /* Emoji picker */
+    .pie-emoji-grid { display:flex;flex-wrap:wrap;gap:6px;margin-top:6px }
+    .pie-emoji-btn { width:36px;height:36px;border:1.5px solid #e2e8f0;border-radius:8px;background:white;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s }
+    .pie-emoji-btn:hover { border-color:#1A56DB;background:#EEF3FF }
+    .pie-emoji-btn.selected { border-color:#1A56DB;background:#EEF3FF;box-shadow:0 0 0 2px #1A56DB }
+    .pie-emoji-custom { width:56px;height:36px;border:1.5px solid #e2e8f0;border-radius:8px;text-align:center;font-size:1rem;outline:none;cursor:text }
+    .pie-emoji-custom:focus { border-color:#1A56DB }
+    /* Color picker */
+    .pie-color-grid { display:flex;gap:8px;margin-top:6px }
+    .pie-color-btn { width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0 }
+    .pie-color-btn:hover { transform:scale(1.15) }
+    .pie-color-btn.selected { border-color:#0F172A;box-shadow:0 0 0 2px white inset }
+    /* Improved preview */
+    .seo-preview { font-family:'Be Vietnam Pro',sans-serif }
+    .preview-body h2 { font-size:1.2rem!important;font-weight:800!important;margin:1.2em 0 .5em!important;color:#0F172A!important;border-top:1px solid #f1f5f9;padding-top:.8em }
+    .preview-body h3 { font-size:1rem!important;font-weight:700!important;margin:1em 0 .4em!important }
+    .preview-body p { margin-bottom:.8em!important }
+    .preview-body ul,.preview-body ol { padding-left:1.4em;margin-bottom:.8em }
+    .preview-body blockquote { border-left:3px solid var(--accent);padding:8px 14px;margin:.8em 0;background:#FFF8F3;border-radius:0 8px 8px 0 }
+    .preview-body strong { color:#0F172A }
+    .preview-body img { max-width:100%;border-radius:8px;margin:.5em 0;display:block }
     .seo-output {
       width: 100%;
       min-height: 560px;
@@ -471,6 +593,50 @@
     }
     .seo-edit-field textarea { resize: vertical; min-height: 100px; line-height: 1.65; }
     .seo-edit-field textarea.tall { min-height: 380px; }
+
+    /* ── BLOG MODAL IMPROVED ─────────────────────────────── */
+    .blog-modal-box { width:980px;max-width:98vw;padding:0;display:flex;flex-direction:column }
+    .blog-modal-header { padding:16px 28px 14px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0 }
+    .blog-modal-close { background:none;border:none;font-size:18px;cursor:pointer;color:#94a3b8;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .15s;font-family:inherit }
+    .blog-modal-close:hover { background:#FEE2E2;color:#E52222 }
+    .blog-meta-wrap { padding:16px 28px;border-bottom:1px solid #f1f5f9 }
+    .blog-meta-wrap .field { margin-bottom:10px }
+    /* Character counter */
+    .char-cnt { font-size:10px;font-weight:700;margin-top:3px;display:block }
+    .char-cnt.ok { color:#00B341 } .char-cnt.warn { color:#FF6B00 } .char-cnt.err { color:#E52222 }
+    /* SEO Workflow panel */
+    .swp-wrap { margin:0 28px 14px;background:#F0F7FF;border:1.5px solid #c7d9f5;border-radius:12px;padding:12px 16px }
+    .swp-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:9px }
+    .swp-title { font-size:11px;font-weight:800;color:#1A56DB;text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;gap:6px }
+    .swp-badge { padding:2px 10px;border-radius:20px;font-size:11px;font-weight:800 }
+    .swp-badge.great { background:#DCFCE7;color:#16A34A } .swp-badge.good { background:#FEF9C3;color:#CA8A04 } .swp-badge.poor { background:#FEE2E2;color:#DC2626 }
+    .swp-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:5px }
+    .swp-item { display:flex;align-items:flex-start;gap:5px;font-size:10.5px;color:#334155;line-height:1.4 }
+    .swp-readtime { font-size:10.5px;color:#64748b;text-align:right;margin-top:7px }
+    /* Editor section */
+    .blog-editor-wrap { padding:0 28px 20px }
+    .blog-editor-label { display:flex;align-items:center;justify-content:space-between;margin-bottom:8px }
+    .blog-edit-tabs { display:flex;gap:0 }
+    .blog-edit-tab { padding:5px 14px;font-size:11px;font-weight:700;border:1.5px solid #e2e8f0;background:#F8FAFF;cursor:pointer;color:#64748b;font-family:inherit;transition:all .15s }
+    .blog-edit-tab:first-child { border-radius:7px 0 0 7px } .blog-edit-tab:last-child { border-radius:0 7px 7px 0;border-left:none }
+    .blog-edit-tab.active { background:white;color:var(--accent);border-color:var(--accent) }
+    /* Toolbar */
+    .blog-tb { display:flex;align-items:center;gap:2px;padding:7px 10px;background:#F8FAFF;border:1.5px solid #e2e8f0;border-bottom:none;border-radius:10px 10px 0 0;flex-wrap:wrap }
+    .blog-tb-sep { width:1px;height:16px;background:#cbd5e1;margin:0 3px;flex-shrink:0 }
+    .blog-tb .tb-btn { width:auto;padding:3px 8px;font-size:11px;font-weight:700;height:auto;min-width:26px }
+    .blog-tb .tb-h { color:#1A56DB;font-size:10px }
+    /* Preview pane */
+    .blog-preview-pane { min-height:320px;max-height:480px;padding:20px 24px;border:1.5px solid #e2e8f0;border-radius:0 0 10px 10px;background:white;overflow-y:auto;font-size:.93rem;line-height:1.8;color:#1e293b;display:none }
+    .blog-preview-pane h2 { font-size:1.25rem;font-weight:800;margin:1.4em 0 .5em;color:#0F172A;padding-top:.8em;border-top:1px solid #f1f5f9 }
+    .blog-preview-pane h3 { font-size:1.05rem;font-weight:700;margin:1.1em 0 .4em;color:#1e293b }
+    .blog-preview-pane h4 { font-size:.95rem;font-weight:700;margin:1em 0 .3em;color:#334155 }
+    .blog-preview-pane p { margin-bottom:.8em }
+    .blog-preview-pane ul,.blog-preview-pane ol { padding-left:1.5em;margin-bottom:.8em }
+    .blog-preview-pane blockquote { border-left:3px solid var(--accent);padding:10px 16px;margin:1em 0;background:#FFF8F3;border-radius:0 8px 8px 0 }
+    .blog-preview-pane code { background:#F1F5F9;padding:2px 6px;border-radius:4px;font-size:.84em;font-family:monospace }
+    .blog-preview-pane img { max-width:100%;border-radius:8px;margin:.6em 0;display:block }
+    .blog-preview-pane hr { border:none;border-top:2px solid #e2e8f0;margin:1.2em 0 }
+    .blog-preview-pane strong { color:#0F172A }
     .seo-edit-save-bar {
       display: flex; gap: 8px; margin-top: 14px; padding-top: 12px;
       border-top: 1px solid #e2e8f0;
@@ -625,7 +791,7 @@
       font-size: 0.78rem; color: #64748b; line-height: 1.6; margin-top: 10px;
     }
     @media (max-width: 980px) {
-      .seo-layout { grid-template-columns: 1fr; }
+      .seo-form-grid { grid-template-columns: 1fr; }
       .seo-output { min-height: 360px; }
       .seo-preview { min-height: 360px; }
     }
@@ -658,7 +824,7 @@
   <header class="top-header">
     <div class="header-left">
       <a href="/" target="_blank" class="header-logo" style="display:flex;align-items:center;gap:8px;text-decoration:none">
-        <img src="/anhlogo/logo2.png" alt="VIAi" style="height:32px;width:auto;object-fit:contain;mix-blend-mode:luminosity;filter:brightness(0) invert(1)" />
+        <img src="/anhlogo/logo2.png" alt="ViAI" style="height:32px;width:auto;object-fit:contain;mix-blend-mode:luminosity;filter:brightness(0) invert(1)" />
       </a>
       <button class="hamburger" onclick="toggleSidebar()" title="Ẩn/hiện menu">
         <i class="fas fa-bars"></i>
@@ -730,11 +896,8 @@
         <i class="fas fa-chevron-right nav-chevron"></i>
       </div>
       <div class="nav-submenu">
-        <a class="nav-sub-item" onclick="showPage('why',this,'Lý do chọn VIAi')">
-          <i class="fas fa-check-circle"></i> Tại sao chọn VIAi
-        </a>
-        <a class="nav-sub-item" onclick="showPage('how',this,'Các bước triển khai')">
-          <i class="fas fa-list-ol"></i> Cách hoạt động
+        <a class="nav-sub-item" onclick="showPage('why',this,'Lý do chọn ViAI')">
+          <i class="fas fa-check-circle"></i> Tại sao chọn ViAI
         </a>
         <a class="nav-sub-item" onclick="showPage('tech',this,'Công nghệ')">
           <i class="fas fa-microchip"></i> Công nghệ
@@ -802,7 +965,7 @@
         <div class="content-body">
           <p class="page-subtitle" id="dash-time" style="margin-bottom:16px"></p>
           <p style="font-size:12px;color:#64748b;margin-bottom:16px">
-            VIAi CMS — Hệ thống quản trị nội dung website. Mọi thay đổi tự đồng bộ ra ngoài trong 60 giây.
+            ViAI CMS — Hệ thống quản trị nội dung website. Mọi thay đổi tự đồng bộ ra ngoài trong 60 giây.
           </p>
 
           <!-- Stats cards -->
@@ -928,7 +1091,7 @@
             </select>
             <button class="btn btn-refresh" onclick="loadProducts()" title="Làm mới"><i class="fas fa-sync-alt"></i></button>
             <span class="filter-count" id="prod-count"></span>
-            <button class="btn btn-add-bar" onclick="openProdModal()"><i class="fas fa-plus"></i> Thêm Agent</button>
+            <button class="btn btn-add-bar" onclick="openProdModal(null)"><i class="fas fa-plus"></i> Thêm Agent</button>
           </div>
           <div class="table-wrap">
             <table>
@@ -941,6 +1104,201 @@
               <tbody id="prod-tbody"></tbody>
             </table>
           </div>
+
+          <!-- ── PRODUCT INLINE EDITOR ── -->
+          <div id="prod-inline-editor">
+            <div class="pie-head">
+              <div class="pie-head-title">
+                <i class="fas fa-edit"></i>
+                <span id="pie-title-label">Thêm AI Agent mới</span>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-refresh" onclick="closeProdInlineEditor()" style="height:30px">✕ Đóng</button>
+                <button class="btn btn-add-bar" onclick="saveProdInline()" style="height:30px"><i class="fas fa-save"></i> Lưu Agent</button>
+              </div>
+            </div>
+            <div class="pie-body">
+              <input type="hidden" id="pie-id" />
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+                <!-- CỘT TRÁI -->
+                <div>
+                  <!-- Tên Agent -->
+                  <div class="pie-section">
+                    <div class="pie-label"><i class="fas fa-robot" style="color:#1A56DB"></i> Tên Agent <span style="color:#E52222">*</span></div>
+                    <input id="pie-name" type="text" placeholder="VD: Zalo Sales Agent"
+                      oninput="pieAutoLink()"
+                      style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;outline:none"
+                      onfocus="this.style.borderColor='#1A56DB'" onblur="this.style.borderColor='#e2e8f0'" />
+                    <div class="pie-hint">Tên hiển thị trên website</div>
+                  </div>
+
+                  <!-- Icon chọn -->
+                  <div class="pie-section">
+                    <div class="pie-label" style="justify-content:space-between;flex-wrap:wrap;gap:4px">
+                      <span><i class="fas fa-smile" style="color:#FF6B00"></i> Icon Agent</span>
+                      <div style="display:flex;gap:6px">
+                        <button id="btn-ai-suggest" onclick="aiSuggestIcon()"
+                          style="padding:3px 9px;background:#FFF3EC;border:1.5px solid #ffd5b5;border-radius:6px;font-size:11px;font-weight:700;color:#FF6B00;cursor:pointer;display:inline-flex;align-items:center;gap:3px">
+                          <i class="fas fa-magic"></i> Gợi ý emoji
+                        </button>
+                        <button id="btn-ai-design" onclick="aiDesignIcon()"
+                          style="padding:3px 9px;background:#f5f3ff;border:1.5px solid #c4b5fd;border-radius:6px;font-size:11px;font-weight:700;color:#7c3aed;cursor:pointer;display:inline-flex;align-items:center;gap:3px">
+                          <i class="fas fa-wand-magic-sparkles"></i> AI thiết kế
+                        </button>
+                      </div>
+                    </div>
+                    <!-- AI emoji suggestions row (ẩn ban đầu) -->
+                    <div id="pie-ai-suggestions" style="display:none;background:#FFF8F3;border:1.5px solid #ffd5b5;border-radius:8px;padding:8px 10px;margin-bottom:8px">
+                      <div style="font-size:.75rem;color:#FF6B00;font-weight:700;margin-bottom:6px"><i class="fas fa-magic"></i> Gợi ý cho "<span id="pie-ai-name-hint"></span>"</div>
+                      <div id="pie-ai-emoji-row" style="display:flex;gap:8px"></div>
+                    </div>
+                    <!-- AI design icon preview (ẩn ban đầu) -->
+                    <div id="pie-ai-icon-design" style="display:none;background:#f5f3ff;border:1.5px solid #c4b5fd;border-radius:8px;padding:10px 12px;margin-bottom:8px">
+                      <div style="font-size:.75rem;color:#7c3aed;font-weight:700;margin-bottom:8px"><i class="fas fa-wand-magic-sparkles"></i> AI thiết kế cho "<span id="pie-ai-design-name"></span>"</div>
+                      <div style="display:flex;align-items:center;gap:14px">
+                        <div style="position:relative;width:80px;height:80px;flex-shrink:0">
+                          <img id="pie-ai-icon-img" src="" alt="" style="width:80px;height:80px;border-radius:14px;object-fit:cover;border:2px solid #c4b5fd;display:block" />
+                          <div id="pie-ai-icon-loading" style="position:absolute;inset:0;background:rgba(245,243,255,.8);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem"><i class="fas fa-spinner fa-spin" style="color:#7c3aed"></i></div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:7px">
+                          <button onclick="pieUseAiIcon()" style="padding:6px 14px;background:#7c3aed;color:white;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-check"></i> Dùng icon này</button>
+                          <button onclick="aiDesignIcon()" style="padding:6px 14px;background:white;color:#7c3aed;border:1.5px solid #c4b5fd;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer"><i class="fas fa-redo"></i> Tạo lại</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="pie-emoji-grid" id="pie-emoji-grid">
+                      <!-- Các emoji phổ biến cho AI Agent -->
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'🤖')" title="Robot AI">🤖</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'💬')" title="Chat">💬</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'📊')" title="Phân tích">📊</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'📱')" title="Mobile">📱</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'🛒')" title="Bán hàng">🛒</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'📦')" title="Đơn hàng">📦</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'✉️')" title="Email">✉️</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'📈')" title="Tăng trưởng">📈</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'🎯')" title="Mục tiêu">🎯</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'🔔')" title="Thông báo">🔔</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'🔧')" title="Cài đặt">🔧</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'💡')" title="Ý tưởng">💡</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'🚀')" title="Ra mắt">🚀</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'💼')" title="Doanh nghiệp">💼</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'🤝')" title="Hợp tác">🤝</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'📋')" title="Báo cáo">📋</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'🔍')" title="Tìm kiếm">🔍</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'🌐')" title="Website">🌐</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'💰')" title="Doanh thu">💰</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'⚡')" title="Nhanh">⚡</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'📅')" title="Lịch hẹn">📅</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'🏪')" title="Cửa hàng">🏪</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'🎨')" title="Sáng tạo">🎨</button>
+                      <button class="pie-emoji-btn" onclick="pieSelectEmoji(this,'🏷️')" title="Nhãn hàng">🏷️</button>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+                      <span style="font-size:.75rem;color:#94a3b8">Hoặc nhập emoji khác:</span>
+                      <input id="pie-icon-custom" type="text" maxlength="4" placeholder="🤖"
+                        oninput="pieCustomEmoji(this)"
+                        class="pie-emoji-custom" />
+                      <span id="pie-icon-preview" style="font-size:1.6rem;line-height:1;display:inline-flex;align-items:center">🤖</span>
+                    </div>
+                    <div class="pie-hint">Chọn emoji bên trên · nhập emoji bất kỳ · hoặc dùng AI thiết kế icon riêng</div>
+                  </div>
+
+                  <!-- Màu icon -->
+                  <div class="pie-section">
+                    <div class="pie-label"><i class="fas fa-palette" style="color:#7c3aed"></i> Màu nền icon</div>
+                    <div class="pie-color-grid" id="pie-color-grid">
+                      <button class="pie-color-btn" onclick="pieSelectColor(this,'blue')" data-color="blue" style="background:#DBEAFE" title="Xanh dương"></button>
+                      <button class="pie-color-btn" onclick="pieSelectColor(this,'orange')" data-color="orange" style="background:#FEE0C8" title="Cam"></button>
+                      <button class="pie-color-btn" onclick="pieSelectColor(this,'green')" data-color="green" style="background:#D1FAE5" title="Xanh lá"></button>
+                      <button class="pie-color-btn" onclick="pieSelectColor(this,'yellow')" data-color="yellow" style="background:#FEF3C7" title="Vàng"></button>
+                      <button class="pie-color-btn" onclick="pieSelectColor(this,'purple')" data-color="purple" style="background:#EDE9FE" title="Tím"></button>
+                      <button class="pie-color-btn" onclick="pieSelectColor(this,'pink')" data-color="pink" style="background:#FCE7F3" title="Hồng"></button>
+                    </div>
+                    <div class="pie-hint">Màu nền của ô chứa icon trên website</div>
+                  </div>
+                </div>
+
+                <!-- CỘT PHẢI -->
+                <div>
+                  <!-- Mô tả -->
+                  <div class="pie-section">
+                    <div class="pie-label"><i class="fas fa-align-left" style="color:#059669"></i> Mô tả ngắn</div>
+                    <textarea id="pie-desc" rows="3" placeholder="VD: Tự động trả lời tin nhắn Zalo, chốt đơn 24/7 không cần nhân viên..."
+                      style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;resize:vertical;outline:none;line-height:1.6"
+                      onfocus="this.style.borderColor='#1A56DB'" onblur="this.style.borderColor='#e2e8f0'"></textarea>
+                    <div class="pie-hint">Mô tả ngắn gọn 1–2 câu, hiển thị dưới tên Agent trên trang chủ</div>
+                  </div>
+
+                  <!-- Danh mục + Badge -->
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                    <div class="pie-section">
+                      <div class="pie-label"><i class="fas fa-tag" style="color:#0891b2"></i> Danh mục</div>
+                      <select id="pie-cat" style="width:100%;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;outline:none">
+                        <option value="all">Tất cả</option>
+                        <option value="sales">Bán hàng</option>
+                        <option value="ops">Vận hành</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="analytics">Phân tích</option>
+                      </select>
+                    </div>
+                    <div class="pie-section">
+                      <div class="pie-label"><i class="fas fa-award" style="color:#d97706"></i> Nhãn nổi bật</div>
+                      <select id="pie-badge" style="width:100%;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;outline:none">
+                        <option value="">Không có</option>
+                        <option value="hot">🔥 HOT — Agent bán chạy nhất</option>
+                        <option value="pop">⭐ PHỔ BIẾN — Nhiều người dùng</option>
+                        <option value="new">✨ MỚI — Mới ra mắt</option>
+                        <option value="beta">🧪 BETA — Đang thử nghiệm</option>
+                      </select>
+                      <div class="pie-hint">Nhãn hiển thị góc card trên website</div>
+                    </div>
+                  </div>
+
+                  <!-- Người dùng + Thứ tự -->
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                    <div class="pie-section">
+                      <div class="pie-label"><i class="fas fa-users" style="color:#1A56DB"></i> Số người dùng</div>
+                      <input id="pie-users" type="number" placeholder="320" min="0"
+                        style="width:100%;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;outline:none"
+                        onfocus="this.style.borderColor='#1A56DB'" onblur="this.style.borderColor='#e2e8f0'" />
+                      <div class="pie-hint">VD: nhập 320 → hiển thị "👥 320+"<br>Để 0 = hiển thị "Enterprise"</div>
+                    </div>
+                    <div class="pie-section">
+                      <div class="pie-label"><i class="fas fa-sort-numeric-up" style="color:#64748b"></i> Thứ tự hiển thị</div>
+                      <input id="pie-order" type="number" placeholder="1" min="1"
+                        style="width:100%;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;outline:none"
+                        onfocus="this.style.borderColor='#1A56DB'" onblur="this.style.borderColor='#e2e8f0'" />
+                      <div class="pie-hint">Số nhỏ = hiển thị trước<br>1 = đứng đầu danh sách</div>
+                    </div>
+                  </div>
+
+                  <!-- Link chi tiết -->
+                  <div class="pie-section">
+                    <div class="pie-label"><i class="fas fa-link" style="color:#1A56DB"></i> Link trang chi tiết</div>
+                    <div style="display:flex;gap:6px;align-items:center">
+                      <span style="font-size:.82rem;color:#64748b;white-space:nowrap">phanmemaiagent.net</span>
+                      <input id="pie-link" type="text" placeholder="/san-pham/zalo-sales-agent"
+                        style="flex:1;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;outline:none"
+                        onfocus="this.style.borderColor='#1A56DB'" onblur="this.style.borderColor='#e2e8f0'" />
+                    </div>
+                    <div class="pie-hint">Tự động tạo từ tên Agent. Để "#" nếu chưa có trang chi tiết (nút "Xem chi tiết" sẽ ẩn)</div>
+                  </div>
+
+                  <!-- Trạng thái -->
+                  <div class="pie-section">
+                    <div class="pie-label"><i class="fas fa-eye" style="color:#059669"></i> Trạng thái hiển thị</div>
+                    <select id="pie-active" style="width:100%;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;outline:none">
+                      <option value="true">✅ Hiển thị — khách hàng thấy được</option>
+                      <option value="false">🙈 Ẩn — chỉ admin thấy</option>
+                    </select>
+                  </div>
+                </div>
+
+              </div><!-- /grid -->
+            </div><!-- /pie-body -->
+          </div><!-- /prod-inline-editor -->
+
         </div>
       </div>
 
@@ -974,6 +1332,123 @@
               <tbody id="news-tbody"></tbody>
             </table>
           </div>
+
+          <!-- ── NEWS INLINE EDITOR ── -->
+          <div id="news-inline-editor">
+            <!-- PHẦN CỐ ĐỊNH: topbar + metadata -->
+            <div class="bie-head">
+
+              <!-- Topbar -->
+              <div class="bie-topbar">
+                <div class="bie-topbar-left">
+                  <i class="fas fa-newspaper"></i>
+                  <span id="nie-title-label">Thêm bài viết mới</span>
+                </div>
+                <div class="bie-topbar-right">
+                  <button class="btn btn-refresh" onclick="closeNewsModal()" style="height:30px">✕ Đóng</button>
+                  <button class="btn btn-add-bar" onclick="saveNews()" style="height:30px"><i class="fas fa-save"></i> Lưu bài viết</button>
+                </div>
+              </div>
+
+              <!-- Metadata collapsible -->
+              <div class="seo-meta-collapse" id="nie-meta-collapse" style="border-radius:0;border-left:none;border-right:none;border-top:none">
+                <div class="seo-meta-toggle" onclick="document.getElementById('nie-meta-collapse').classList.toggle('open')">
+                  <i class="fas fa-sliders-h" style="color:#1A56DB;font-size:12px"></i>
+                  <strong>Metadata bài viết</strong>
+                  <span style="color:#94a3b8;font-size:.8rem;font-weight:400">(nguồn · ảnh · ngày đăng · trạng thái)</span>
+                  <i class="fas fa-chevron-down" style="margin-left:auto;color:#94a3b8;font-size:11px"></i>
+                </div>
+                <div class="seo-meta-fields">
+                  <span id="nie-id" style="display:none"></span>
+                  <div style="display:grid;grid-template-columns:1fr 1fr 2fr;gap:10px;margin-bottom:10px">
+                    <div class="field" style="margin:0">
+                      <label>Tên nguồn *</label>
+                      <input id="news-source-name" type="text" placeholder="GENK.VN"
+                        oninput="document.getElementById('nie-badge-source').textContent=this.value" />
+                    </div>
+                    <div class="field" style="margin:0">
+                      <label>Tag nguồn (CSS class)</label>
+                      <input id="news-source-tag" type="text" placeholder="genk" />
+                    </div>
+                    <div class="field" style="margin:0">
+                      <label>URL nguồn</label>
+                      <input id="news-source-url" type="text" placeholder="https://genk.vn"
+                        oninput="document.getElementById('nie-source-url-hint').textContent=this.value" />
+                    </div>
+                  </div>
+                  <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:10px">
+                    <div class="field" style="margin:0">
+                      <label>URL ảnh thumbnail</label>
+                      <div style="display:flex;gap:6px">
+                        <input id="news-img" type="text" placeholder="URL ảnh..." style="flex:1;font-size:12px"
+                          oninput="nieUpdateHero(this.value)" />
+                        <label style="padding:7px 10px;background:#F0F7FF;border:1.5px solid #c7d9f5;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;color:#1A56DB;white-space:nowrap;flex-shrink:0;display:flex;align-items:center;gap:4px">
+                          <i class="fas fa-upload"></i> Upload
+                          <input type="file" id="news-img-file" accept="image/*" style="display:none" onchange="uploadNewsImg(this)" />
+                        </label>
+                      </div>
+                      <div id="news-upload-status" style="font-size:11px;color:#64748b;margin-top:4px;display:none"></div>
+                    </div>
+                    <div class="field" style="margin:0">
+                      <label>Ngày đăng</label>
+                      <input id="news-date" type="date" />
+                    </div>
+                    <div class="field" style="margin:0">
+                      <label>Trạng thái</label>
+                      <select id="news-active">
+                        <option value="true">Hiển thị</option>
+                        <option value="false">Ẩn</option>
+                      </select>
+                    </div>
+                  </div>
+                  <!-- URL fetch -->
+                  <div style="background:#F0F7FF;border:1.5px dashed #1A56DB;border-radius:8px;padding:10px 12px">
+                    <div style="color:#1A56DB;font-size:.78rem;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:5px">
+                      <i class="fas fa-magic"></i> Dán URL bài báo → Tự động điền tất cả
+                    </div>
+                    <div style="display:flex;gap:8px">
+                      <input id="news-fetch-url" type="text" placeholder="https://genk.vn/bai-bao-abc.html"
+                        style="flex:1;padding:7px 10px;border:1.5px solid #c7d9f5;border-radius:7px;font-family:inherit;font-size:.82rem;outline:none"
+                        onkeydown="if(event.key==='Enter')fetchNewsUrl()" />
+                      <button onclick="fetchNewsUrl()" id="btn-fetch"
+                        style="padding:7px 14px;background:#1A56DB;color:white;border:none;border-radius:7px;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px">
+                        <i class="fas fa-download"></i> Lấy dữ liệu
+                      </button>
+                    </div>
+                    <div id="fetch-status" style="font-size:.72rem;margin-top:5px;color:#64748b;display:none"></div>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /bie-head -->
+
+            <!-- PHẦN CUỘN: canvas bài viết -->
+            <div class="bie-scroll-area">
+              <div class="seo-article-canvas" style="border-left:none;border-right:none;border-bottom:none;border-radius:0;min-height:280px">
+                <div class="article-canvas-meta">
+                  <span class="preview-cat-badge" id="nie-badge-source">Nguồn</span>
+                  <span class="article-url-hint" id="nie-source-url-hint"></span>
+                </div>
+                <img id="nie-hero-img" src="" alt="" style="width:100%;border-radius:10px;margin:12px 0 18px;display:none;max-height:280px;object-fit:cover" onerror="this.style.display='none'" />
+                <div id="nie-title-canvas" contenteditable="true" class="article-edit-title"
+                  data-placeholder="Tiêu đề bài viết..."
+                  oninput="blogCharCount('nie-title-canvas','nie-cnt-title',10,120)"></div>
+                <span class="char-cnt" id="nie-cnt-title" style="display:block;margin-bottom:14px">0 ký tự</span>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                  <span style="font-size:.78rem;font-weight:700;color:#94a3b8">TÓM TẮT</span>
+                  <button onclick="aiSuggestExcerpt()" id="btn-ai"
+                    style="background:linear-gradient(135deg,#7C3AED,#9F67F5);color:white;border:none;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px">
+                    <i class="fas fa-robot"></i> AI gợi ý
+                  </button>
+                </div>
+                <div id="nie-excerpt-canvas" contenteditable="true" class="article-edit-excerpt"
+                  data-placeholder="Tóm tắt ngắn (2–3 câu hiển thị trên trang chủ)..."
+                  style="min-height:80px"></div>
+              </div>
+            </div><!-- /bie-scroll-area -->
+          </div><!-- /news-inline-editor -->
+          <!-- END NEWS INLINE EDITOR -->
+
         </div>
       </div>
 
@@ -989,210 +1464,278 @@
           <p class="page-subtitle">Nhập yêu cầu, để AI tạo bản nháp đầy đủ, xem lại rồi bấm đăng bài</p>
 
           <div class="seo-layout">
-            <div class="seo-panel">
-              <div class="seo-panel-title"><i class="fas fa-wand-magic-sparkles"></i> Yêu cầu cho AI</div>
 
-              <div class="field">
-                <label>Chế độ</label>
-                <select id="seo-mode" onchange="onSeoModeChange()">
-                  <option value="generate">✍️ Viết bài SEO mới</option>
-                  <option value="improve">✨ Cải thiện bài có sẵn</option>
-                </select>
-              </div>
-
-              <div class="field" id="field-keyword">
-                <label>Từ khóa chính</label>
-                <input id="seo-keyword" type="text" placeholder="VD: AI Agent cho doanh nghiệp" />
-              </div>
-
-              <div class="field" id="field-topic">
-                <label>Chủ đề bài viết</label>
-                <input id="seo-topic" type="text" placeholder="VD: Ứng dụng AI Agent trong bán hàng" />
-              </div>
-
-              <div class="field">
-                <label>Đối tượng đọc</label>
-                <input id="seo-audience" type="text" value="chủ doanh nghiệp và đội ngũ marketing tại Việt Nam" />
-              </div>
-
-              <div class="field">
-                <label>Mục đích tìm kiếm</label>
-                <select id="seo-intent">
-                  <option value="tìm hiểu và cân nhắc giải pháp">Tìm hiểu / cân nhắc</option>
-                  <option value="so sánh giải pháp trước khi mua">So sánh trước khi mua</option>
-                  <option value="tìm nhà cung cấp để triển khai">Muốn triển khai</option>
-                  <option value="học kiến thức tổng quan">Học kiến thức</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label>Giọng văn</label>
-                <select id="seo-tone">
-                  <option value="chuyên nghiệp, rõ ràng, dễ hiểu">Chuyên nghiệp</option>
-                  <option value="thân thiện, tư vấn như chuyên gia">Thân thiện tư vấn</option>
-                  <option value="ngắn gọn, thuyết phục, tập trung chuyển đổi">Tập trung chuyển đổi</option>
-                </select>
-              </div>
-
-              <!-- Viết mới: yêu cầu thêm -->
-              <div class="field" id="field-request">
-                <label>Yêu cầu thêm cho AI <span style="color:#94a3b8;font-weight:400">(tùy chọn)</span></label>
-                <textarea id="seo-request" placeholder="VD: Viết theo hướng VIAi hỗ trợ chủ shop online chốt đơn nhanh hơn, có CTA đăng ký dùng thử..." style="min-height:100px"></textarea>
-              </div>
-
-              <!-- Cải thiện bài có sẵn -->
-              <div class="field" id="field-existing" style="display:none">
-                <label>Dán bài viết có sẵn vào đây <span style="color:#94a3b8;font-weight:400">(AI sẽ cải thiện SEO, thêm ảnh, cấu trúc lại)</span></label>
-                <textarea id="seo-existing-content" placeholder="Dán toàn bộ nội dung bài viết vào đây..." style="min-height:260px;font-size:0.82rem;line-height:1.7"></textarea>
-                <div style="margin-top:8px">
-                  <label style="font-size:0.78rem;font-weight:700;color:#1A56DB;display:block;margin-bottom:5px">Hướng dẫn cải thiện <span style="color:#94a3b8;font-weight:400">(tùy chọn)</span></label>
-                  <textarea id="seo-improve-request" placeholder="VD: Thêm ảnh cho từng section, viết lại đoạn mở đầu hấp dẫn hơn, thêm bảng so sánh..." style="min-height:70px;font-size:0.82rem"></textarea>
+            <!-- ── PHẦN TRÊN: Form nhập liệu 3 cột ── -->
+            <div class="seo-top-form">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+                <div style="font-size:.95rem;font-weight:800;color:#0F172A;display:flex;align-items:center;gap:8px">
+                  <i class="fas fa-wand-magic-sparkles" style="color:var(--primary)"></i> Yêu cầu cho AI
                 </div>
-              </div>
-
-              <details style="margin-bottom:14px">
-                <summary style="cursor:pointer;font-size:0.8rem;font-weight:700;color:#1A56DB;list-style:none;display:flex;align-items:center;gap:6px;padding:8px 10px;background:#EEF3FF;border-radius:8px;border:1.5px solid #dbe8ff">
-                  <i class="fas fa-sliders"></i> SEO nâng cao <i class="fas fa-chevron-down" style="margin-left:auto;font-size:10px"></i>
-                </summary>
-                <div style="padding:12px 4px 0;display:flex;flex-direction:column;gap:10px">
-                  <div class="field" style="margin-bottom:0">
-                    <label>Từ khóa phụ / LSI <span style="color:#94a3b8;font-weight:400">(cách nhau bởi dấu phẩy)</span></label>
-                    <input id="seo-secondary-kw" type="text" placeholder="VD: chatbot AI, tự động hóa, phần mềm AI" />
-                  </div>
-                  <div class="field" style="margin-bottom:0">
-                    <label>SEO Title muốn dùng <span style="color:#94a3b8;font-weight:400">(tối đa 60 ký tự)</span></label>
-                    <input id="seo-preset-title" type="text" placeholder="Để trống AI tự tạo" maxlength="70" />
-                  </div>
-                  <div class="field" style="margin-bottom:0">
-                    <label>Meta Description <span style="color:#94a3b8;font-weight:400">(140-160 ký tự)</span></label>
-                    <textarea id="seo-preset-meta" placeholder="Để trống AI tự tạo" style="min-height:70px;resize:vertical"></textarea>
-                  </div>
-                  <div class="field" style="margin-bottom:0">
-                    <label>Internal links muốn chèn <span style="color:#94a3b8;font-weight:400">(cách nhau bởi dấu phẩy)</span></label>
-                    <input id="seo-internal-links" type="text" placeholder="VD: /san-pham.html, /dung-thu.html" value="/san-pham.html, /dung-thu.html" />
-                  </div>
-                </div>
-              </details>
-
-              <!-- Tạo ảnh AI thumbnail -->
-              <div class="field">
-                <label style="display:flex;align-items:center;gap:6px">
-                  <i class="fas fa-image" style="color:#1A56DB"></i>
-                  Tạo ảnh thumbnail bằng AI
-                  <span style="font-size:.7rem;background:#e8fdf0;color:#00B341;padding:2px 7px;border-radius:20px;font-weight:700">FREE</span>
-                </label>
-                <div style="display:flex;gap:8px;margin-bottom:8px">
-                  <input id="ai-img-prompt" type="text" placeholder="VD: doanh nghiệp Việt Nam dùng AI, màu xanh hiện đại" style="flex:1" />
-                  <button type="button" onclick="genAiImg()" id="btn-gen-img"
-                    style="padding:8px 14px;background:#1A56DB;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px;flex-shrink:0">
-                    <i class="fas fa-wand-magic-sparkles"></i> Tạo ảnh
+                <div style="display:flex;gap:8px;align-items:center">
+                  <select id="seo-mode" onchange="onSeoModeChange()" style="padding:6px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:.82rem;font-weight:700;outline:none">
+                    <option value="generate">✍️ Viết bài SEO mới</option>
+                    <option value="improve">✨ Cải thiện bài có sẵn</option>
+                  </select>
+                  <button class="btn btn-add-bar" id="btn-seo-run" onclick="runSeoAssistant()" style="height:34px">
+                    <i class="fas fa-robot"></i> Tạo bản nháp
+                  </button>
+                  <button class="btn btn-refresh" onclick="fillSeoFromNewsForm()" title="Lấy từ form bài viết" style="height:34px">
+                    <i class="fas fa-file-import"></i>
                   </button>
                 </div>
-                <div id="ai-img-result" style="display:none">
-                  <img id="ai-img-preview" src="" alt="" style="width:100%;border-radius:8px;border:1px solid #e2e8f0;max-height:160px;object-fit:cover;display:block;margin-bottom:8px" />
-                  <button type="button" onclick="useAiImg()"
-                    style="width:100%;padding:8px;background:#00B341;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">
-                    <i class="fas fa-check"></i> Dùng ảnh này làm thumbnail
-                  </button>
-                </div>
-                <div id="ai-img-status" style="font-size:11px;color:#64748b;margin-top:4px"></div>
               </div>
 
-              <div class="field">
-                <label>Ảnh thumbnail (tùy chọn)</label>
-                <div style="display:flex;gap:8px;margin-bottom:6px">
-                  <input id="seo-image-url" type="text" placeholder="URL ảnh, để trống sẽ dùng ảnh mặc định"
-                    oninput="updateSeoImgPreview(this.value)" />
-                  <label style="padding:8px 14px;background:#F0F7FF;border:1.5px solid #c7d9f5;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;color:#1A56DB;white-space:nowrap;display:flex;align-items:center;gap:5px;flex-shrink:0">
-                    <i class="fas fa-upload"></i> Upload
-                    <input type="file" id="seo-img-file" accept="image/*" style="display:none" onchange="uploadSeoImg(this)" />
-                  </label>
+              <div class="seo-form-grid" id="seo-form-grid">
+                <!-- Cột 1: Từ khóa & chủ đề -->
+                <div class="seo-form-col">
+                  <div class="field" id="field-keyword">
+                    <label>Từ khóa chính <span style="color:#94a3b8;font-weight:400">(quan trọng nhất)</span></label>
+                    <input id="seo-keyword" type="text" placeholder="VD: AI Agent cho doanh nghiệp"
+                      oninput="blogCharCount('seo-keyword','cnt-seo-kw',5,50)" />
+                    <span class="char-cnt" id="cnt-seo-kw">0 ký tự</span>
+                  </div>
+                  <div class="field" id="field-topic">
+                    <label>Chủ đề bài viết</label>
+                    <input id="seo-topic" type="text" placeholder="VD: Ứng dụng AI Agent trong bán hàng"
+                      oninput="blogCharCount('seo-topic','cnt-seo-topic',10,100)" />
+                    <span class="char-cnt" id="cnt-seo-topic">0 ký tự</span>
+                  </div>
+                  <div class="field">
+                    <label>Từ khóa phụ / LSI <span style="color:#94a3b8;font-weight:400">(cách nhau dấu phẩy)</span></label>
+                    <input id="seo-secondary-kw" type="text" placeholder="VD: chatbot AI, tự động hóa" />
+                  </div>
+                  <div class="field" style="margin-bottom:0">
+                    <label>Đối tượng đọc</label>
+                    <input id="seo-audience" type="text" value="chủ doanh nghiệp và đội ngũ marketing tại Việt Nam" />
+                  </div>
                 </div>
-                <div id="seo-img-preview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;max-height:100px;text-align:center;background:#f8faff">
-                  <img id="seo-img-preview-el" src="" alt="" style="max-height:100px;max-width:100%;object-fit:contain" />
+
+                <!-- Cột 2: Cấu hình & yêu cầu -->
+                <div class="seo-form-col">
+                  <div class="field">
+                    <label>Mục đích tìm kiếm</label>
+                    <select id="seo-intent">
+                      <option value="tìm hiểu và cân nhắc giải pháp">Tìm hiểu / cân nhắc</option>
+                      <option value="so sánh giải pháp trước khi mua">So sánh trước khi mua</option>
+                      <option value="tìm nhà cung cấp để triển khai">Muốn triển khai</option>
+                      <option value="học kiến thức tổng quan">Học kiến thức</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>Giọng văn</label>
+                    <select id="seo-tone">
+                      <option value="chuyên nghiệp, rõ ràng, dễ hiểu">Chuyên nghiệp</option>
+                      <option value="thân thiện, tư vấn như chuyên gia">Thân thiện tư vấn</option>
+                      <option value="ngắn gọn, thuyết phục, tập trung chuyển đổi">Tập trung chuyển đổi</option>
+                    </select>
+                  </div>
+                  <div class="field" id="field-request">
+                    <label>Yêu cầu thêm cho AI <span style="color:#94a3b8;font-weight:400">(tùy chọn)</span></label>
+                    <textarea id="seo-request" placeholder="VD: Viết theo hướng ViAI hỗ trợ chủ shop online chốt đơn nhanh hơn..." style="min-height:80px"></textarea>
+                  </div>
+                  <details style="margin-bottom:0">
+                    <summary style="cursor:pointer;font-size:.78rem;font-weight:700;color:#1A56DB;list-style:none;display:flex;align-items:center;gap:6px;padding:7px 10px;background:#EEF3FF;border-radius:8px;border:1.5px solid #dbe8ff">
+                      <i class="fas fa-sliders"></i> SEO nâng cao <i class="fas fa-chevron-down" style="margin-left:auto;font-size:10px"></i>
+                    </summary>
+                    <div style="padding:10px 2px 0;display:flex;flex-direction:column;gap:8px">
+                      <div class="field" style="margin-bottom:0">
+                        <label>SEO Title muốn dùng <span style="color:#94a3b8;font-weight:400">50–60 ký tự</span></label>
+                        <input id="seo-preset-title" type="text" placeholder="Để trống AI tự tạo" maxlength="70"
+                          oninput="blogCharCount('seo-preset-title','cnt-seo-ptitle',50,60)" />
+                        <span class="char-cnt" id="cnt-seo-ptitle">0 ký tự</span>
+                      </div>
+                      <div class="field" style="margin-bottom:0">
+                        <label>Meta Description <span style="color:#94a3b8;font-weight:400">140–160 ký tự</span></label>
+                        <textarea id="seo-preset-meta" placeholder="Để trống AI tự tạo" style="min-height:60px;resize:vertical"
+                          oninput="blogCharCount('seo-preset-meta','cnt-seo-pmeta',140,160)"></textarea>
+                        <span class="char-cnt" id="cnt-seo-pmeta">0 ký tự</span>
+                      </div>
+                      <div class="field" style="margin-bottom:0">
+                        <label>Internal links <span style="color:#94a3b8;font-weight:400">(cách nhau dấu phẩy)</span></label>
+                        <input id="seo-internal-links" type="text" value="/san-pham.html, /dung-thu.html" />
+                      </div>
+                    </div>
+                  </details>
                 </div>
-                <div id="seo-upload-status" style="font-size:11px;color:#64748b;margin-top:4px;display:none"></div>
+
+                <!-- Cột 3: Ảnh AI -->
+                <div class="seo-form-col">
+                  <div class="field">
+                    <label style="display:flex;align-items:center;gap:6px">
+                      <i class="fas fa-image" style="color:#1A56DB"></i> Tạo ảnh thumbnail AI
+                      <span style="font-size:.68rem;background:#e8fdf0;color:#00B341;padding:2px 7px;border-radius:20px;font-weight:700">FREE · WebP</span>
+                    </label>
+                    <div style="display:flex;gap:6px;margin-bottom:6px">
+                      <input id="ai-img-prompt" type="text" placeholder="VD: doanh nghiệp Việt Nam dùng AI" style="flex:1;font-size:12px" />
+                      <button type="button" onclick="genAiImg()" id="btn-gen-img"
+                        style="padding:7px 12px;background:#1A56DB;color:white;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">
+                        <i class="fas fa-wand-magic-sparkles"></i> Tạo
+                      </button>
+                    </div>
+                    <div id="ai-img-result" style="display:none;margin-bottom:6px">
+                      <img id="ai-img-preview" src="" alt="" style="width:100%;border-radius:8px;border:1px solid #e2e8f0;max-height:120px;object-fit:cover;display:block;margin-bottom:6px" />
+                      <button type="button" onclick="useAiImg()" id="btn-use-ai-img"
+                        style="width:100%;padding:7px;background:#00B341;color:white;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer">
+                        <i class="fas fa-check"></i> Dùng ảnh này (WebP)
+                      </button>
+                    </div>
+                    <div id="ai-img-status" style="font-size:11px;color:#64748b;margin-bottom:6px"></div>
+                    <div style="display:flex;gap:6px">
+                      <input id="seo-image-url" type="text" placeholder="URL ảnh thumbnail"
+                        oninput="updateSeoImgPreview(this.value)" style="flex:1;font-size:12px" />
+                      <label style="padding:6px 10px;background:#F0F7FF;border:1.5px solid #c7d9f5;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;color:#1A56DB;white-space:nowrap;display:flex;align-items:center;gap:4px;flex-shrink:0">
+                        <i class="fas fa-upload"></i>
+                        <input type="file" id="seo-img-file" accept="image/*" style="display:none" onchange="uploadSeoImg(this)" />
+                      </label>
+                    </div>
+                    <div id="seo-img-preview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;max-height:70px;text-align:center;background:#f8faff;margin-top:4px">
+                      <img id="seo-img-preview-el" src="" alt="" style="max-height:70px;max-width:100%;object-fit:contain" />
+                    </div>
+                    <div id="seo-upload-status" style="font-size:11px;color:#64748b;margin-top:4px;display:none"></div>
+                  </div>
+                  <div class="field" style="margin-bottom:0">
+                    <label style="display:flex;align-items:center;justify-content:space-between">
+                      <span>Ảnh từng section <span style="color:#94a3b8;font-weight:400">(AI đặt đúng vị trí)</span></span>
+                      <button type="button" onclick="addSectionImg()" style="padding:3px 8px;background:#EEF3FF;border:1.5px solid #dbe8ff;border-radius:6px;font-size:11px;font-weight:700;color:#1A56DB;cursor:pointer">+ Thêm</button>
+                    </label>
+                    <div id="section-imgs-list" style="display:flex;flex-direction:column;gap:6px;margin-top:6px"></div>
+                  </div>
+                </div>
               </div>
 
-              <div class="field">
-                <label style="display:flex;align-items:center;justify-content:space-between">
-                  <span>Ảnh cho từng section <span style="color:#94a3b8;font-weight:400">(AI sẽ đặt đúng vị trí)</span></span>
-                  <button type="button" onclick="addSectionImg()" style="padding:4px 10px;background:#EEF3FF;border:1.5px solid #dbe8ff;border-radius:6px;font-size:11px;font-weight:700;color:#1A56DB;cursor:pointer">+ Thêm ảnh</button>
-                </label>
-                <div id="section-imgs-list" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"></div>
-                <p style="font-size:11px;color:#94a3b8;margin-top:6px">Thêm 3-6 ảnh, AI sẽ phân bổ đúng từng section. Để trống = AI tự chọn ảnh.</p>
+              <!-- Mode Cải thiện: full-width textarea -->
+              <div class="seo-improve-row" id="field-existing" style="display:none">
+                <div class="field" style="margin-bottom:8px">
+                  <label>Dán bài viết có sẵn <span style="color:#94a3b8;font-weight:400">(AI cải thiện SEO, thêm ảnh, cấu trúc lại)</span></label>
+                  <textarea id="seo-existing-content" placeholder="Dán toàn bộ nội dung bài viết vào đây..." style="min-height:200px;font-size:.82rem;line-height:1.7"></textarea>
+                </div>
+                <div class="field" style="margin-bottom:0">
+                  <label>Hướng dẫn cải thiện <span style="color:#94a3b8;font-weight:400">(tùy chọn)</span></label>
+                  <textarea id="seo-improve-request" placeholder="VD: Thêm ảnh cho từng section, viết lại đoạn mở đầu hấp dẫn hơn..." style="min-height:60px;font-size:.82rem"></textarea>
+                </div>
               </div>
 
-              <div class="seo-actions">
-                <button class="btn btn-add-bar" id="btn-seo-run" onclick="runSeoAssistant()">
-                  <i class="fas fa-robot"></i> Tạo bản nháp
-                </button>
-                <button class="btn btn-refresh" onclick="fillSeoFromNewsForm()" title="Lấy dữ liệu từ form bài viết">
-                  <i class="fas fa-file-import"></i>
-                </button>
-              </div>
-              <div class="seo-hint">AI sẽ tự tạo tiêu đề, slug, meta, tóm tắt, nội dung bài, FAQ và gợi ý ảnh. Bạn chỉ đăng khi đã xem ổn.</div>
+              <div class="seo-hint" style="margin-top:10px;margin-bottom:0">AI tự tạo tiêu đề, slug, meta, nội dung, FAQ và gợi ý ảnh. Xem lại rồi mới đăng.</div>
             </div>
 
-            <div class="seo-panel">
-              <div class="seo-panel-title"><i class="fas fa-list-check"></i> Bản nháp trước khi đăng</div>
-              <div class="seo-tab-bar">
-                <button class="seo-tab-btn active" id="tab-preview-btn" onclick="switchSeoTab('preview')">
-                  <i class="fas fa-eye"></i> Xem trước
-                </button>
-                <button class="seo-tab-btn" id="tab-edit-btn" onclick="switchSeoTab('edit')">
-                  <i class="fas fa-pen"></i> Chỉnh sửa
-                </button>
+            <!-- ── SEO WORKFLOW PANEL (hiện sau khi tạo draft) ── -->
+            <div class="seo-wf-panel" id="seo-wf-panel">
+              <div class="seo-wf-header">
+                <div class="seo-wf-title"><i class="fas fa-chart-line" style="font-size:11px"></i> SEO Workflow</div>
+                <span class="seo-wf-badge poor" id="seo-wf-badge">0/8 điểm SEO</span>
+              </div>
+              <div class="seo-wf-grid">
+                <div class="swp-item" id="swf-kw-exists"><span class="swp-icon">❌</span><span class="swp-text">Chưa nhập từ khóa</span></div>
+                <div class="swp-item" id="swf-kw-title"><span class="swp-icon">❌</span><span class="swp-text">Từ khóa chưa trong tiêu đề</span></div>
+                <div class="swp-item" id="swf-kw-first100"><span class="swp-icon">❌</span><span class="swp-text">Chưa có trong 100 từ đầu</span></div>
+                <div class="swp-item" id="swf-density"><span class="swp-icon">❌</span><span class="swp-text">Mật độ từ khóa: –</span></div>
+                <div class="swp-item" id="swf-headings"><span class="swp-icon">❌</span><span class="swp-text">Chưa có H2/H3</span></div>
+                <div class="swp-item" id="swf-words"><span class="swp-icon">❌</span><span class="swp-text">0 từ (cần ≥800)</span></div>
+                <div class="swp-item" id="swf-seo-title"><span class="swp-icon">❌</span><span class="swp-text">SEO Title: 0/60</span></div>
+                <div class="swp-item" id="swf-meta"><span class="swp-icon">❌</span><span class="swp-text">Meta Desc: 0/160</span></div>
+              </div>
+              <div class="seo-wf-readtime" id="swf-readtime">📖 ~0 phút đọc · 0 từ</div>
+            </div>
+
+            <!-- ── PHẦN DƯỚI: Bản nháp ── -->
+            <div class="seo-draft-section">
+              <div class="seo-draft-title">
+                <i class="fas fa-list-check" style="color:var(--primary)"></i> Bản nháp trước khi đăng
+                <div style="margin-left:auto;display:flex;gap:8px">
+                  <button class="btn btn-export" id="btn-seo-publish" onclick="publishSeoDraft()" disabled><i class="fas fa-paper-plane"></i> Đăng bài</button>
+                  <button class="btn btn-refresh" onclick="copySeoResult()"><i class="fas fa-copy"></i> Copy</button>
+                  <button class="btn btn-refresh" onclick="clearSeoAssistant()"><i class="fas fa-eraser"></i> Xóa</button>
+                </div>
               </div>
 
-              <!-- Preview tab -->
-              <div id="seo-preview-tab">
-                <div id="seo-preview" class="seo-preview">
-                  <div class="seo-empty"><i class="fas fa-robot" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:10px"></i>Bản nháp AI sẽ hiện ở đây sau khi bấm Tạo bản nháp.</div>
+              <!-- Hidden seo-preview backward compat -->
+              <div id="seo-preview" style="display:none"></div>
+
+              <!-- SEO Metadata (click để mở) -->
+              <div class="seo-meta-collapse" id="seo-meta-collapse">
+                <div class="seo-meta-toggle" onclick="document.getElementById('seo-meta-collapse').classList.toggle('open')">
+                  <i class="fas fa-sliders"></i> SEO Metadata
+                  <span style="font-size:10px;font-weight:400;color:#64748b;margin-left:4px">(SEO title · meta description · slug)</span>
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="seo-meta-fields">
+                  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+                    <div class="seo-edit-field" style="margin:0">
+                      <label><i class="fas fa-search"></i> SEO Title <span style="color:#94a3b8;font-weight:400">50–60 ký tự</span></label>
+                      <input id="edit-seo-title" type="text" placeholder="SEO title" maxlength="70"
+                        oninput="blogCharCount('edit-seo-title','cnt-edit-stitle',50,60);updateSeoWf()" />
+                      <span class="char-cnt" id="cnt-edit-stitle">0 ký tự</span>
+                    </div>
+                    <div class="seo-edit-field" style="margin:0">
+                      <label><i class="fas fa-tag"></i> Meta Description <span style="color:#94a3b8;font-weight:400">140–160 ký tự</span></label>
+                      <textarea id="edit-meta" placeholder="140-160 ký tự" style="min-height:56px"
+                        oninput="blogCharCount('edit-meta','cnt-edit-meta',140,160);updateSeoWf()"></textarea>
+                      <span class="char-cnt" id="cnt-edit-meta">0 ký tự</span>
+                    </div>
+                    <div class="seo-edit-field" style="margin:0">
+                      <label><i class="fas fa-link"></i> Slug URL</label>
+                      <input id="edit-slug" type="text" placeholder="slug-bai-viet"
+                        oninput="const h=document.getElementById('edit-slug-hint');if(h)h.textContent=this.value" />
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <!-- Edit tab -->
-              <div id="seo-edit-tab" class="seo-edit-panel">
-                <div class="seo-edit-field">
-                  <label><i class="fas fa-heading"></i> Tiêu đề bài viết</label>
-                  <input id="edit-title" type="text" placeholder="Tiêu đề bài viết" />
+              <!-- Toolbar -->
+              <div class="seo-edit-tb" style="border-radius:10px 10px 0 0">
+                <button class="tb-btn tb-h" onclick="seoEditBlock('# ')" title="H1 — dùng 1 lần">H1</button>
+                <button class="tb-btn tb-h" onclick="seoEditBlock('## ')">H2</button>
+                <button class="tb-btn tb-h" onclick="seoEditBlock('### ')">H3</button>
+                <button class="tb-btn tb-h" onclick="seoEditBlock('#### ')">H4</button>
+                <button class="tb-btn tb-h" onclick="_seoExec('formatBlock','P')" title="Đoạn văn">¶</button>
+                <div class="seo-edit-tb-sep"></div>
+                <button class="tb-btn" onclick="seoEditWrap('**','**')"><b>B</b></button>
+                <button class="tb-btn" onclick="seoEditWrap('*','*')"><em>I</em></button>
+                <button class="tb-btn" onclick="seoEditWrap('~~','~~')"><s>S</s></button>
+                <div class="seo-edit-tb-sep"></div>
+                <button class="tb-btn" onclick="seoEditLink()">🔗 Link</button>
+                <div class="seo-edit-tb-sep"></div>
+                <button class="tb-btn" onclick="seoEditBlock('- ')">• List</button>
+                <button class="tb-btn" onclick="seoEditBlock('1. ')">1. List</button>
+                <div class="seo-edit-tb-sep"></div>
+                <button class="tb-btn" onclick="seoEditBlock('> ')">❝ Quote</button>
+                <button class="tb-btn" onclick="seoEditRaw('\n\n---\n\n')">— HR</button>
+                <button class="tb-btn" onclick="seoEditWrap('\`','\`')" style="font-family:monospace">Code</button>
+                <div style="margin-left:auto">
+                  <button class="btn btn-export" style="height:28px;font-size:11px;padding:0 14px" onclick="saveDraftEdits()">
+                    <i class="fas fa-check"></i> Lưu
+                  </button>
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-                  <div class="seo-edit-field">
-                    <label><i class="fas fa-search"></i> SEO Title</label>
-                    <input id="edit-seo-title" type="text" placeholder="SEO title (max 60 ký tự)" maxlength="70" />
+              </div>
+
+              <!-- Article canvas — nhìn như bài thật, sửa trực tiếp -->
+              <div class="seo-article-canvas">
+                <div class="seo-empty" id="article-empty-state">
+                  <i class="fas fa-robot" style="font-size:2rem;opacity:.2;display:block;margin-bottom:10px"></i>
+                  Bản nháp AI sẽ hiện ở đây sau khi bấm Tạo bản nháp.
+                </div>
+                <div id="article-body" style="display:none">
+                  <div class="article-canvas-meta">
+                    <span class="preview-cat-badge" id="article-category">Kiến thức AI</span>
+                    <span class="article-url-hint">phanmemaiagent.net/blog/<span id="edit-slug-hint"></span></span>
                   </div>
-                  <div class="seo-edit-field">
-                    <label><i class="fas fa-link"></i> Slug URL</label>
-                    <input id="edit-slug" type="text" placeholder="slug-bai-viet" />
-                  </div>
-                </div>
-                <div class="seo-edit-field">
-                  <label><i class="fas fa-align-left"></i> Tóm tắt (Excerpt)</label>
-                  <textarea id="edit-excerpt" placeholder="2-3 câu tóm tắt hấp dẫn"></textarea>
-                </div>
-                <div class="seo-edit-field">
-                  <label><i class="fas fa-tag"></i> Meta Description</label>
-                  <textarea id="edit-meta" placeholder="140-160 ký tự" style="min-height:70px"></textarea>
-                </div>
-                <div class="seo-edit-field">
-                  <label><i class="fas fa-file-alt"></i> Nội dung (Markdown)</label>
-                  <textarea id="edit-content" class="tall" placeholder="Nội dung markdown..."></textarea>
-                </div>
-                <div class="seo-edit-save-bar">
-                  <button class="btn btn-export" onclick="saveDraftEdits()"><i class="fas fa-check"></i> Lưu & Xem trước</button>
-                  <button class="btn btn-refresh" onclick="switchSeoTab('preview')"><i class="fas fa-times"></i> Hủy</button>
+                  <img id="article-hero-img" class="preview-hero" style="display:none;margin-bottom:20px" onerror="this.style.display='none'" />
+                  <div id="edit-title" contenteditable="true" class="article-edit-title"
+                    data-placeholder="Tiêu đề bài viết..."
+                    oninput="blogCharCount('edit-title','cnt-edit-title',30,70);updateSeoWf()"></div>
+                  <span class="char-cnt" id="cnt-edit-title" style="display:block;margin-bottom:14px">0 ký tự</span>
+                  <div id="edit-excerpt" contenteditable="true" class="article-edit-excerpt"
+                    data-placeholder="Tóm tắt bài viết (2–3 câu)..."
+                    oninput="updateSeoWf()"></div>
+                  <div id="edit-content" class="seo-wysiwyg" contenteditable="true"
+                    data-placeholder="Nội dung bài viết..."
+                    oninput="updateSeoWf()"></div>
                 </div>
               </div>
 
               <textarea id="seo-output" class="seo-output" readonly style="display:none"></textarea>
-              <div class="seo-actions">
-                <button class="btn btn-export" id="btn-seo-publish" onclick="publishSeoDraft()" disabled><i class="fas fa-paper-plane"></i> Đăng bài</button>
-                <button class="btn btn-refresh" onclick="copySeoResult()"><i class="fas fa-copy"></i> Copy nội dung</button>
-                <button class="btn btn-refresh" onclick="clearSeoAssistant()"><i class="fas fa-eraser"></i> Xóa</button>
-              </div>
             </div>
+
           </div>
         </div>
       </div>
@@ -1251,11 +1794,11 @@
       <!-- ── WHY PAGE ── -->
       <div id="page-why" style="display:none">
         <div class="content-topbar">
-          <div class="content-title">Lý do chọn VIAi</div>
-          <div class="breadcrumb-inner"><i class="fas fa-home"></i> › Nội dung › <span>Lý do chọn VIAi</span></div>
+          <div class="content-title">Lý do chọn ViAI</div>
+          <div class="breadcrumb-inner"><i class="fas fa-home"></i> › Nội dung › <span>Lý do chọn ViAI</span></div>
         </div>
         <div class="content-body">
-          <p class="page-subtitle">Quản lý các thẻ "Tại sao chọn VIAi" hiển thị trên trang chủ</p>
+          <p class="page-subtitle">Quản lý các thẻ "Tại sao chọn ViAI" hiển thị trên trang chủ</p>
           <div class="filter-bar">
             <i class="fas fa-search" style="color:#94a3b8;font-size:12px"></i>
             <input type="text" placeholder="Tìm theo tiêu đề..." oninput="filterTable('why-tbody',this.value)" />
@@ -1326,9 +1869,109 @@
             <button class="btn btn-add-bar" onclick="openGalleryModal()"><i class="fas fa-plus"></i> Thêm ảnh</button>
           </div>
           <div class="table-wrap">
-            <table><thead><tr><th>Ảnh</th><th>Caption</th><th>Thứ tự</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+            <table><thead><tr><th>Ảnh</th><th>Caption</th><th style="text-align:center">Thứ tự</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
             <tbody id="gallery-tbody"></tbody></table>
           </div>
+
+          <!-- ── GALLERY INLINE EDITOR ── -->
+          <div id="gallery-inline-editor" style="display:none;margin-top:16px;border:1.5px solid #1A56DB;border-radius:12px;overflow:hidden;background:white">
+
+            <!-- Topbar -->
+            <div class="bie-topbar">
+              <div class="bie-topbar-left">
+                <i class="fas fa-images"></i>
+                <span id="gie-title-label">Thêm ảnh mới</span>
+              </div>
+              <div class="bie-topbar-right">
+                <button class="btn btn-refresh" onclick="closeGalleryEditor()" style="height:30px">✕ Đóng</button>
+                <button class="btn btn-add-bar" onclick="saveGallery()" style="height:30px"><i class="fas fa-save"></i> Lưu ảnh</button>
+              </div>
+            </div>
+
+            <div style="padding:24px 28px;display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+
+              <!-- Cột trái: Upload zone + preview -->
+              <div>
+                <div id="gie-upload-zone"
+                  onclick="document.getElementById('gie-file-input').click()"
+                  ondragover="event.preventDefault();this.style.borderColor='#1A56DB';this.style.background='#EEF3FF'"
+                  ondragleave="this.style.borderColor='#c7d9f5';this.style.background='#F8FAFF'"
+                  ondrop="event.preventDefault();this.style.borderColor='#c7d9f5';this.style.background='#F8FAFF';uploadGalleryImgNew(event.dataTransfer.files[0])"
+                  style="border:2px dashed #c7d9f5;border-radius:12px;background:#F8FAFF;padding:32px 20px;text-align:center;cursor:pointer;transition:all .2s;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+                  <i class="fas fa-cloud-upload-alt" style="font-size:2.5rem;color:#1A56DB;opacity:.5"></i>
+                  <div style="font-weight:700;color:#1A56DB;font-size:.9rem">Kéo thả ảnh vào đây</div>
+                  <div style="color:#94a3b8;font-size:.78rem">hoặc click để chọn file</div>
+                  <div style="color:#94a3b8;font-size:.72rem">JPG, PNG, WebP · tối đa 5MB</div>
+                  <input type="file" id="gie-file-input" accept="image/*" style="display:none" onchange="uploadGalleryImgNew(this.files[0])" />
+                </div>
+                <div id="gie-upload-status" style="font-size:12px;margin-top:8px;display:none;text-align:center;font-weight:700"></div>
+
+                <!-- Preview sau upload -->
+                <div id="gie-preview-wrap" style="display:none;margin-top:12px;border-radius:10px;overflow:hidden;border:1.5px solid #e2e8f0;position:relative">
+                  <img id="gie-preview-img" src="" alt="" style="width:100%;max-height:220px;object-fit:cover;display:block" />
+                  <div style="position:absolute;top:8px;right:8px">
+                    <button onclick="document.getElementById('gie-file-input').click()" style="background:rgba(0,0,0,.55);color:white;border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer"><i class="fas fa-redo"></i> Đổi ảnh</button>
+                  </div>
+                </div>
+
+                <!-- URL thủ công -->
+                <div style="margin-top:10px">
+                  <label style="font-size:.75rem;font-weight:700;color:#94a3b8;display:block;margin-bottom:4px">Hoặc dán URL ảnh trực tiếp</label>
+                  <input id="gie-img-url" type="text" placeholder="https://... hoặc /anhthucte/anh.jpg"
+                    oninput="gieUpdatePreview(this.value)"
+                    style="width:100%;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.82rem;outline:none"
+                    onfocus="this.style.borderColor='#1A56DB'" onblur="this.style.borderColor='#e2e8f0'" />
+                </div>
+              </div>
+
+              <!-- Cột phải: Thông tin ảnh (AI tự điền) -->
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <div style="background:#EEF3FF;border-radius:8px;padding:10px 14px;font-size:.78rem;color:#1A56DB;font-weight:700;display:flex;align-items:center;gap:6px">
+                  <i class="fas fa-wand-magic-sparkles"></i> AI tự điền caption & alt sau khi upload
+                  <span id="gie-ai-status" style="margin-left:auto;display:none"><i class="fas fa-spinner fa-spin"></i></span>
+                </div>
+                <span id="gie-id" style="display:none"></span>
+
+                <div class="field" style="margin:0">
+                  <label>Caption <span style="color:#94a3b8;font-weight:400">(chú thích hiển thị)</span></label>
+                  <input id="gie-caption" type="text" placeholder="AI sẽ gợi ý sau khi upload..."
+                    style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;outline:none"
+                    onfocus="this.style.borderColor='#1A56DB'" onblur="this.style.borderColor='#e2e8f0'" />
+                </div>
+
+                <div class="field" style="margin:0">
+                  <label>Alt text <span style="color:#94a3b8;font-weight:400">(SEO, mô tả ảnh)</span></label>
+                  <input id="gie-alt" type="text" placeholder="AI sẽ gợi ý sau khi upload..."
+                    style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;outline:none"
+                    onfocus="this.style.borderColor='#1A56DB'" onblur="this.style.borderColor='#e2e8f0'" />
+                  <button onclick="aiGalleryCaption()" style="margin-top:6px;padding:4px 12px;background:#f5f3ff;border:1.5px solid #c4b5fd;border-radius:6px;font-size:11px;font-weight:700;color:#7c3aed;cursor:pointer;display:inline-flex;align-items:center;gap:4px"><i class="fas fa-wand-magic-sparkles"></i> AI viết lại</button>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                  <div class="field" style="margin:0">
+                    <label>Thứ tự</label>
+                    <input id="gie-order" type="number" min="0" placeholder="0"
+                      style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;outline:none"
+                      onfocus="this.style.borderColor='#1A56DB'" onblur="this.style.borderColor='#e2e8f0'" />
+                  </div>
+                  <div class="field" style="margin:0">
+                    <label>Trạng thái</label>
+                    <select id="gie-active" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;outline:none">
+                      <option value="true">Hiển thị</option>
+                      <option value="false">Ẩn</option>
+                    </select>
+                  </div>
+                </div>
+
+                <button onclick="saveGallery()" style="margin-top:4px;padding:11px;background:var(--accent);color:white;border:none;border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;width:100%">
+                  <i class="fas fa-save"></i> Lưu ảnh
+                </button>
+              </div>
+
+            </div>
+          </div>
+          <!-- END GALLERY INLINE EDITOR -->
+
         </div>
       </div>
 
@@ -1345,7 +1988,7 @@
             <input type="text" placeholder="Tìm theo tiêu đề..." oninput="filterTable('blog-tbody',this.value)" />
             <button class="btn btn-refresh" onclick="loadBlogPosts()" title="Làm mới"><i class="fas fa-sync-alt"></i></button>
             <span class="filter-count" id="blog-count"></span>
-            <button class="btn btn-add-bar" onclick="openBlogModal()"><i class="fas fa-plus"></i> Thêm bài viết</button>
+            <button class="btn btn-add-bar" onclick="openBlogInlineEditor()"><i class="fas fa-plus"></i> Thêm bài viết</button>
           </div>
           <div class="table-wrap">
             <table>
@@ -1353,6 +1996,178 @@
               <tbody id="blog-tbody"></tbody>
             </table>
           </div>
+
+          <!-- ── BLOG INLINE EDITOR ── -->
+          <div id="blog-inline-editor">
+            <!-- PHẦN CỐ ĐỊNH: topbar + metadata + toolbar -->
+            <div class="bie-head">
+
+            <!-- Topbar -->
+            <div class="bie-topbar">
+              <div class="bie-topbar-left">
+                <i class="fas fa-edit"></i>
+                <span id="bie-title-label">Đang sửa bài viết</span>
+              </div>
+              <div class="bie-topbar-right">
+                <button class="btn btn-refresh" onclick="closeBlogInlineEditor()" style="height:30px">✕ Đóng</button>
+                <button class="btn btn-add-bar" onclick="saveBlogInlineEdit()" style="height:30px"><i class="fas fa-save"></i> Lưu bài viết</button>
+              </div>
+            </div>
+
+            <!-- Metadata collapsible -->
+            <div class="seo-meta-collapse" id="bie-meta-collapse" style="border-radius:0;border-left:none;border-right:none;border-top:none">
+              <div class="seo-meta-toggle" onclick="document.getElementById('bie-meta-collapse').classList.toggle('open')">
+                <i class="fas fa-sliders-h" style="color:#1A56DB;font-size:12px"></i>
+                <strong>Metadata bài viết</strong>
+                <span style="color:#94a3b8;font-size:.8rem;font-weight:400">(slug · danh mục · ảnh · SEO title · meta)</span>
+                <i class="fas fa-chevron-down" style="margin-left:auto;color:#94a3b8;font-size:11px"></i>
+              </div>
+              <div class="seo-meta-fields">
+                <input type="hidden" id="bie-id" />
+                <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:10px">
+                  <div class="field" style="margin:0">
+                    <label>SEO Title <span style="color:#94a3b8;font-weight:400">50–60 ký tự</span></label>
+                    <input id="bie-seo-title" type="text" placeholder="SEO Title..."
+                      oninput="blogCharCount('bie-seo-title','bie-cnt-stitle',50,60)" />
+                    <span class="char-cnt" id="bie-cnt-stitle">0 ký tự</span>
+                  </div>
+                  <div class="field" style="margin:0">
+                    <label>Slug URL</label>
+                    <input id="bie-slug" type="text" placeholder="slug-bai-viet"
+                      oninput="document.getElementById('bie-slug-hint').textContent=this.value" />
+                  </div>
+                  <div class="field" style="margin:0">
+                    <label>Danh mục</label>
+                    <select id="bie-category" onchange="document.getElementById('bie-badge-cat').textContent=this.value">
+                      <option value="Kiến thức AI">Kiến thức AI</option>
+                      <option value="Hướng dẫn">Hướng dẫn</option>
+                      <option value="Tin tức">Tin tức</option>
+                      <option value="Case Study">Case Study</option>
+                    </select>
+                  </div>
+                </div>
+                <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px;margin-bottom:10px">
+                  <div class="field" style="margin:0">
+                    <label>Meta Description <span style="color:#94a3b8;font-weight:400">140–160 ký tự</span></label>
+                    <textarea id="bie-meta" style="min-height:52px" placeholder="Mô tả SEO..."
+                      oninput="blogCharCount('bie-meta','bie-cnt-meta',140,160)"></textarea>
+                    <span class="char-cnt" id="bie-cnt-meta">0 ký tự</span>
+                  </div>
+                  <div class="field" style="margin:0"><label>Tác giả</label><input id="bie-author" type="text" /></div>
+                  <div class="field" style="margin:0"><label>Ngày đăng</label><input id="bie-date" type="date" /></div>
+                  <div class="field" style="margin:0">
+                    <label>Trạng thái</label>
+                    <select id="bie-active"><option value="true">Hiển thị</option><option value="false">Ẩn</option></select>
+                  </div>
+                </div>
+                <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px">
+                  <div class="field" style="margin:0">
+                    <label>URL ảnh thumbnail</label>
+                    <div style="display:flex;gap:6px">
+                      <input id="bie-img" type="text" placeholder="URL ảnh..." style="flex:1;font-size:12px"
+                        oninput="var h=document.getElementById('bie-hero-img');h.src=this.value;h.style.display=this.value?'block':'none'" />
+                      <label style="padding:7px 10px;background:#F0F7FF;border:1.5px solid #c7d9f5;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;color:#1A56DB;white-space:nowrap;flex-shrink:0">
+                        <i class="fas fa-upload"></i> Upload
+                        <input type="file" id="bie-img-file" accept="image/*" style="display:none" onchange="uploadBieImg(this)" />
+                      </label>
+                    </div>
+                  </div>
+                  <div class="field" style="margin:0">
+                    <label>Alt ảnh</label>
+                    <input id="bie-img-alt" type="text" placeholder="Mô tả ảnh..." />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="seo-edit-tb" style="border-radius:0;border-left:none;border-right:none;padding:8px 10px">
+              <span class="bie-tb-wrap" onclick="bieExec('formatBlock','H1')">
+                <button class="tb-btn tb-h">H1</button>
+                <span class="bie-tb-label">Tiêu đề chính</span>
+              </span>
+              <span class="bie-tb-wrap" onclick="bieExec('formatBlock','H2')">
+                <button class="tb-btn tb-h">H2</button>
+                <span class="bie-tb-label">Mục lớn</span>
+              </span>
+              <span class="bie-tb-wrap" onclick="bieExec('formatBlock','H3')">
+                <button class="tb-btn tb-h">H3</button>
+                <span class="bie-tb-label">Mục nhỏ</span>
+              </span>
+              <span class="bie-tb-wrap" onclick="bieExec('formatBlock','H4')">
+                <button class="tb-btn tb-h">H4</button>
+                <span class="bie-tb-label">Phụ đề</span>
+              </span>
+              <span class="bie-tb-wrap" onclick="bieExec('formatBlock','P')">
+                <button class="tb-btn tb-h">¶</button>
+                <span class="bie-tb-label">Đoạn văn</span>
+              </span>
+              <div class="seo-edit-tb-sep" style="height:28px"></div>
+              <span class="bie-tb-wrap" onclick="bieExec('bold')">
+                <button class="tb-btn"><b>B</b></button>
+                <span class="bie-tb-label">Đậm</span>
+              </span>
+              <span class="bie-tb-wrap" onclick="bieExec('italic')">
+                <button class="tb-btn"><em>I</em></button>
+                <span class="bie-tb-label">Nghiêng</span>
+              </span>
+              <span class="bie-tb-wrap" onclick="bieExec('strikeThrough')">
+                <button class="tb-btn"><s>S</s></button>
+                <span class="bie-tb-label">Gạch ngang</span>
+              </span>
+              <div class="seo-edit-tb-sep" style="height:28px"></div>
+              <span class="bie-tb-wrap" onclick="bieInsertLink()">
+                <button class="tb-btn">🔗 Link</button>
+                <span class="bie-tb-label">Chèn link</span>
+              </span>
+              <div class="seo-edit-tb-sep" style="height:28px"></div>
+              <span class="bie-tb-wrap" onclick="bieExec('insertUnorderedList')">
+                <button class="tb-btn">• List</button>
+                <span class="bie-tb-label">Danh sách</span>
+              </span>
+              <span class="bie-tb-wrap" onclick="bieExec('insertOrderedList')">
+                <button class="tb-btn">1. List</button>
+                <span class="bie-tb-label">Đánh số</span>
+              </span>
+              <div class="seo-edit-tb-sep" style="height:28px"></div>
+              <span class="bie-tb-wrap" onclick="bieExec('formatBlock','BLOCKQUOTE')">
+                <button class="tb-btn">❝ Quote</button>
+                <span class="bie-tb-label">Trích dẫn</span>
+              </span>
+              <span class="bie-tb-wrap" onclick="document.getElementById('bie-content').focus();document.execCommand('insertHTML',false,'<hr>')">
+                <button class="tb-btn">— HR</button>
+                <span class="bie-tb-label">Đường kẻ</span>
+              </span>
+              <span class="bie-tb-wrap" onclick="document.getElementById('bie-content').focus();document.execCommand('insertHTML',false,'<code>​</code>')">
+                <button class="tb-btn" style="font-family:monospace">Code</button>
+                <span class="bie-tb-label">Code</span>
+              </span>
+            </div>
+
+            </div><!-- /bie-head -->
+
+            <!-- PHẦN CUỘN: bài viết -->
+            <div class="bie-scroll-area">
+
+            <!-- Article canvas -->
+            <div class="seo-article-canvas" style="border-left:none;border-right:none;border-bottom:none;border-radius:0;min-height:500px">
+              <div class="article-canvas-meta">
+                <span class="preview-cat-badge" id="bie-badge-cat">Kiến thức AI</span>
+                <span class="article-url-hint">phanmemaiagent.net/blog/<span id="bie-slug-hint"></span></span>
+              </div>
+              <img id="bie-hero-img" src="" alt="" style="width:100%;border-radius:10px;margin:12px 0 18px;display:none;max-height:320px;object-fit:cover" onerror="this.style.display='none'" />
+              <div id="bie-title" contenteditable="true" class="article-edit-title"
+                data-placeholder="Tiêu đề bài viết..."
+                oninput="blogCharCount('bie-title','bie-cnt-title',30,70)"></div>
+              <span class="char-cnt" id="bie-cnt-title" style="display:block;margin-bottom:12px">0 ký tự</span>
+              <div id="bie-excerpt" contenteditable="true" class="article-edit-excerpt"
+                data-placeholder="Tóm tắt bài viết (2–3 câu)..."></div>
+              <div id="bie-content" class="seo-wysiwyg" contenteditable="true"
+                data-placeholder="Nội dung bài viết..."
+                style="min-height:400px;border-left:none;border-right:none;border-bottom:none;border-radius:0"></div>
+            </div>
+            </div><!-- /bie-scroll-area -->
+          </div><!-- /blog-inline-editor -->
         </div>
       </div>
 
@@ -1363,7 +2178,7 @@
           <div class="breadcrumb-inner"><i class="fas fa-home"></i> › Người dùng › <span>Tài khoản Web</span></div>
         </div>
         <div class="content-body">
-          <p class="page-subtitle" style="margin-bottom:14px">Quản lý tài khoản người dùng đã đăng ký trên website VIAi.</p>
+          <p class="page-subtitle" style="margin-bottom:14px">Quản lý tài khoản người dùng đã đăng ký trên website ViAI.</p>
 
           <!-- Stat cards -->
           <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
@@ -1571,7 +2386,7 @@
               </div>
               <div class="field">
                 <label style="display:block;font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px">Mô tả ngắn <span style="color:#94a3b8;font-weight:400">(đoạn văn dưới heading)</span></label>
-                <textarea id="ss-hero_desc" rows="3" placeholder="VIAi cung cấp các AI Agent sẵn sàng triển khai..." style="width:100%;padding:8px 11px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none;resize:vertical" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='#e2e8f0'"></textarea>
+                <textarea id="ss-hero_desc" rows="3" placeholder="ViAI cung cấp các AI Agent sẵn sàng triển khai..." style="width:100%;padding:8px 11px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none;resize:vertical" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='#e2e8f0'"></textarea>
                 <p style="font-size:11px;color:#94a3b8;margin-top:4px">Đoạn mô tả bên dưới tiêu đề Hero. Nên 1-2 câu ngắn gọn.</p>
               </div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
@@ -1610,7 +2425,7 @@
             <div style="background:white;border:1px solid #e2e8f0;border-radius:12px;padding:22px;display:grid;gap:16px">
               <div class="field">
                 <label style="display:block;font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px">Tiêu đề Google (SEO Title) <span id="ss-title-count" style="color:#94a3b8;font-weight:400"></span></label>
-                <input id="ss-seo_title" type="text" maxlength="60" placeholder="VIAi – AI Agent cho Doanh nghiệp Việt" oninput="document.getElementById('ss-title-count').textContent='('+this.value.length+'/60 ký tự)'" style="width:100%;padding:8px 11px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='#e2e8f0'" />
+                <input id="ss-seo_title" type="text" maxlength="60" placeholder="ViAI – AI Agent cho Doanh nghiệp Việt" oninput="document.getElementById('ss-title-count').textContent='('+this.value.length+'/60 ký tự)'" style="width:100%;padding:8px 11px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='#e2e8f0'" />
                 <p style="font-size:11px;color:#94a3b8;margin-top:4px">Tiêu đề hiển thị trên Google. 50–60 ký tự là tối ưu.</p>
               </div>
               <div class="field">
@@ -1792,77 +2607,7 @@
   </div>
 </div>
 
-<!-- NEWS MODAL -->
-<div class="modal-overlay" id="news-modal">
-  <div class="modal-box" style="width:620px">
-    <div class="modal-title" id="news-modal-title">Thêm bài viết</div>
-    <input type="hidden" id="news-id" />
-
-    <!-- Bước 1: nhập URL → tự động điền -->
-    <div class="field" style="background:#F0F7FF;border:1.5px dashed #1A56DB;border-radius:12px;padding:14px 16px;margin-bottom:18px">
-      <label style="color:#1A56DB;font-size:0.82rem;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:6px">
-        <i class="fas fa-magic"></i> Dán URL bài báo → Tự động điền thông tin
-      </label>
-      <div style="display:flex;gap:8px">
-        <input id="news-fetch-url" type="text" placeholder="https://genk.vn/bai-bao-abc.html"
-          style="flex:1;padding:9px 12px;border:1.5px solid #c7d9f5;border-radius:8px;font-family:inherit;font-size:0.85rem;outline:none"
-          onkeydown="if(event.key==='Enter')fetchNewsUrl()" />
-        <button onclick="fetchNewsUrl()" id="btn-fetch"
-          style="padding:9px 16px;background:#1A56DB;color:white;border:none;border-radius:8px;font-family:inherit;font-size:0.82rem;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px">
-          <i class="fas fa-download"></i> Lấy dữ liệu
-        </button>
-      </div>
-      <div id="fetch-status" style="font-size:0.75rem;margin-top:6px;color:#64748b;display:none"></div>
-    </div>
-
-    <div class="field"><label>Tiêu đề *</label><input id="news-title" type="text" placeholder="Tiêu đề bài báo..." /></div>
-
-    <div class="field">
-      <label style="display:flex;align-items:center;justify-content:space-between">
-        <span>Đoạn tóm tắt</span>
-        <button onclick="aiSuggestExcerpt()" id="btn-ai"
-          style="background:linear-gradient(135deg,#7C3AED,#9F67F5);color:white;border:none;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px">
-          <i class="fas fa-robot"></i> AI gợi ý
-        </button>
-      </label>
-      <textarea id="news-excerpt" data-rich placeholder="Nội dung tóm tắt..." style="min-height:100px"></textarea>
-    </div>
-
-    <!-- Upload ảnh -->
-    <div class="field">
-      <label>Ảnh thumbnail</label>
-      <div style="display:flex;gap:8px;margin-bottom:8px">
-        <input id="news-img" type="text" placeholder="URL ảnh hoặc upload bên dưới..."
-          oninput="updateImgPreview(this.value)" />
-        <label style="padding:8px 14px;background:#F0F7FF;border:1.5px solid #c7d9f5;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;color:#1A56DB;white-space:nowrap;display:flex;align-items:center;gap:5px">
-          <i class="fas fa-upload"></i> Upload
-          <input type="file" id="news-img-file" accept="image/*" style="display:none" onchange="uploadNewsImg(this)" />
-        </label>
-      </div>
-      <!-- Preview ảnh -->
-      <div id="news-img-preview" style="display:none;margin-top:6px;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;max-height:120px;text-align:center;background:#f8faff">
-        <img id="news-img-preview-el" src="" alt="" style="max-height:120px;max-width:100%;object-fit:contain" />
-      </div>
-      <div id="news-upload-status" style="font-size:11px;color:#64748b;margin-top:4px;display:none"></div>
-    </div>
-
-    <div class="field-row">
-      <div class="field"><label>Tên nguồn *</label><input id="news-source-name" type="text" placeholder="GENK.VN" /></div>
-      <div class="field"><label>Tag nguồn (CSS class)</label><input id="news-source-tag" type="text" placeholder="genk" /></div>
-    </div>
-    <div class="field-row">
-      <div class="field"><label>URL nguồn</label><input id="news-source-url" type="text" placeholder="https://genk.vn" /></div>
-      <div class="field"><label>Ngày đăng</label><input id="news-date" type="date" /></div>
-    </div>
-    <div class="field"><label>Trạng thái</label>
-      <select id="news-active"><option value="true">Hiển thị</option><option value="false">Ẩn</option></select>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeNewsModal()">Huỷ</button>
-      <button class="btn-save" onclick="saveNews()">Lưu</button>
-    </div>
-  </div>
-</div>
+<!-- NEWS MODAL removed — dùng inline editor trong page-news -->
 
 <!-- PROFILE MODAL -->
 <div class="profile-overlay" id="profile-overlay" onclick="if(event.target===this)closeProfile()">
@@ -1958,111 +2703,195 @@
 
 <!-- BLOG POST MODAL -->
 <div class="modal-overlay" id="blog-modal">
-  <div class="modal-box" style="width:900px;max-width:98vw;padding:32px 36px">
-    <div class="modal-title" id="blog-modal-title">Thêm bài viết Blog</div>
-    <input type="hidden" id="blog-id" />
+  <div class="modal-box blog-modal-box">
 
-    <!-- Row 1: tiêu đề + slug -->
-    <div class="field-row">
-      <div class="field" style="flex:2"><label>Tiêu đề *</label><input id="blog-title" type="text" placeholder="Tiêu đề bài viết..." oninput="autoSlug()" /></div>
-      <div class="field" style="flex:1"><label>Slug URL</label><input id="blog-slug" type="text" placeholder="tieu-de-bai-viet" oninput="blogSlugManual=true" /></div>
+    <!-- Header -->
+    <div class="blog-modal-header">
+      <div class="modal-title" id="blog-modal-title" style="margin:0">Thêm bài viết Blog</div>
+      <button class="blog-modal-close" onclick="closeModal('blog-modal')">✕</button>
     </div>
 
-    <!-- Row: từ khóa -->
-    <div class="field-row">
-      <div class="field"><label>Từ khóa chính <span style="color:#94a3b8;font-weight:400">(dùng cho SEO)</span></label><input id="blog-keyword" type="text" placeholder="VD: AI Agent cho doanh nghiệp" /></div>
-      <div class="field"><label>Từ khóa phụ <span style="color:#94a3b8;font-weight:400">(cách nhau bởi dấu phẩy)</span></label><input id="blog-secondary-kw" type="text" placeholder="VD: chatbot AI, tự động hóa" /></div>
-    </div>
+    <!-- PHẦN TRÊN: Metadata -->
+    <div class="blog-meta-wrap">
+      <input type="hidden" id="blog-id" />
 
-    <!-- Row 2: 2 cột — tóm tắt + ảnh -->
-    <div class="field-row" style="align-items:start">
-      <div class="field" style="flex:1">
-        <label>Đoạn tóm tắt</label>
-        <textarea id="blog-excerpt" data-rich placeholder="Tóm tắt 2-3 câu..." style="min-height:100px"></textarea>
+      <!-- Row 1: tiêu đề + slug -->
+      <div class="field-row" style="grid-template-columns:2fr 1fr;gap:10px">
+        <div class="field" style="margin:0">
+          <label>Tiêu đề bài viết *</label>
+          <input id="blog-title" type="text" placeholder="Tiêu đề bài viết..."
+            oninput="autoSlug();blogCharCount('blog-title','cnt-title',30,70);updateSeoWorkflow()" />
+          <span class="char-cnt ok" id="cnt-title">0 ký tự</span>
+        </div>
+        <div class="field" style="margin:0">
+          <label>Slug URL</label>
+          <input id="blog-slug" type="text" placeholder="tieu-de-bai-viet"
+            oninput="blogSlugManual=true;blogCharCount('blog-slug','cnt-slug',0,70)" />
+          <span class="char-cnt" id="cnt-slug">0 ký tự</span>
+        </div>
       </div>
-      <div class="field" style="flex:1">
-        <!-- Tạo ảnh AI -->
-        <label style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
-          <i class="fas fa-image" style="color:#1A56DB"></i> Tạo ảnh AI
-          <span style="font-size:.7rem;background:#e8fdf0;color:#00B341;padding:2px 7px;border-radius:20px;font-weight:700">FREE</span>
-        </label>
-        <div style="display:flex;gap:6px;margin-bottom:6px">
-          <input id="blog-ai-img-prompt" type="text" placeholder="VD: doanh nghiệp dùng AI màu xanh" style="flex:1;font-size:12px" />
-          <button type="button" onclick="genBlogAiImg()" id="btn-gen-blog-img"
-            style="padding:7px 12px;background:#1A56DB;color:white;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">
-            <i class="fas fa-wand-magic-sparkles"></i> Tạo
-          </button>
+
+      <!-- Row 2: từ khóa -->
+      <div class="field-row" style="gap:10px;margin-top:10px">
+        <div class="field" style="margin:0">
+          <label>Từ khóa chính <span style="color:#94a3b8;font-weight:400">(quan trọng nhất cho SEO)</span></label>
+          <input id="blog-keyword" type="text" placeholder="VD: AI Agent cho doanh nghiệp"
+            oninput="blogCharCount('blog-keyword','cnt-kw',5,50);updateSeoWorkflow()" />
+          <span class="char-cnt ok" id="cnt-kw">0 ký tự</span>
         </div>
-        <div id="blog-ai-img-result" style="display:none;margin-bottom:6px">
-          <img id="blog-ai-img-preview" src="" alt="" style="width:100%;border-radius:6px;border:1px solid #e2e8f0;max-height:80px;object-fit:cover;display:block;margin-bottom:4px" />
-          <button type="button" onclick="useBlogAiImg()"
-            style="width:100%;padding:6px;background:#00B341;color:white;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">
-            <i class="fas fa-check"></i> Dùng ảnh này
-          </button>
+        <div class="field" style="margin:0">
+          <label>Từ khóa phụ <span style="color:#94a3b8;font-weight:400">(cách nhau bởi dấu phẩy)</span></label>
+          <input id="blog-secondary-kw" type="text" placeholder="VD: chatbot AI, tự động hóa"
+            oninput="blogCharCount('blog-secondary-kw','cnt-skw',0,100)" />
+          <span class="char-cnt" id="cnt-skw">0 ký tự</span>
         </div>
-        <div id="blog-ai-img-status" style="font-size:11px;color:#64748b;margin-bottom:4px"></div>
-        <label style="font-size:.78rem;font-weight:700;color:#334155;display:block;margin-bottom:4px">Hoặc nhập URL / upload</label>
-        <div style="display:flex;gap:8px;margin-bottom:6px">
-          <input id="blog-img" type="text" placeholder="URL ảnh thumbnail"
-            oninput="updateBlogImgPreview(this.value)" style="flex:1" />
-          <label style="padding:8px 12px;background:#F0F7FF;border:1.5px solid #c7d9f5;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;color:#1A56DB;white-space:nowrap;display:flex;align-items:center;gap:4px;flex-shrink:0">
-            <i class="fas fa-upload"></i> Upload
-            <input type="file" id="blog-img-file" accept="image/*" style="display:none" onchange="uploadBlogImg(this)" />
+      </div>
+
+      <!-- Row 3: tóm tắt + ảnh -->
+      <div class="field-row" style="gap:10px;margin-top:10px;align-items:start">
+        <div class="field" style="margin:0">
+          <label>Đoạn tóm tắt</label>
+          <textarea id="blog-excerpt" data-rich placeholder="Tóm tắt 140–160 ký tự dùng làm meta description..."
+            style="min-height:86px"
+            oninput="blogCharCount('blog-excerpt','cnt-excerpt',140,160);updateSeoWorkflow()"></textarea>
+          <span class="char-cnt ok" id="cnt-excerpt">0 ký tự</span>
+          <!-- SEO Title + Meta bên dưới tóm tắt -->
+          <div style="margin-top:10px">
+            <label>SEO Title <span style="font-weight:400;color:#94a3b8">50–60 ký tự</span></label>
+            <input id="blog-seo-title" type="text" placeholder="SEO Title..."
+              oninput="blogCharCount('blog-seo-title','cnt-seo-title',50,60);updateSeoWorkflow()" />
+            <span class="char-cnt ok" id="cnt-seo-title">0 ký tự</span>
+          </div>
+          <div style="margin-top:8px">
+            <label>Meta Description <span style="font-weight:400;color:#94a3b8">140–160 ký tự</span></label>
+            <textarea id="blog-meta-desc" style="min-height:52px" placeholder="Mô tả SEO ngắn gọn..."
+              oninput="blogCharCount('blog-meta-desc','cnt-meta',140,160);updateSeoWorkflow()"></textarea>
+            <span class="char-cnt ok" id="cnt-meta">0 ký tự</span>
+          </div>
+        </div>
+        <div class="field" style="margin:0">
+          <label style="display:flex;align-items:center;gap:6px">
+            <i class="fas fa-image" style="color:#1A56DB"></i> Ảnh đại diện bài viết
+            <span style="font-size:.7rem;background:#e8fdf0;color:#00B341;padding:2px 7px;border-radius:20px;font-weight:700">AI FREE</span>
           </label>
+          <div style="display:flex;gap:6px;margin-bottom:6px">
+            <input id="blog-ai-img-prompt" type="text" placeholder="Mô tả ảnh AI..." style="flex:1;font-size:12px" />
+            <button type="button" onclick="genBlogAiImg()" id="btn-gen-blog-img"
+              style="padding:7px 12px;background:#1A56DB;color:white;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">
+              <i class="fas fa-wand-magic-sparkles"></i> Tạo
+            </button>
+          </div>
+          <div id="blog-ai-img-result" style="display:none;margin-bottom:6px">
+            <img id="blog-ai-img-preview" src="" alt="" style="width:100%;border-radius:6px;border:1px solid #e2e8f0;max-height:80px;object-fit:cover;display:block;margin-bottom:4px" />
+            <button type="button" onclick="useBlogAiImg()"
+              style="width:100%;padding:6px;background:#00B341;color:white;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">
+              <i class="fas fa-check"></i> Dùng ảnh này
+            </button>
+          </div>
+          <div id="blog-ai-img-status" style="font-size:11px;color:#64748b;margin-bottom:4px"></div>
+          <div style="display:flex;gap:8px;margin-bottom:6px">
+            <input id="blog-img" type="text" placeholder="URL ảnh thumbnail"
+              oninput="updateBlogImgPreview(this.value)" style="flex:1;font-size:12px" />
+            <label style="padding:7px 10px;background:#F0F7FF;border:1.5px solid #c7d9f5;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;color:#1A56DB;white-space:nowrap;display:flex;align-items:center;gap:4px;flex-shrink:0">
+              <i class="fas fa-upload"></i> Upload
+              <input type="file" id="blog-img-file" accept="image/*" style="display:none" onchange="uploadBlogImg(this)" />
+            </label>
+          </div>
+          <div id="blog-img-preview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;max-height:80px;text-align:center;background:#f8faff;margin-bottom:4px">
+            <img id="blog-img-preview-el" src="" alt="" style="max-height:80px;max-width:100%;object-fit:contain" />
+          </div>
+          <div id="blog-upload-status" style="font-size:11px;color:#64748b;display:none"></div>
+          <input id="blog-img-alt" type="text" placeholder="Alt ảnh (mô tả ảnh)" style="margin-top:6px;font-size:12px" />
+          <!-- Danh mục / tác giả / ngày / trạng thái -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+            <div class="field" style="margin:0"><label>Danh mục</label>
+              <select id="blog-category">
+                <option value="Kiến thức AI">Kiến thức AI</option>
+                <option value="Hướng dẫn">Hướng dẫn</option>
+                <option value="Tin tức">Tin tức</option>
+                <option value="Case Study">Case Study</option>
+              </select>
+            </div>
+            <div class="field" style="margin:0"><label>Tác giả</label><input id="blog-author" type="text" value="ViAI Team" /></div>
+            <div class="field" style="margin:0"><label>Ngày đăng</label><input id="blog-date" type="date" /></div>
+            <div class="field" style="margin:0"><label>Trạng thái</label>
+              <select id="blog-active"><option value="true">Hiển thị</option><option value="false">Ẩn</option></select>
+            </div>
+          </div>
         </div>
-        <div id="blog-img-preview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;max-height:80px;text-align:center;background:#f8faff;margin-bottom:4px">
-          <img id="blog-img-preview-el" src="" alt="" style="max-height:80px;max-width:100%;object-fit:contain" />
-        </div>
-        <div id="blog-upload-status" style="font-size:11px;color:#64748b;display:none"></div>
-        <input id="blog-img-alt" type="text" placeholder="Alt ảnh (mô tả ảnh)" style="margin-top:6px" />
       </div>
     </div>
 
-    <!-- Nội dung markdown — full width, cao -->
-    <div class="field">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:6px">
-        <label style="margin:0">Nội dung bài viết (Markdown)</label>
-        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-          <span style="font-size:0.72rem;color:#94a3b8">## H2 | ### H3 | **đậm** | - list | 1. list | &gt; quote | --- | ![alt](url)</span>
-          <label id="btn-insert-img" style="padding:5px 12px;background:#EEF3FF;border:1.5px solid #c7d9f5;border-radius:6px;cursor:pointer;font-size:11px;font-weight:700;color:#1A56DB;display:inline-flex;align-items:center;gap:4px;white-space:nowrap">
+    <!-- SEO WORKFLOW PANEL -->
+    <div class="swp-wrap">
+      <div class="swp-header">
+        <div class="swp-title"><i class="fas fa-chart-line" style="font-size:11px"></i> SEO Workflow — kiểm tra chuẩn SEO</div>
+        <span class="swp-badge poor" id="swp-score-badge">0/8 điểm SEO</span>
+      </div>
+      <div class="swp-grid">
+        <div class="swp-item" id="swp-kw-exists"><span class="swp-icon">❌</span><span class="swp-text">Chưa nhập từ khóa</span></div>
+        <div class="swp-item" id="swp-kw-title"><span class="swp-icon">❌</span><span class="swp-text">Từ khóa chưa trong tiêu đề</span></div>
+        <div class="swp-item" id="swp-kw-first100"><span class="swp-icon">❌</span><span class="swp-text">Chưa có trong 100 từ đầu</span></div>
+        <div class="swp-item" id="swp-density"><span class="swp-icon">❌</span><span class="swp-text">Mật độ từ khóa: –</span></div>
+        <div class="swp-item" id="swp-headings"><span class="swp-icon">❌</span><span class="swp-text">Chưa có H2/H3</span></div>
+        <div class="swp-item" id="swp-words"><span class="swp-icon">❌</span><span class="swp-text">0 từ (cần ≥800)</span></div>
+        <div class="swp-item" id="swp-seo-title"><span class="swp-icon">❌</span><span class="swp-text">SEO Title: 0/60</span></div>
+        <div class="swp-item" id="swp-meta"><span class="swp-icon">❌</span><span class="swp-text">Meta Desc: 0/160</span></div>
+      </div>
+      <div class="swp-readtime" id="swp-readtime">📖 ~0 phút đọc · 0 từ</div>
+    </div>
+
+    <!-- PHẦN DƯỚI: Editor -->
+    <div class="blog-editor-wrap">
+      <div class="blog-editor-label">
+        <label style="font-size:.8rem;font-weight:700;color:var(--gray-600);margin:0">Nội dung bài viết (Markdown)</label>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <div class="blog-edit-tabs">
+            <button class="blog-edit-tab active" onclick="switchBlogEditorTab('write')">✏️ Viết</button>
+            <button class="blog-edit-tab" onclick="switchBlogEditorTab('preview')">👁 Xem trước</button>
+          </div>
+          <label id="btn-insert-img" style="padding:5px 10px;background:#EEF3FF;border:1.5px solid #c7d9f5;border-radius:6px;cursor:pointer;font-size:11px;font-weight:700;color:#1A56DB;display:inline-flex;align-items:center;gap:4px;white-space:nowrap">
             <i class="fas fa-image"></i> Chèn ảnh
             <input type="file" id="blog-content-img-file" accept="image/*" style="display:none" onchange="insertBlogImage(this)" />
           </label>
           <button type="button" onclick="improveBlogContent()" id="btn-improve-blog"
-            style="padding:5px 12px;background:#FFF3EC;border:1.5px solid #ffd5b5;border-radius:6px;font-size:11px;font-weight:700;color:#FF6B00;cursor:pointer;display:inline-flex;align-items:center;gap:4px;white-space:nowrap">
+            style="padding:5px 10px;background:#FFF3EC;border:1.5px solid #ffd5b5;border-radius:6px;font-size:11px;font-weight:700;color:#FF6B00;cursor:pointer;display:inline-flex;align-items:center;gap:4px;white-space:nowrap">
             <i class="fas fa-wand-magic-sparkles"></i> Cải thiện AI
           </button>
         </div>
       </div>
-      <textarea id="blog-content"
-        style="min-height:320px;width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:monospace;font-size:0.83rem;line-height:1.75;resize:vertical;outline:none;transition:border-color 0.2s;background:#fafbff"
-        placeholder="## Giới thiệu&#10;Nội dung bài viết...&#10;&#10;![Mô tả ảnh](https://...)&#10;&#10;## Phần 1&#10;Nội dung...&#10;&#10;| Cột 1 | Cột 2 | Cột 3 |&#10;|---|---|---|&#10;| Dữ liệu | Dữ liệu | Dữ liệu |&#10;&#10;## Kết luận&#10;..."
-        onfocus="this.style.borderColor='#FF6B00';this.style.background='#fff'"
-        onblur="this.style.borderColor='#e2e8f0';this.style.background='#fafbff'"></textarea>
-    </div>
 
-    <!-- Row: SEO title + meta desc -->
-    <div class="field-row">
-      <div class="field"><label>SEO Title <span style="font-weight:400;color:#94a3b8">(≤60 ký tự)</span></label><input id="blog-seo-title" type="text" placeholder="SEO Title..." /></div>
-      <div class="field"><label>Meta Description <span style="font-weight:400;color:#94a3b8">(140–160 ký tự)</span></label><textarea id="blog-meta-desc" style="min-height:56px" placeholder="Mô tả SEO ngắn gọn..."></textarea></div>
-    </div>
-
-    <!-- Row: danh mục + tác giả + ngày + trạng thái -->
-    <div class="field-row">
-      <div class="field"><label>Danh mục</label>
-        <select id="blog-category">
-          <option value="Kiến thức AI">Kiến thức AI</option>
-          <option value="Hướng dẫn">Hướng dẫn</option>
-          <option value="Tin tức">Tin tức</option>
-          <option value="Case Study">Case Study</option>
-        </select>
+      <!-- Toolbar markdown -->
+      <div class="blog-tb">
+        <button class="tb-btn tb-h" title="Heading 1 (chỉ dùng 1 lần)" onclick="blogInsertBlock('# ')">H1</button>
+        <button class="tb-btn tb-h" title="Heading 2" onclick="blogInsertBlock('## ')">H2</button>
+        <button class="tb-btn tb-h" title="Heading 3" onclick="blogInsertBlock('### ')">H3</button>
+        <button class="tb-btn tb-h" title="Heading 4" onclick="blogInsertBlock('#### ')">H4</button>
+        <div class="blog-tb-sep"></div>
+        <button class="tb-btn" title="Đậm" onclick="blogWrap('**','**')"><b>B</b></button>
+        <button class="tb-btn" title="Nghiêng" onclick="blogWrap('*','*')"><em>I</em></button>
+        <button class="tb-btn" title="Gạch ngang" onclick="blogWrap('~~','~~')"><s>S</s></button>
+        <div class="blog-tb-sep"></div>
+        <button class="tb-btn" title="Chèn link" onclick="blogInsertLink()">🔗 Link</button>
+        <div class="blog-tb-sep"></div>
+        <button class="tb-btn" title="Danh sách gạch đầu dòng" onclick="blogInsertBlock('- ')">• List</button>
+        <button class="tb-btn" title="Danh sách đánh số" onclick="blogInsertBlock('1. ')">1. List</button>
+        <div class="blog-tb-sep"></div>
+        <button class="tb-btn" title="Trích dẫn" onclick="blogInsertBlock('> ')">❝ Quote</button>
+        <button class="tb-btn" title="Đường kẻ ngang" onclick="blogInsertRaw('\n\n---\n\n')">— HR</button>
+        <button class="tb-btn" title="Code inline" onclick="blogWrap('`','`')" style="font-family:monospace">Code</button>
       </div>
-      <div class="field"><label>Tác giả</label><input id="blog-author" type="text" value="VIAi Team" /></div>
-      <div class="field"><label>Ngày đăng</label><input id="blog-date" type="date" /></div>
-      <div class="field"><label>Trạng thái</label><select id="blog-active"><option value="true">Hiển thị</option><option value="false">Ẩn</option></select></div>
+
+      <textarea id="blog-content"
+        style="min-height:320px;width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:0 0 10px 10px;border-top:none;font-family:monospace;font-size:0.83rem;line-height:1.75;resize:vertical;outline:none;transition:border-color 0.2s;background:#fafbff"
+        placeholder="## Giới thiệu&#10;Nội dung bài viết...&#10;&#10;## Phần 1&#10;Nội dung...&#10;&#10;## Kết luận&#10;..."
+        onfocus="this.style.borderColor='#FF6B00';this.style.background='#fff'"
+        onblur="this.style.borderColor='#e2e8f0';this.style.background='#fafbff'"
+        oninput="updateSeoWorkflow()"></textarea>
+      <div class="blog-preview-pane" id="blog-preview-pane"></div>
     </div>
 
-    <div class="modal-actions">
+    <div class="modal-actions" style="padding:0 28px 22px;margin:0">
       <button class="btn-cancel" onclick="closeModal('blog-modal')">Huỷ</button>
       <button class="btn-save" onclick="saveBlogPost()"><i class="fas fa-save"></i> Lưu bài viết</button>
     </div>
@@ -2081,7 +2910,7 @@
       </div>
     </div>
     <div class="field"><label>Tiêu đề *</label><input id="why-title" type="text" /></div>
-    <div class="field"><label>Mô tả</label><textarea id="why-desc" data-rich placeholder="Mô tả lý do chọn VIAi..."></textarea></div>
+    <div class="field"><label>Mô tả</label><textarea id="why-desc" data-rich placeholder="Mô tả lý do chọn ViAI..."></textarea></div>
     <div class="field-row">
       <div class="field"><label>Thứ tự</label><input id="why-order" type="number" /></div>
       <div class="field"><label>Trạng thái</label><select id="why-active"><option value="true">Hiển thị</option><option value="false">Ẩn</option></select></div>
@@ -2135,45 +2964,14 @@
   </div>
 </div>
 
-<!-- GALLERY MODAL -->
-<div class="modal-overlay" id="gallery-modal">
-  <div class="modal-box">
-    <div class="modal-title" id="gallery-modal-title">Thêm ảnh</div>
-    <input type="hidden" id="gallery-id" />
-    <div class="field">
-      <label>Ảnh *</label>
-      <div style="display:flex;gap:8px;margin-bottom:8px">
-        <input id="gallery-img" type="text" placeholder="anhthucte/ten-anh.jpg hoặc upload bên phải"
-          oninput="updateGalleryPreview(this.value)" />
-        <label style="padding:8px 14px;background:#F0F7FF;border:1.5px solid #c7d9f5;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;color:#1A56DB;white-space:nowrap;display:flex;align-items:center;gap:5px;flex-shrink:0">
-          <i class="fas fa-upload"></i> Upload
-          <input type="file" id="gallery-img-file" accept="image/*" style="display:none" onchange="uploadGalleryImg(this)" />
-        </label>
-      </div>
-      <div id="gallery-img-preview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;max-height:140px;text-align:center;background:#f8faff">
-        <img id="gallery-img-preview-el" src="" alt="" style="max-height:140px;max-width:100%;object-fit:contain" />
-      </div>
-      <div id="gallery-upload-status" style="font-size:11px;color:#64748b;margin-top:4px;display:none"></div>
-    </div>
-    <div class="field"><label>Caption (chú thích)</label><input id="gallery-caption" type="text" /></div>
-    <div class="field"><label>Alt text</label><input id="gallery-alt" type="text" /></div>
-    <div class="field-row">
-      <div class="field"><label>Thứ tự</label><input id="gallery-order" type="number" /></div>
-      <div class="field"><label>Trạng thái</label><select id="gallery-active"><option value="true">Hiển thị</option><option value="false">Ẩn</option></select></div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('gallery-modal')">Huỷ</button>
-      <button class="btn-save" onclick="saveGallery()">Lưu</button>
-    </div>
-  </div>
-</div>
+<!-- GALLERY MODAL removed — dùng inline editor trong page-gallery -->
 
 
 <div class="toast" id="toast"></div>
 
 <script>
   const API = '/admin-api';
-  let token = sessionStorage.getItem('viai_token');
+  let token = sessionStorage.getItem('ViAI_token');
   const badgeLabels = { hot:'HOT', pop:'PHỔ BIẾN', new:'MỚI', beta:'BETA' };
   let currentSeoDraft = null;
 
@@ -2216,7 +3014,7 @@
       return;
     }
     token = data.token;
-    sessionStorage.setItem('viai_token', token);
+    sessionStorage.setItem('ViAI_token', token);
     showApp();
   }
 
@@ -2286,7 +3084,7 @@
   }
 
   function doLogout() {
-    sessionStorage.removeItem('viai_token');
+    sessionStorage.removeItem('ViAI_token');
     window.location.href = '/login.html';
   }
 
@@ -2299,7 +3097,7 @@
     try {
       const r = await fetch(url, opts);
       if (r.status === 401) {
-        sessionStorage.removeItem('viai_token');
+        sessionStorage.removeItem('ViAI_token');
         token = null;
         document.getElementById('app').style.display = 'none';
         document.getElementById('login-screen').style.display = 'flex';
@@ -2588,8 +3386,9 @@ if (p === 'site-settings') loadSettings();
               <td style="padding:10px 12px;font-size:11px;color:#64748b;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escH(srcPage)}">${escH(srcPage)}</td>
               <td style="padding:10px 12px;font-size:11px;color:#94a3b8">${lastLogin}</td>
               <td style="padding:10px 12px;text-align:center">${statusBadge}</td>
-              <td style="padding:10px 12px;text-align:center">
+              <td style="padding:10px 12px;text-align:center;white-space:nowrap">
                 <button onclick='openUserModal(${JSON.stringify(u)})' class="btn" style="height:26px;font-size:11px;background:#EEF3FF;color:var(--primary)"><i class="fas fa-eye"></i></button>
+                <button onclick='if(confirm("Xóa tài khoản ${escH(u.name||"")}?"))deleteUser(${u.id})' class="btn" style="height:26px;font-size:11px;background:#FEF2F2;color:#E52222;margin-left:4px"><i class="fas fa-trash"></i></button>
               </td>
             </tr>`;
           }).join('')
@@ -2982,7 +3781,7 @@ if (p === 'site-settings') loadSettings();
     }
     tbody.innerHTML = products.map(p => `
       <tr>
-        <td style="font-size:1.3rem">${p.icon}</td>
+        <td style="min-width:44px">${renderIcon(p.icon)}</td>
         <td><strong>${p.name}</strong></td>
         <td>${p.category}</td>
         <td>${p.badge_type ? `<span class="badge badge-${p.badge_type}">${badgeLabels[p.badge_type]||p.badge}</span>` : '—'}</td>
@@ -2995,46 +3794,186 @@ if (p === 'site-settings') loadSettings();
       </tr>`).join('');
   }
 
+  let _pieSelectedIcon = '🤖';
+  let _pieSelectedColor = 'blue';
+
   function openProdModal(p) {
-    document.getElementById('prod-modal-title').textContent = p ? 'Sửa AI Agent' : 'Thêm AI Agent';
-    document.getElementById('prod-id').value         = p?.id || '';
-    document.getElementById('prod-icon').value       = p?.icon || '🤖';
-    document.getElementById('prod-icon-color').value = p?.icon_color || 'blue';
-    document.getElementById('prod-name').value       = p?.name || '';
-    setField('prod-desc', p?.description || '');
-    document.getElementById('prod-cat').value        = p?.category || 'all';
-    document.getElementById('prod-badge-type').value = p?.badge_type || '';
-    document.getElementById('prod-users').value      = p?.users_count || '';
-    document.getElementById('prod-order').value      = p?.order_index || '';
-    document.getElementById('prod-link').value       = p?.link || '#';
-    document.getElementById('prod-active').value     = p?.active !== false ? 'true' : 'false';
-    document.getElementById('prod-modal').classList.add('open');
+    _pieSelectedIcon  = p?.icon || '🤖';
+    _pieSelectedColor = p?.icon_color || 'blue';
+
+    document.getElementById('pie-id').value     = p?.id || '';
+    document.getElementById('pie-name').value   = p?.name || '';
+    document.getElementById('pie-desc').value   = p?.description || '';
+    document.getElementById('pie-cat').value    = p?.category || 'all';
+    document.getElementById('pie-badge').value  = p?.badge_type || '';
+    document.getElementById('pie-users').value  = p?.users_count || '';
+    document.getElementById('pie-order').value  = p?.order_index || '';
+    document.getElementById('pie-link').value   = p?.link || (p ? '#' : '');
+    document.getElementById('pie-active').value = p?.active !== false ? 'true' : 'false';
+    const isImgIcon = _pieSelectedIcon && _pieSelectedIcon.startsWith('http');
+    document.getElementById('pie-icon-custom').value = isImgIcon ? '(ảnh AI)' : _pieSelectedIcon;
+    pieUpdateIconPreview(_pieSelectedIcon);
+    document.getElementById('pie-title-label').textContent = p ? `Đang sửa: ${p.name}` : 'Thêm AI Agent mới';
+    document.getElementById('pie-ai-icon-design').style.display = 'none';
+
+    // Highlight emoji đang chọn
+    document.querySelectorAll('.pie-emoji-btn').forEach(btn => {
+      btn.classList.toggle('selected', btn.textContent.trim() === _pieSelectedIcon);
+    });
+    // Highlight màu đang chọn
+    document.querySelectorAll('.pie-color-btn').forEach(btn => {
+      btn.classList.toggle('selected', btn.dataset.color === _pieSelectedColor);
+    });
+
+    const editor = document.getElementById('prod-inline-editor');
+    editor.classList.add('open');
+    setTimeout(() => editor.scrollIntoView({ behavior:'smooth', block:'start' }), 50);
+  }
+
+  function closeProdModal() { document.getElementById('prod-inline-editor').classList.remove('open'); }
+  function closeProdInlineEditor() { closeProdModal(); }
+
+  function renderIcon(icon) {
+    if (!icon) return '🤖';
+    if (icon.startsWith('http')) return `<img src="${icon}" style="width:36px;height:36px;object-fit:cover;border-radius:8px;vertical-align:middle">`;
+    return `<span style="font-size:1.3rem">${icon}</span>`;
+  }
+
+  function pieUpdateIconPreview(icon) {
+    const el = document.getElementById('pie-icon-preview');
+    if (!icon) { el.innerHTML = '🤖'; return; }
+    if (icon.startsWith('http')) {
+      el.innerHTML = `<img src="${icon}" style="width:40px;height:40px;object-fit:cover;border-radius:10px;border:2px solid #7c3aed">`;
+    } else {
+      el.innerHTML = icon;
+    }
+  }
+
+  function pieSelectEmoji(btn, emoji) {
+    _pieSelectedIcon = emoji;
+    document.querySelectorAll('.pie-emoji-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById('pie-icon-custom').value = emoji;
+    pieUpdateIconPreview(emoji);
+    document.getElementById('pie-ai-icon-design').style.display = 'none';
+  }
+
+  function pieCustomEmoji(input) {
+    const val = input.value.trim();
+    if (val) {
+      _pieSelectedIcon = val;
+      pieUpdateIconPreview(val);
+      document.querySelectorAll('.pie-emoji-btn').forEach(b => b.classList.remove('selected'));
+    }
+  }
+
+  function pieSelectColor(btn, color) {
+    _pieSelectedColor = color;
+    document.querySelectorAll('.pie-color-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function pieAutoLink() {
+    const name = document.getElementById('pie-name').value.trim();
+    const linkEl = document.getElementById('pie-link');
+    if (!linkEl.dataset.manual) {
+      const slug = name.normalize('NFD').replace(/[̀-ͯ]/g,'')
+        .replace(/đ/gi,'d').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,60);
+      linkEl.value = slug ? `/san-pham/${slug}` : '';
+    }
   }
 
   function editProd(id) { openProdModal(products.find(p => p.id === id)); }
-  function closeProdModal() { document.getElementById('prod-modal').classList.remove('open'); }
 
-  async function saveProd() {
-    if (!validate([{ id:'prod-name', label:'Tên Agent' }])) return;
-    const id = document.getElementById('prod-id').value;
+  async function aiSuggestIcon() {
+    const name = document.getElementById('pie-name').value.trim();
+    if (!name) { toast('Nhập tên Agent trước để AI gợi ý emoji'); return; }
+    const btn = document.getElementById('btn-ai-suggest');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tìm...';
+    btn.disabled = true;
+    try {
+      const r = await safeFetch(`${API}/suggest-emoji`, {
+        method: 'POST', headers: hdr(),
+        body: JSON.stringify({ name, desc: document.getElementById('pie-desc').value })
+      });
+      if (!r) throw new Error('no response');
+      const data = await r.json();
+      const row = document.getElementById('pie-ai-emoji-row');
+      row.innerHTML = (data.emojis || []).map(e =>
+        `<button class="pie-emoji-btn" style="width:42px;height:42px;font-size:1.4rem" onclick="pieSelectEmoji(this,'${e}')" title="${e}">${e}</button>`
+      ).join('');
+      document.getElementById('pie-ai-name-hint').textContent = name;
+      document.getElementById('pie-ai-suggestions').style.display = 'block';
+      document.getElementById('pie-ai-icon-design').style.display = 'none';
+    } catch(e) { toast('Không lấy được gợi ý emoji'); }
+    btn.innerHTML = '<i class="fas fa-magic"></i> Gợi ý emoji';
+    btn.disabled = false;
+  }
+
+  async function aiDesignIcon() {
+    const name = document.getElementById('pie-name').value.trim();
+    if (!name) { toast('Nhập tên Agent trước để AI thiết kế icon'); return; }
+    const btn = document.getElementById('btn-ai-design');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
+    btn.disabled = true;
+
+    const prompt = encodeURIComponent(`icon for "${name}" concept, flat 3D style, vibrant gradient colors, white clean background, no text, no letters, minimal shapes, professional app icon, high quality`);
+    const seed = Math.floor(Math.random() * 999999);
+    const url = `https://image.pollinations.ai/prompt/${prompt}?width=200&height=200&nologo=true&seed=${seed}`;
+
+    document.getElementById('pie-ai-design-name').textContent = name;
+    document.getElementById('pie-ai-icon-design').dataset.iconUrl = url;
+    document.getElementById('pie-ai-icon-design').style.display = 'block';
+    document.getElementById('pie-ai-suggestions').style.display = 'none';
+
+    const img = document.getElementById('pie-ai-icon-img');
+    const loading = document.getElementById('pie-ai-icon-loading');
+    loading.style.display = 'flex';
+    img.src = '';
+    img.onload = () => { loading.style.display = 'none'; };
+    img.onerror = () => { loading.style.display = 'none'; toast('Không tạo được icon, thử lại nhé'); };
+    img.src = url;
+
+    btn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> AI thiết kế';
+    btn.disabled = false;
+  }
+
+  function pieUseAiIcon() {
+    const url = document.getElementById('pie-ai-icon-design').dataset.iconUrl;
+    if (!url) return;
+    _pieSelectedIcon = url;
+    pieUpdateIconPreview(url);
+    document.getElementById('pie-icon-custom').value = '(ảnh AI)';
+    document.querySelectorAll('.pie-emoji-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('pie-ai-icon-design').style.display = 'none';
+    toast('Đã chọn icon AI thiết kế ✨');
+  }
+
+  async function saveProdInline() {
+    const name = document.getElementById('pie-name').value.trim();
+    if (!name) { toast('Vui lòng nhập tên Agent'); document.getElementById('pie-name').focus(); return; }
+    const id = document.getElementById('pie-id').value;
+    const badgeType = document.getElementById('pie-badge').value;
     const body = {
-      name:        document.getElementById('prod-name').value,
-      description: getField('prod-desc'),
-      icon:        document.getElementById('prod-icon').value,
-      icon_color:  document.getElementById('prod-icon-color').value,
-      badge_type:  document.getElementById('prod-badge-type').value || null,
-      badge:       badgeLabels[document.getElementById('prod-badge-type').value] || null,
-      category:    document.getElementById('prod-cat').value,
-      users_count: parseInt(document.getElementById('prod-users').value) || 0,
-      order_index: parseInt(document.getElementById('prod-order').value) || 0,
-      link:        document.getElementById('prod-link').value,
-      active:      document.getElementById('prod-active').value === 'true',
+      name,
+      description: document.getElementById('pie-desc').value,
+      icon:        _pieSelectedIcon,
+      icon_color:  _pieSelectedColor,
+      badge_type:  badgeType || null,
+      badge:       badgeLabels[badgeType] || null,
+      category:    document.getElementById('pie-cat').value,
+      users_count: parseInt(document.getElementById('pie-users').value) || 0,
+      order_index: parseInt(document.getElementById('pie-order').value) || 1,
+      link:        document.getElementById('pie-link').value || '#',
+      active:      document.getElementById('pie-active').value === 'true',
     };
-    await fetch(id ? `${API}/products/${id}` : `${API}/products`, {
+    const r = await safeFetch(id ? `${API}/products/${id}` : `${API}/products`, {
       method: id ? 'PUT' : 'POST', headers: hdr(), body: JSON.stringify(body)
     });
-    closeProdModal(); loadProducts(); toast(id ? 'Đã cập nhật Agent' : 'Đã thêm Agent mới');
+    if (r) { closeProdModal(); loadProducts(); toast(id ? 'Đã cập nhật Agent' : 'Đã thêm Agent mới'); }
   }
+
+  async function saveProd() { await saveProdInline(); }
 
   async function delProd(id) {
     if (!confirm('Xoá Agent này?')) return;
@@ -3068,28 +4007,55 @@ if (p === 'site-settings') loadSettings();
   }
 
   function openNewsModal(n) {
-    document.getElementById('news-modal-title').textContent  = n ? 'Sửa bài viết' : 'Thêm bài viết';
-    document.getElementById('news-id').value          = n?.id || '';
-    document.getElementById('news-title').value       = n?.title || '';
-    setField('news-excerpt', n?.excerpt || '');
-    document.getElementById('news-img').value         = n?.image_url || '';
-    document.getElementById('news-source-name').value = n?.source_name || '';
-    document.getElementById('news-source-tag').value  = n?.source_tag || '';
-    document.getElementById('news-source-url').value  = n?.source_url || '';
-    document.getElementById('news-date').value        = n?.published_at ? n.published_at.slice(0,10) : '';
-    document.getElementById('news-active').value      = n?.active !== false ? 'true' : 'false';
-    document.getElementById('news-modal').classList.add('open');
+    document.getElementById('nie-title-label').textContent = n ? `Đang sửa: ${n.title || 'bài viết'}` : 'Thêm bài viết mới';
+    document.getElementById('nie-id').textContent          = n?.id || '';
+    // Canvas
+    document.getElementById('nie-title-canvas').innerText  = n?.title || '';
+    document.getElementById('nie-excerpt-canvas').innerHTML = n?.excerpt || '';
+    // Hero image
+    nieUpdateHero(n?.image_url || '');
+    // Badge + URL hint
+    document.getElementById('nie-badge-source').textContent    = n?.source_name || '';
+    document.getElementById('nie-source-url-hint').textContent = n?.source_url || '';
+    // Metadata fields
+    document.getElementById('news-img').value          = n?.image_url || '';
+    document.getElementById('news-source-name').value  = n?.source_name || '';
+    document.getElementById('news-source-tag').value   = n?.source_tag || '';
+    document.getElementById('news-source-url').value   = n?.source_url || '';
+    document.getElementById('news-date').value         = n?.published_at ? n.published_at.slice(0,10) : '';
+    document.getElementById('news-active').value       = n?.active !== false ? 'true' : 'false';
+    // Reset fetch nếu thêm mới
+    if (!n) { document.getElementById('news-fetch-url').value = ''; document.getElementById('fetch-status').style.display = 'none'; }
+    // Mở metadata nếu thêm mới, đóng nếu đang sửa
+    const mc = document.getElementById('nie-meta-collapse');
+    if (!n) mc.classList.add('open'); else mc.classList.remove('open');
+    // Mở editor
+    const editor = document.getElementById('news-inline-editor');
+    editor.classList.add('open');
+    setTimeout(() => editor.scrollIntoView({ behavior:'smooth', block:'start' }), 50);
+  }
+
+  function nieUpdateHero(src) {
+    const hero = document.getElementById('nie-hero-img');
+    if (src) { hero.src = src; hero.style.display = 'block'; }
+    else      { hero.style.display = 'none'; }
   }
 
   function editNews(id) { openNewsModal(newsList.find(n => n.id === id)); }
-  function closeNewsModal() { document.getElementById('news-modal').classList.remove('open'); }
+  function closeNewsModal() {
+    document.getElementById('news-inline-editor').classList.remove('open');
+  }
+  function closeNewsInlineEditor() { closeNewsModal(); }
 
   async function saveNews() {
-    if (!validate([{ id:'news-title', label:'Tiêu đề' }, { id:'news-source-name', label:'Tên nguồn' }])) return;
-    const id = document.getElementById('news-id').value;
+    const title = document.getElementById('nie-title-canvas').innerText.trim();
+    const srcName = document.getElementById('news-source-name').value.trim();
+    if (!title)   { toast('⚠️ Vui lòng nhập tiêu đề'); document.getElementById('nie-title-canvas').focus(); return; }
+    if (!srcName) { toast('⚠️ Vui lòng nhập tên nguồn'); document.getElementById('nie-meta-collapse').classList.add('open'); document.getElementById('news-source-name').focus(); return; }
+    const id = document.getElementById('nie-id').textContent.trim();
     const body = {
-      title:        document.getElementById('news-title').value,
-      excerpt:      getField('news-excerpt'),
+      title,
+      excerpt:      document.getElementById('nie-excerpt-canvas').innerHTML,
       image_url:    document.getElementById('news-img').value,
       source_name:  document.getElementById('news-source-name').value,
       source_tag:   document.getElementById('news-source-tag').value,
@@ -3341,9 +4307,14 @@ if (p === 'site-settings') loadSettings();
     document.getElementById('gallery-count').textContent = `${galleryList.length} ảnh`;
     document.getElementById('gallery-tbody').innerHTML = galleryList.map(g => `
       <tr>
-        <td><img src="/${g.image_url}" style="height:44px;width:70px;object-fit:cover;border-radius:5px" onerror="this.style.display='none'" /></td>
-        <td>${g.caption||''}</td>
-        <td>${g.order_index}</td>
+        <td style="width:90px">
+          ${g.image_url
+            ? `<img src="${g.image_url.startsWith('http')?'':'/'}${g.image_url}" style="height:52px;width:80px;object-fit:cover;border-radius:6px;border:1px solid #e2e8f0" onerror="this.outerHTML='<div style=\\'height:52px;width:80px;border-radius:6px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:18px;border:1px solid #e2e8f0\\'><i class=\\'fas fa-image\\'></i></div>'" />`
+            : `<div style="height:52px;width:80px;border-radius:6px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;color:#cbd5e1;font-size:18px;border:1px dashed #e2e8f0"><i class="fas fa-image"></i></div>`
+          }
+        </td>
+        <td>${g.caption||'<span style="color:#cbd5e1;font-style:italic">Chưa có caption</span>'}</td>
+        <td style="text-align:center">${g.order_index}</td>
         <td><span class="badge badge-${g.active?'active':'inactive'}">${g.active?'Hiển thị':'Ẩn'}</span></td>
         <td class="actions">
           <button class="btn-edit" onclick="editGallery(${g.id})"><i class="fas fa-edit"></i> Sửa</button>
@@ -3352,55 +4323,110 @@ if (p === 'site-settings') loadSettings();
       </tr>`).join('');
   }
   function openGalleryModal(g) {
-    document.getElementById('gallery-modal-title').textContent = g ? 'Sửa ảnh' : 'Thêm ảnh';
-    document.getElementById('gallery-id').value      = g?.id||'';
-    document.getElementById('gallery-img').value     = g?.image_url||'';
-    document.getElementById('gallery-caption').value = g?.caption||'';
-    document.getElementById('gallery-alt').value     = g?.alt_text||'';
-    document.getElementById('gallery-order').value   = g?.order_index||'';
-    document.getElementById('gallery-active').value  = g?.active!==0?'true':'false';
-    document.getElementById('gallery-upload-status').style.display = 'none';
-    document.getElementById('gallery-img-file').value = '';
-    updateGalleryPreview(g?.image_url||'');
-    openModal('gallery-modal');
-  }
-  function editGallery(id) { openGalleryModal(galleryList.find(g=>g.id===id)); }
-  async function saveGallery() {
-    if (!validate([{ id:'gallery-img', label:'URL ảnh' }])) return;
-    const id = document.getElementById('gallery-id').value;
-    const body = { image_url:document.getElementById('gallery-img').value, caption:document.getElementById('gallery-caption').value, alt_text:document.getElementById('gallery-alt').value, order_index:+document.getElementById('gallery-order').value||0, active:document.getElementById('gallery-active').value==='true' };
-    await fetch(id?`${API}/gallery/${id}`:`${API}/gallery`, { method:id?'PUT':'POST', headers:hdr(), body:JSON.stringify(body) });
-    closeModal('gallery-modal'); loadGallery(); toast(id?'Đã cập nhật':'Đã thêm ảnh mới');
-  }
-  function updateGalleryPreview(src) {
-    const wrap = document.getElementById('gallery-img-preview');
-    const img  = document.getElementById('gallery-img-preview-el');
-    if (src) { img.src = src; wrap.style.display = 'block'; }
-    else      { wrap.style.display = 'none'; }
+    document.getElementById('gie-title-label').textContent = g ? `Đang sửa ảnh #${g.id}` : 'Thêm ảnh mới';
+    document.getElementById('gie-id').textContent   = g?.id || '';
+    document.getElementById('gie-img-url').value    = g?.image_url || '';
+    document.getElementById('gie-caption').value    = g?.caption || '';
+    document.getElementById('gie-alt').value        = g?.alt_text || '';
+    document.getElementById('gie-order').value      = g?.order_index ?? '';
+    document.getElementById('gie-active').value     = g?.active !== false ? 'true' : 'false';
+    document.getElementById('gie-upload-status').style.display = 'none';
+    // Preview nếu sửa
+    gieUpdatePreview(g?.image_url || '');
+    // Mở editor
+    const editor = document.getElementById('gallery-inline-editor');
+    editor.style.display = 'block';
+    setTimeout(() => editor.scrollIntoView({ behavior:'smooth', block:'start' }), 50);
   }
 
-  async function uploadGalleryImg(input) {
-    if (!input.files[0]) return;
-    const statusEl = document.getElementById('gallery-upload-status');
+  function closeGalleryEditor() {
+    document.getElementById('gallery-inline-editor').style.display = 'none';
+  }
+
+  function gieUpdatePreview(src) {
+    const wrap = document.getElementById('gie-preview-wrap');
+    const img  = document.getElementById('gie-preview-img');
+    if (src) {
+      const full = src.startsWith('http') ? src : '/' + src.replace(/^\//, '');
+      img.src = full; wrap.style.display = 'block';
+      document.getElementById('gie-upload-zone').style.display = 'none';
+    } else {
+      wrap.style.display = 'none';
+      document.getElementById('gie-upload-zone').style.display = 'flex';
+    }
+  }
+
+  function editGallery(id) { openGalleryModal(galleryList.find(g=>g.id===id)); }
+
+  async function saveGallery() {
+    const url = document.getElementById('gie-img-url').value.trim();
+    if (!url) { toast('⚠️ Chưa có ảnh — upload hoặc dán URL trước'); return; }
+    const id  = document.getElementById('gie-id').textContent.trim();
+    const body = {
+      image_url:   url,
+      caption:     document.getElementById('gie-caption').value,
+      alt_text:    document.getElementById('gie-alt').value,
+      order_index: +document.getElementById('gie-order').value || 0,
+      active:      document.getElementById('gie-active').value === 'true',
+    };
+    const r = await safeFetch(id ? `${API}/gallery/${id}` : `${API}/gallery`, {
+      method: id ? 'PUT' : 'POST', headers: hdr(), body: JSON.stringify(body)
+    });
+    if (r) { closeGalleryEditor(); loadGallery(); toast(id ? 'Đã cập nhật ảnh' : 'Đã thêm ảnh mới ✅'); }
+  }
+
+  async function uploadGalleryImgNew(file) {
+    if (!file) return;
+    const statusEl = document.getElementById('gie-upload-status');
     statusEl.style.display = 'block';
-    statusEl.style.color   = '#64748b';
+    statusEl.style.color   = '#1A56DB';
     statusEl.textContent   = '⏳ Đang upload...';
     const formData = new FormData();
-    formData.append('file', input.files[0]);
+    formData.append('file', file);
     try {
       const r    = await fetch(`${API}/upload`, { method:'POST', headers:{ 'Authorization': `Bearer ${token}` }, body: formData });
       const data = await r.json();
       if (!r.ok) throw new Error(data.error);
-      document.getElementById('gallery-img').value = data.url;
-      updateGalleryPreview(data.url);
-      if (!document.getElementById('gallery-alt').value)
-        document.getElementById('gallery-alt').value = input.files[0].name.replace(/\.[^.]+$/, '');
+      document.getElementById('gie-img-url').value = data.url;
+      gieUpdatePreview(data.url);
       statusEl.style.color = '#00B341';
       statusEl.textContent = '✅ Upload thành công!';
+      // AI tự điền caption & alt
+      aiGalleryCaptionAuto(file.name, data.url);
     } catch (e) {
       statusEl.style.color = '#E52222';
       statusEl.textContent = '❌ ' + e.message;
     }
+  }
+
+  async function aiGalleryCaptionAuto(filename, url) {
+    const aiStatus = document.getElementById('gie-ai-status');
+    aiStatus.style.display = 'inline';
+    try {
+      const r = await safeFetch(`${API}/ai-gallery-caption`, {
+        method: 'POST', headers: hdr(),
+        body: JSON.stringify({ filename, url })
+      });
+      if (r) {
+        const data = await r.json();
+        if (data.caption) document.getElementById('gie-caption').value = data.caption;
+        if (data.alt)     document.getElementById('gie-alt').value     = data.alt;
+      }
+    } catch(_) {
+      // fallback: dùng tên file
+      const name = filename.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+      document.getElementById('gie-caption').value = name.charAt(0).toUpperCase() + name.slice(1);
+      document.getElementById('gie-alt').value     = 'ViAI - ' + name;
+    }
+    aiStatus.style.display = 'none';
+  }
+
+  async function aiGalleryCaption() {
+    const filename = document.getElementById('gie-img-url').value.split('/').pop() || '';
+    const url      = document.getElementById('gie-img-url').value;
+    if (!url) { toast('Upload ảnh trước để AI gợi ý'); return; }
+    await aiGalleryCaptionAuto(filename, url);
+    toast('AI đã cập nhật caption & alt ✨');
   }
 
   async function delGallery(id) { if(!confirm('Xoá ảnh này?'))return; await fetch(`${API}/gallery/${id}`,{method:'DELETE',headers:hdr()}); loadGallery(); toast('Đã xoá'); }
@@ -3495,18 +4521,32 @@ if (p === 'site-settings') loadSettings();
       const data = await r.json();
       if (data.error) throw new Error(data.error);
 
-      if (data.title)    document.getElementById('news-title').value       = data.title;
-      if (data.excerpt)  setField('news-excerpt', data.excerpt);
-      if (data.image)  { document.getElementById('news-img').value         = data.image; updateImgPreview(data.image); }
-      if (data.siteName) document.getElementById('news-source-name').value = data.siteName.toUpperCase();
-      if (data.date)     document.getElementById('news-date').value        = data.date;
+      if (data.title) {
+        document.getElementById('nie-title-canvas').innerText = data.title;
+        blogCharCount('nie-title-canvas','nie-cnt-title',10,120);
+      }
+      if (data.excerpt) document.getElementById('nie-excerpt-canvas').innerHTML = data.excerpt;
+      if (data.image) {
+        document.getElementById('news-img').value = data.image;
+        nieUpdateHero(data.image);
+      }
+      if (data.siteName) {
+        const name = data.siteName.toUpperCase();
+        document.getElementById('news-source-name').value = name;
+        document.getElementById('nie-badge-source').textContent = name;
+      }
+      if (data.date) document.getElementById('news-date').value = data.date;
 
       // Tự động điền tag & URL nguồn từ domain
       try {
         const domain = new URL(url).hostname.replace('www.','');
-        if (!document.getElementById('news-source-name').value) document.getElementById('news-source-name').value = domain.toUpperCase();
+        if (!document.getElementById('news-source-name').value) {
+          document.getElementById('news-source-name').value = domain.toUpperCase();
+          document.getElementById('nie-badge-source').textContent = domain.toUpperCase();
+        }
         document.getElementById('news-source-tag').value  = domain.split('.')[0];
         document.getElementById('news-source-url').value  = `https://${domain}`;
+        document.getElementById('nie-source-url-hint').textContent = `https://${domain}`;
       } catch {}
 
       status.style.color = '#00B341';
@@ -3534,7 +4574,7 @@ if (p === 'site-settings') loadSettings();
       const data = await r.json();
       if (!r.ok) throw new Error(data.error);
       document.getElementById('news-img').value = data.url;
-      updateImgPreview(data.url);
+      nieUpdateHero(data.url);
       statusEl.style.color = '#00B341';
       statusEl.textContent = '✅ Upload thành công!';
     } catch (e) {
@@ -3552,8 +4592,8 @@ if (p === 'site-settings') loadSettings();
 
   // ── AI gợi ý tóm tắt ─────────────────────────────────
   async function aiSuggestExcerpt() {
-    const title   = document.getElementById('news-title').value.trim();
-    const excerpt = stripHtml(getField('news-excerpt'));
+    const title   = document.getElementById('nie-title-canvas').innerText.trim();
+    const excerpt = stripHtml(document.getElementById('nie-excerpt-canvas').innerHTML);
     const btn     = document.getElementById('btn-ai');
     if (!title && !excerpt) { toast('⚠️ Nhập tiêu đề trước để AI gợi ý'); return; }
 
@@ -3566,8 +4606,8 @@ if (p === 'site-settings') loadSettings();
       });
       const data = await r.json();
       if (data.error) throw new Error(data.error);
-      setField('news-excerpt', data.result);
-      toast(data.fallback ? 'Đã tạo tóm tắt mẫu. Thêm Anthropic key thật để dùng Claude.' : '✅ AI đã gợi ý xong!');
+      document.getElementById('nie-excerpt-canvas').innerHTML = data.result;
+      toast(data.fallback ? 'Đã tạo tóm tắt mẫu.' : '✅ AI đã gợi ý xong!');
     } catch (e) {
       toast('❌ ' + (e.message || 'Lỗi AI'));
     }
@@ -3692,11 +4732,41 @@ if (p === 'site-settings') loadSettings();
     btn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Tạo ảnh';
   }
 
-  function useAiImg() {
+  async function useAiImg() {
     const img = document.getElementById('ai-img-preview');
-    if (!img.src) return;
+    if (!img || !img.src || img.src === window.location.href) return;
+    // Thử chuyển sang WebP qua canvas trước khi upload
+    try {
+      const canvas = document.createElement('canvas');
+      const tmpImg = new Image();
+      tmpImg.crossOrigin = 'anonymous';
+      await new Promise((res, rej) => {
+        tmpImg.onload = res; tmpImg.onerror = rej;
+        tmpImg.src = img.src;
+      });
+      canvas.width  = tmpImg.naturalWidth  || tmpImg.width;
+      canvas.height = tmpImg.naturalHeight || tmpImg.height;
+      canvas.getContext('2d').drawImage(tmpImg, 0, 0);
+      const blob = await new Promise(res => canvas.toBlob(res, 'image/webp', 0.85));
+      if (blob) {
+        const fd = new FormData();
+        fd.append('file', blob, 'ai-image.webp');
+        const r  = await fetch('/api/upload', { method: 'POST', body: fd });
+        if (r.ok) {
+          const data = await r.json();
+          const url  = data.url || data.path || img.src;
+          document.getElementById('seo-image-url').value = url;
+          updateSeoImgPreview(url);
+          if (currentSeoDraft) currentSeoDraft.image_url = url;
+          toast('Đã chuyển WebP và đặt làm ảnh thumbnail');
+          return;
+        }
+      }
+    } catch (_) { /* fallback nếu CORS hoặc canvas lỗi */ }
+    // Fallback: dùng URL trực tiếp
     document.getElementById('seo-image-url').value = img.src;
     updateSeoImgPreview(img.src);
+    if (currentSeoDraft) currentSeoDraft.image_url = img.src;
     toast('Đã đặt làm ảnh thumbnail');
   }
 
@@ -3712,48 +4782,114 @@ if (p === 'site-settings') loadSettings();
     });
   }
 
-  function switchSeoTab(tab) {
-    const previewTab = document.getElementById('seo-preview-tab');
-    const editTab = document.getElementById('seo-edit-tab');
-    const previewBtn = document.getElementById('tab-preview-btn');
-    const editBtn = document.getElementById('tab-edit-btn');
-    if (tab === 'edit') {
-      if (!currentSeoDraft) { toast('Tạo bản nháp trước khi chỉnh sửa'); return; }
-      loadDraftToEditPanel();
-      previewTab.style.display = 'none';
-      editTab.classList.add('active');
-      previewBtn.classList.remove('active');
-      editBtn.classList.add('active');
-    } else {
-      previewTab.style.display = '';
-      editTab.classList.remove('active');
-      previewBtn.classList.add('active');
-      editBtn.classList.remove('active');
-    }
+  function switchSeoTab() { /* không còn tab — split-view */ }
+
+  function updateLivePreview() {
+    if (!currentSeoDraft) return;
+    const title    = document.getElementById('edit-title')?.value    || currentSeoDraft.title    || '';
+    const excerpt  = document.getElementById('edit-excerpt')?.value  || currentSeoDraft.excerpt  || '';
+    const content  = document.getElementById('edit-content')?.value  || currentSeoDraft.content  || '';
+    const slug     = document.getElementById('edit-slug')?.value     || currentSeoDraft.slug     || '';
+    const imgUrl   = currentSeoDraft.image_url || '';
+    const imgAlt   = currentSeoDraft.image_alt || title;
+    const category = currentSeoDraft.category  || 'Kiến thức AI';
+    const faqHtml  = (currentSeoDraft.faq || []).length ? `
+      <div class="preview-faq">
+        <div class="preview-faq-title">Câu hỏi thường gặp</div>
+        ${currentSeoDraft.faq.map(f => `
+          <div class="preview-faq-item">
+            <strong>${escapeHtml(f.question)}</strong>
+            ${escapeHtml(f.answer || '')}
+          </div>`).join('')}
+      </div>` : '';
+    const preview  = document.getElementById('seo-preview');
+    if (!preview) return;
+    const contentEl2 = document.getElementById('edit-content');
+    // WYSIWYG div → dùng innerHTML trực tiếp; textarea → dùng marked
+    const mdHtml = contentEl2 && contentEl2.tagName !== 'TEXTAREA'
+      ? (contentEl2.innerHTML || '')
+      : (typeof marked !== 'undefined' ? marked.parse(content || '') : `<pre style="white-space:pre-wrap">${escapeHtml(content)}</pre>`);
+    preview.innerHTML = `
+      <div class="preview-browser-bar">
+        <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
+        <div class="url-bar">phanmemaiagent.net/blog/${escapeHtml(slug)}</div>
+      </div>
+      <div class="preview-article">
+        ${imgUrl ? `<img class="preview-hero" src="${escapeHtml(imgUrl)}" alt="${escapeHtml(imgAlt)}" onerror="this.style.display='none'" />` : ''}
+        <div class="preview-body">
+          <span class="preview-cat-badge">${escapeHtml(category)}</span>
+          <div class="preview-post-title">${escapeHtml(title)}</div>
+          <div class="preview-excerpt-box">${escapeHtml(excerpt)}</div>
+          <div class="preview-md">${mdHtml}</div>
+          ${faqHtml}
+        </div>
+      </div>`;
+  }
+
+  // Helper đọc value từ cả input/textarea lẫn contenteditable div
+  function _getVal(id) {
+    const el = document.getElementById(id);
+    if (!el) return '';
+    return el.value !== undefined ? el.value : (el.innerText || '');
   }
 
   function loadDraftToEditPanel() {
     if (!currentSeoDraft) return;
-    document.getElementById('edit-title').value = currentSeoDraft.title || '';
+    // Tiêu đề (contenteditable div)
+    const titleEl = document.getElementById('edit-title');
+    if (titleEl) titleEl.innerText = currentSeoDraft.title || '';
+    // Excerpt (contenteditable div)
+    const excerptEl = document.getElementById('edit-excerpt');
+    if (excerptEl) excerptEl.innerText = currentSeoDraft.excerpt || '';
+    // Nội dung WYSIWYG
+    const _ec = document.getElementById('edit-content');
+    if (_ec) {
+      _ec.innerHTML = typeof marked !== 'undefined'
+        ? marked.parse(currentSeoDraft.content || '')
+        : escapeHtml(currentSeoDraft.content || '');
+    }
+    // Form fields
     document.getElementById('edit-seo-title').value = currentSeoDraft.seo_title || '';
-    document.getElementById('edit-slug').value = currentSeoDraft.slug || '';
-    document.getElementById('edit-excerpt').value = currentSeoDraft.excerpt || '';
-    document.getElementById('edit-meta').value = currentSeoDraft.meta_description || '';
-    document.getElementById('edit-content').value = currentSeoDraft.content || '';
+    document.getElementById('edit-slug').value       = currentSeoDraft.slug || '';
+    document.getElementById('edit-meta').value       = currentSeoDraft.meta_description || '';
+    // Slug hint
+    const hint = document.getElementById('edit-slug-hint');
+    if (hint) hint.textContent = currentSeoDraft.slug || '';
+    // Hero image
+    const heroImg = document.getElementById('article-hero-img');
+    if (heroImg) {
+      heroImg.src = currentSeoDraft.image_url || '';
+      heroImg.style.display = currentSeoDraft.image_url ? 'block' : 'none';
+    }
+    // Category
+    const catEl = document.getElementById('article-category');
+    if (catEl) catEl.textContent = currentSeoDraft.category || 'Kiến thức AI';
+    // Hiện article body, ẩn empty state
+    document.getElementById('article-empty-state').style.display = 'none';
+    document.getElementById('article-body').style.display = 'block';
+    // Char counts
+    blogCharCount('edit-title',     'cnt-edit-title',  30, 70);
+    blogCharCount('edit-seo-title', 'cnt-edit-stitle', 50, 60);
+    blogCharCount('edit-meta',      'cnt-edit-meta',  140, 160);
+    updateSeoWf();
   }
 
   function saveDraftEdits() {
     if (!currentSeoDraft) return;
-    currentSeoDraft.title = document.getElementById('edit-title').value.trim() || currentSeoDraft.title;
-    currentSeoDraft.seo_title = document.getElementById('edit-seo-title').value.trim() || currentSeoDraft.seo_title;
-    currentSeoDraft.slug = document.getElementById('edit-slug').value.trim() || currentSeoDraft.slug;
-    currentSeoDraft.excerpt = document.getElementById('edit-excerpt').value.trim() || currentSeoDraft.excerpt;
-    currentSeoDraft.meta_description = document.getElementById('edit-meta').value.trim() || currentSeoDraft.meta_description;
-    currentSeoDraft.content = document.getElementById('edit-content').value || currentSeoDraft.content;
+    currentSeoDraft.title            = _getVal('edit-title').trim()     || currentSeoDraft.title;
+    currentSeoDraft.seo_title        = _getVal('edit-seo-title').trim() || currentSeoDraft.seo_title;
+    currentSeoDraft.slug             = _getVal('edit-slug').trim()      || currentSeoDraft.slug;
+    currentSeoDraft.excerpt          = _getVal('edit-excerpt').trim()   || currentSeoDraft.excerpt;
+    currentSeoDraft.meta_description = _getVal('edit-meta').trim()      || currentSeoDraft.meta_description;
+    const _ecSave = document.getElementById('edit-content');
+    if (_ecSave) {
+      currentSeoDraft.content = _ecSave.tagName === 'TEXTAREA'
+        ? (_ecSave.value || currentSeoDraft.content)
+        : (htmlToMarkdown(_ecSave.innerHTML) || currentSeoDraft.content);
+    }
     document.getElementById('seo-output').value = formatSeoDraftText(currentSeoDraft);
-    renderSeoDraft(currentSeoDraft, null);
-    switchSeoTab('preview');
-    toast('Đã lưu chỉnh sửa');
+    updateLivePreview();
+    toast('Đã lưu bản nháp');
   }
 
   function renderSeoDraft(draft, warning) {
@@ -3762,13 +4898,17 @@ if (p === 'site-settings') loadSettings();
     const output = document.getElementById('seo-output');
     const publishBtn = document.getElementById('btn-seo-publish');
     if (!draft) {
-      preview.innerHTML = '<div class="seo-empty"><i class="fas fa-robot" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:10px"></i>Bản nháp AI sẽ hiện ở đây sau khi bấm Tạo bản nháp.</div>';
       output.value = '';
       publishBtn.disabled = true;
+      document.getElementById('article-empty-state').style.display = '';
+      document.getElementById('article-body').style.display = 'none';
       return;
     }
     output.value = formatSeoDraftText(draft);
     publishBtn.disabled = false;
+    const wfPanel = document.getElementById('seo-wf-panel');
+    if (wfPanel) wfPanel.style.display = 'block';
+    loadDraftToEditPanel();
 
     const mdHtml = typeof marked !== 'undefined' ? marked.parse(draft.content || '') : `<pre style="white-space:pre-wrap">${escapeHtml(draft.content || '')}</pre>`;
     const faqHtml = (draft.faq || []).length ? `
@@ -3865,6 +5005,9 @@ if (p === 'site-settings') loadSettings();
       return;
     }
     if (!confirm('Đăng bài này lên website?')) return;
+    // Nếu user đã chọn/tạo ảnh AI sau khi tạo draft, cập nhật lại image_url trước khi đăng
+    const manualImg = document.getElementById('seo-image-url').value.trim();
+    if (manualImg) currentSeoDraft.image_url = manualImg;
     const btn = document.getElementById('btn-seo-publish');
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang đăng...';
@@ -3979,16 +5122,135 @@ if (p === 'site-settings') loadSettings();
     document.getElementById('blog-seo-title').value = b?.seo_title || '';
     document.getElementById('blog-meta-desc').value = b?.meta_description || '';
     document.getElementById('blog-category').value  = b?.category || 'Kiến thức AI';
-    document.getElementById('blog-author').value    = b?.author || 'VIAi Team';
+    document.getElementById('blog-author').value    = b?.author || 'ViAI Team';
     document.getElementById('blog-date').value      = b?.published_at ? b.published_at.slice(0,10) : new Date().toISOString().slice(0,10);
     document.getElementById('blog-active').value    = (b?.active !== false && b?.active !== 0) ? 'true' : 'false';
     document.getElementById('blog-img-file').value  = '';
     document.getElementById('blog-upload-status').style.display = 'none';
     updateBlogImgPreview(b?.image_url || '');
     openModal('blog-modal');
+    _initBlogCharCounts();
   }
 
-  function editBlogPost(id) { openBlogModal(blogList.find(b => b.id === id)); }
+  function openBlogInlineEditor() {
+    // Reset tất cả fields về trống cho bài viết mới
+    document.getElementById('bie-id').value            = '';
+    document.getElementById('bie-seo-title').value     = '';
+    document.getElementById('bie-slug').value          = '';
+    document.getElementById('bie-category').value      = 'Kiến thức AI';
+    document.getElementById('bie-meta').value          = '';
+    document.getElementById('bie-author').value        = 'ViAI Team';
+    document.getElementById('bie-date').value          = new Date().toISOString().slice(0,10);
+    document.getElementById('bie-active').value        = 'true';
+    document.getElementById('bie-img').value           = '';
+    document.getElementById('bie-img-alt').value       = '';
+    document.getElementById('bie-title').innerText     = '';
+    document.getElementById('bie-excerpt').innerText   = '';
+    document.getElementById('bie-content').innerHTML   = '';
+    document.getElementById('bie-hero-img').style.display = 'none';
+    document.getElementById('bie-slug-hint').textContent  = '';
+    document.getElementById('bie-badge-cat').textContent  = 'Kiến thức AI';
+    document.getElementById('bie-title-label').textContent = 'Thêm bài viết mới';
+    // Mở metadata để dễ điền
+    document.getElementById('bie-meta-collapse').classList.add('open');
+    const editor = document.getElementById('blog-inline-editor');
+    editor.classList.add('open');
+    setTimeout(() => editor.scrollIntoView({ behavior:'smooth', block:'start' }), 50);
+    blogCharCount('bie-seo-title','bie-cnt-stitle',50,60);
+    blogCharCount('bie-meta','bie-cnt-meta',140,160);
+  }
+
+  function editBlogPost(id) {
+    const b = blogList.find(x => x.id === id);
+    if (!b) return;
+
+    document.getElementById('bie-id').value            = b.id;
+    document.getElementById('bie-seo-title').value     = b.seo_title || '';
+    document.getElementById('bie-slug').value          = b.slug || '';
+    document.getElementById('bie-category').value      = b.category || 'Kiến thức AI';
+    document.getElementById('bie-meta').value          = b.meta_description || '';
+    document.getElementById('bie-author').value        = b.author || 'ViAI Team';
+    document.getElementById('bie-date').value          = b.published_at ? b.published_at.slice(0,10) : '';
+    document.getElementById('bie-active').value        = (b.active !== false && b.active !== 0) ? 'true' : 'false';
+    document.getElementById('bie-img').value           = b.image_url || '';
+    document.getElementById('bie-img-alt').value       = b.image_alt || '';
+
+    document.getElementById('bie-title').innerText   = b.title || '';
+    document.getElementById('bie-excerpt').innerText = b.excerpt || '';
+    document.getElementById('bie-content').innerHTML = marked.parse(b.content || '');
+
+    const hero = document.getElementById('bie-hero-img');
+    if (b.image_url) { hero.src = b.image_url; hero.alt = b.image_alt||''; hero.style.display = 'block'; }
+    else { hero.style.display = 'none'; }
+
+    document.getElementById('bie-slug-hint').textContent  = b.slug || '';
+    document.getElementById('bie-badge-cat').textContent  = b.category || 'Kiến thức AI';
+    document.getElementById('bie-title-label').textContent = `Đang sửa: ${b.title}`;
+
+    const editor = document.getElementById('blog-inline-editor');
+    editor.classList.add('open');
+    setTimeout(() => editor.scrollIntoView({ behavior:'smooth', block:'start' }), 50);
+
+    blogCharCount('bie-title','bie-cnt-title',30,70);
+    blogCharCount('bie-seo-title','bie-cnt-stitle',50,60);
+    blogCharCount('bie-meta','bie-cnt-meta',140,160);
+  }
+
+  function closeBlogInlineEditor() {
+    document.getElementById('blog-inline-editor').classList.remove('open');
+  }
+
+  async function saveBlogInlineEdit() {
+    const id    = document.getElementById('bie-id').value;
+    const title = (document.getElementById('bie-title').innerText || '').trim();
+    if (!title) { toast('⚠️ Vui lòng nhập tiêu đề bài viết'); document.getElementById('bie-title').focus(); return; }
+    const body = {
+      title,
+      slug:             document.getElementById('bie-slug').value || title.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/gi,'d').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,70),
+      excerpt:          (document.getElementById('bie-excerpt').innerText || '').trim(),
+      content:          htmlToMarkdown(document.getElementById('bie-content').innerHTML),
+      image_url:        document.getElementById('bie-img').value,
+      image_alt:        document.getElementById('bie-img-alt').value,
+      seo_title:        document.getElementById('bie-seo-title').value,
+      meta_description: document.getElementById('bie-meta').value,
+      category:         document.getElementById('bie-category').value,
+      author:           document.getElementById('bie-author').value,
+      published_at:     document.getElementById('bie-date').value,
+      active:           document.getElementById('bie-active').value === 'true',
+    };
+    const r = await safeFetch(id ? `${API}/blog-posts/${id}` : `${API}/blog-posts`, {
+      method: id ? 'PUT' : 'POST', headers:hdr(), body:JSON.stringify(body)
+    });
+    if (r) { closeBlogInlineEditor(); loadBlogPosts(); toast(id ? 'Đã cập nhật bài viết' : 'Đã tạo bài viết mới ✅'); }
+  }
+
+  function bieExec(cmd, val) {
+    document.getElementById('bie-content').focus();
+    document.execCommand(cmd, false, val || null);
+  }
+
+  function bieInsertLink() {
+    const url = prompt('Nhập URL link:');
+    if (!url) return;
+    const txt = prompt('Nhập text hiển thị:', url) || url;
+    document.getElementById('bie-content').focus();
+    document.execCommand('insertHTML', false, `<a href="${url}">${txt}</a>`);
+  }
+
+  async function uploadBieImg(input) {
+    if (!input.files[0]) return;
+    const formData = new FormData();
+    formData.append('file', input.files[0]);
+    try {
+      const r = await fetch(`${API}/upload`, { method:'POST', headers:{'Authorization':`Bearer ${token}`}, body:formData });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error);
+      document.getElementById('bie-img').value = data.url;
+      const hero = document.getElementById('bie-hero-img');
+      hero.src = data.url; hero.style.display = 'block';
+      toast('Đã upload ảnh');
+    } catch(err) { toast('❌ ' + err.message); }
+  }
 
   async function saveBlogPost() {
     if (!validate([{ id:'blog-title', label:'Tiêu đề' }])) return;
@@ -4136,6 +5398,295 @@ if (p === 'site-settings') loadSettings();
     if (!confirm('Xoá bài viết này?')) return;
     await fetch(`${API}/blog-posts/${id}`, { method:'DELETE', headers:hdr() });
     loadBlogPosts(); toast('Đã xoá bài viết');
+  }
+
+  // ── BLOG EDITOR HELPERS ──────────────────────────────────
+  function blogCharCount(inputId, cntId, min, max) {
+    const el  = document.getElementById(inputId);
+    const cnt = document.getElementById(cntId);
+    if (!el || !cnt) return;
+    const len = (el.value !== undefined ? el.value : (el.innerText || '')).length;
+    let cls = 'ok';
+    if (max && len > max + 20) {
+      cls = 'err';  // vượt max quá nhiều → đỏ
+    } else if (max && len > max) {
+      cls = 'warn'; // vượt max 1–20 ký tự → cam
+    }
+    cnt.textContent = `${len} ký tự`;
+    cnt.className   = 'char-cnt ' + cls;
+  }
+
+  function blogWrap(before, after) {
+    const ta  = document.getElementById('blog-content');
+    const s   = ta.selectionStart, e = ta.selectionEnd;
+    const sel = ta.value.slice(s, e) || 'văn bản';
+    const ins = before + sel + after;
+    ta.value  = ta.value.slice(0, s) + ins + ta.value.slice(e);
+    ta.selectionStart = s + before.length;
+    ta.selectionEnd   = s + before.length + sel.length;
+    ta.focus(); updateSeoWorkflow();
+  }
+
+  function blogInsertBlock(prefix) {
+    const ta       = document.getElementById('blog-content');
+    const s        = ta.selectionStart;
+    const before   = ta.value.slice(0, s);
+    const lineStart = before.lastIndexOf('\n') + 1;
+    const lineEnd  = ta.value.indexOf('\n', s);
+    const end      = lineEnd === -1 ? ta.value.length : lineEnd;
+    const line     = ta.value.slice(lineStart, end);
+    if (line.startsWith(prefix)) {
+      ta.value = ta.value.slice(0, lineStart) + line.slice(prefix.length) + ta.value.slice(end);
+      ta.selectionStart = ta.selectionEnd = Math.max(lineStart, s - prefix.length);
+    } else {
+      ta.value = ta.value.slice(0, lineStart) + prefix + line + ta.value.slice(end);
+      ta.selectionStart = ta.selectionEnd = s + prefix.length;
+    }
+    ta.focus(); updateSeoWorkflow();
+  }
+
+  function blogInsertRaw(text) {
+    const ta = document.getElementById('blog-content');
+    const s  = ta.selectionStart;
+    ta.value = ta.value.slice(0, s) + text + ta.value.slice(s);
+    ta.selectionStart = ta.selectionEnd = s + text.length;
+    ta.focus(); updateSeoWorkflow();
+  }
+
+  function blogInsertLink() {
+    const url = prompt('Nhập URL:', 'https://');
+    if (!url) return;
+    const ta  = document.getElementById('blog-content');
+    const s   = ta.selectionStart, e = ta.selectionEnd;
+    const sel = ta.value.slice(s, e) || 'anchor text';
+    const ins = `[${sel}](${url})`;
+    ta.value  = ta.value.slice(0, s) + ins + ta.value.slice(e);
+    ta.selectionStart = ta.selectionEnd = s + ins.length;
+    ta.focus();
+  }
+
+  let _blogEditorTab = 'write';
+  function switchBlogEditorTab(tab) {
+    _blogEditorTab = tab;
+    const ta   = document.getElementById('blog-content');
+    const pane = document.getElementById('blog-preview-pane');
+    const tabs = document.querySelectorAll('.blog-edit-tab');
+    if (tab === 'preview') {
+      ta.style.display   = 'none';
+      pane.style.display = 'block';
+      pane.innerHTML     = typeof marked !== 'undefined'
+        ? marked.parse(ta.value || '*Chưa có nội dung*')
+        : '<em>Thư viện marked chưa tải</em>';
+      tabs[0].classList.remove('active'); tabs[1].classList.add('active');
+    } else {
+      ta.style.display   = 'block';
+      pane.style.display = 'none';
+      tabs[0].classList.add('active'); tabs[1].classList.remove('active');
+    }
+  }
+
+  // ── SEO WORKFLOW ──────────────────────────────────────────
+  function updateSeoWorkflow() {
+    const title    = (document.getElementById('blog-title')?.value    || '').trim();
+    const keyword  = (document.getElementById('blog-keyword')?.value  || '').trim().toLowerCase();
+    const content  = document.getElementById('blog-content')?.value   || '';
+    const seoLen   = (document.getElementById('blog-seo-title')?.value || '').length;
+    const metaLen  = (document.getElementById('blog-meta-desc')?.value || '').length;
+
+    const words    = content.trim() ? content.trim().split(/\s+/).length : 0;
+    const readTime = Math.max(1, Math.round(words / 200));
+    const kw       = keyword;
+    const titleLow = title.toLowerCase();
+    const contLow  = content.toLowerCase();
+    const first100 = content.split(/\s+/).slice(0, 100).join(' ').toLowerCase();
+
+    const kwExists  = !!kw;
+    const kwInTitle = !!(kw && titleLow.includes(kw));
+    const kwIn100   = !!(kw && first100.includes(kw));
+
+    let density = 0;
+    if (kw && words > 0) {
+      const esc  = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const hits = (contLow.match(new RegExp(esc, 'g')) || []).length;
+      density    = (hits / words) * 100;
+    }
+    const densityOk  = density >= 1 && density <= 3;
+    const hasH2H3    = /^#{2,3} /m.test(content);
+    const wordsOk    = words >= 800;
+    const seoTitleOk = seoLen >= 50 && seoLen <= 60;
+    const metaOk     = metaLen >= 140 && metaLen <= 160;
+
+    const score = [kwExists, kwInTitle, kwIn100, densityOk, hasH2H3, wordsOk, seoTitleOk, metaOk].filter(Boolean).length;
+
+    const badge = document.getElementById('swp-score-badge');
+    if (badge) {
+      badge.textContent = `${score}/8 điểm SEO`;
+      badge.className   = 'swp-badge ' + (score >= 7 ? 'great' : score >= 5 ? 'good' : 'poor');
+    }
+
+    function si(id, ok, text) {
+      const el = document.getElementById(id); if (!el) return;
+      el.querySelector('.swp-icon').textContent = ok ? '✅' : '❌';
+      el.querySelector('.swp-text').textContent = text;
+    }
+    si('swp-kw-exists',   kwExists,   kwExists   ? `Từ khóa: "${kw}"` : 'Chưa nhập từ khóa');
+    si('swp-kw-title',    kwInTitle,  kwInTitle  ? 'Từ khóa có trong tiêu đề' : 'Từ khóa chưa trong tiêu đề');
+    si('swp-kw-first100', kwIn100,    kwIn100    ? 'Từ khóa trong 100 từ đầu' : 'Chưa có trong 100 từ đầu');
+    si('swp-density',     densityOk,  kw ? `Mật độ: ${density.toFixed(1)}%${densityOk ? ' ✓' : ' (cần 1–3%)'}` : 'Mật độ: –');
+    si('swp-headings',    hasH2H3,    hasH2H3    ? 'Có H2/H3 trong bài ✓' : 'Chưa có heading H2/H3');
+    si('swp-words',       wordsOk,    `${words} từ ${wordsOk ? '✓' : '(cần ≥800)'}`);
+    si('swp-seo-title',   seoTitleOk, `SEO Title: ${seoLen}/60${seoTitleOk ? ' ✓' : ''}`);
+    si('swp-meta',        metaOk,     `Meta Desc: ${metaLen}/160${metaOk ? ' ✓' : ''}`);
+
+    const rt = document.getElementById('swp-readtime');
+    if (rt) rt.textContent = `📖 ~${readTime} phút đọc · ${words} từ`;
+  }
+
+  function _initBlogCharCounts() {
+    blogCharCount('blog-title',        'cnt-title',    30, 70);
+    blogCharCount('blog-slug',         'cnt-slug',      0, 70);
+    blogCharCount('blog-keyword',      'cnt-kw',        5, 50);
+    blogCharCount('blog-secondary-kw', 'cnt-skw',       0, 100);
+    blogCharCount('blog-excerpt',      'cnt-excerpt', 140, 160);
+    blogCharCount('blog-seo-title',    'cnt-seo-title', 50, 60);
+    blogCharCount('blog-meta-desc',    'cnt-meta',    140, 160);
+    updateSeoWorkflow();
+    switchBlogEditorTab('write');
+  }
+
+  // ── SEO PAGE TOOLBAR & WORKFLOW (WYSIWYG) ────────────────
+  function _seoExec(cmd, val) {
+    document.getElementById('edit-content').focus();
+    document.execCommand(cmd, false, val || null);
+    updateSeoWf(); updateLivePreview();
+  }
+
+  function seoEditWrap(before) {
+    if (before === '**')  _seoExec('bold');
+    else if (before === '*') _seoExec('italic');
+    else if (before === '~~') _seoExec('strikeThrough');
+    else if (before === '`') {
+      const sel = window.getSelection()?.toString() || 'code';
+      _seoExec('insertHTML', `<code>${sel}</code>`);
+    }
+  }
+
+  function seoEditBlock(prefix) {
+    document.getElementById('edit-content').focus();
+    if      (prefix === '# ')   _seoExec('formatBlock', 'H1');
+    else if (prefix === '## ')  _seoExec('formatBlock', 'H2');
+    else if (prefix === '### ') _seoExec('formatBlock', 'H3');
+    else if (prefix === '#### ') _seoExec('formatBlock', 'H4');
+    else if (prefix === '> ')   _seoExec('formatBlock', 'BLOCKQUOTE');
+    else if (prefix === '- ')   _seoExec('insertUnorderedList');
+    else if (prefix === '1. ')  _seoExec('insertOrderedList');
+    else _seoExec('formatBlock', 'P');
+  }
+
+  function seoEditRaw(text) {
+    document.getElementById('edit-content').focus();
+    if (text.includes('---')) _seoExec('insertHorizontalRule');
+    else _seoExec('insertText', text);
+  }
+
+  function seoEditLink() {
+    const url = prompt('Nhập URL:', 'https://');
+    if (!url) return;
+    document.getElementById('edit-content').focus();
+    _seoExec('createLink', url);
+  }
+
+  // HTML → Markdown (để lưu về DB)
+  function htmlToMarkdown(html) {
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    return _domToMd(div).replace(/\n{3,}/g, '\n\n').trim();
+  }
+  function _domToMd(node) {
+    let out = '';
+    for (const c of node.childNodes) {
+      if (c.nodeType === 3) { out += c.textContent; continue; }
+      if (c.nodeType !== 1) continue;
+      const tag = c.tagName, inner = _domToMd(c);
+      switch (tag) {
+        case 'H1': out += `\n# ${inner.trim()}\n\n`; break;
+        case 'H2': out += `\n## ${inner.trim()}\n\n`; break;
+        case 'H3': out += `\n### ${inner.trim()}\n\n`; break;
+        case 'H4': out += `\n#### ${inner.trim()}\n\n`; break;
+        case 'P':  out += `\n${inner.trim()}\n\n`; break;
+        case 'STRONG': case 'B': out += `**${inner}**`; break;
+        case 'EM': case 'I':     out += `*${inner}*`; break;
+        case 'S': case 'DEL': case 'STRIKE': out += `~~${inner}~~`; break;
+        case 'CODE': out += `\`${inner}\``; break;
+        case 'A':  out += `[${inner}](${c.getAttribute('href') || ''})`; break;
+        case 'BLOCKQUOTE': out += `\n> ${inner.trim().replace(/\n/g, '\n> ')}\n\n`; break;
+        case 'UL': out += '\n' + Array.from(c.querySelectorAll(':scope > li')).map(li => `- ${_domToMd(li).trim()}`).join('\n') + '\n\n'; break;
+        case 'OL': out += '\n' + Array.from(c.querySelectorAll(':scope > li')).map((li,i) => `${i+1}. ${_domToMd(li).trim()}`).join('\n') + '\n\n'; break;
+        case 'LI': out += inner; break;
+        case 'HR': out += '\n---\n\n'; break;
+        case 'BR': out += '\n'; break;
+        default:   out += inner + (tag === 'DIV' ? '\n' : '');
+      }
+    }
+    return out;
+  }
+
+  function updateSeoWf() {
+    const title    = _getVal('edit-title').trim();
+    const keyword  = (document.getElementById('seo-keyword')?.value    || '').trim().toLowerCase();
+    const contentEl = document.getElementById('edit-content');
+    // Hỗ trợ cả textarea (value) và contenteditable div (innerText)
+    const content  = (contentEl?.value ?? contentEl?.innerText ?? '').replace(/\n{2,}/g, ' ');
+    const seoLen   = (document.getElementById('edit-seo-title')?.value || '').length;
+    const metaLen  = (document.getElementById('edit-meta')?.value      || '').length;
+
+    const words    = content.trim() ? content.trim().split(/\s+/).length : 0;
+    const readTime = Math.max(1, Math.round(words / 200));
+    const titleLow = title.toLowerCase();
+    const contLow  = content.toLowerCase();
+    const first100 = content.split(/\s+/).slice(0, 100).join(' ').toLowerCase();
+
+    const kwExists  = !!keyword;
+    const kwInTitle = !!(keyword && titleLow.includes(keyword));
+    const kwIn100   = !!(keyword && first100.includes(keyword));
+
+    let density = 0;
+    if (keyword && words > 0) {
+      const esc  = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const hits = (contLow.match(new RegExp(esc, 'g')) || []).length;
+      density    = (hits / words) * 100;
+    }
+    const densityOk  = density >= 1 && density <= 3;
+    // Kiểm tra H2/H3 cả markdown lẫn HTML thật (WYSIWYG)
+    const hasH2H3    = /^#{2,3} /m.test(content) || !!(contentEl?.querySelector?.('h2,h3'));
+    const wordsOk    = words >= 800;
+    const seoTitleOk = seoLen >= 50 && seoLen <= 60;
+    const metaOk     = metaLen >= 140 && metaLen <= 160;
+
+    const score = [kwExists, kwInTitle, kwIn100, densityOk, hasH2H3, wordsOk, seoTitleOk, metaOk].filter(Boolean).length;
+
+    const badge = document.getElementById('seo-wf-badge');
+    if (badge) {
+      badge.textContent = `${score}/8 điểm SEO`;
+      badge.className   = 'seo-wf-badge ' + (score >= 7 ? 'great' : score >= 5 ? 'good' : 'poor');
+    }
+
+    function sw(id, ok, text) {
+      const el = document.getElementById(id); if (!el) return;
+      el.querySelector('.swp-icon').textContent = ok ? '✅' : '❌';
+      el.querySelector('.swp-text').textContent = text;
+    }
+    sw('swf-kw-exists',   kwExists,   kwExists   ? `Từ khóa: "${keyword}"` : 'Chưa nhập từ khóa');
+    sw('swf-kw-title',    kwInTitle,  kwInTitle  ? 'Từ khóa có trong tiêu đề' : 'Từ khóa chưa trong tiêu đề');
+    sw('swf-kw-first100', kwIn100,    kwIn100    ? 'Từ khóa trong 100 từ đầu' : 'Chưa có trong 100 từ đầu');
+    sw('swf-density',     densityOk,  keyword ? `Mật độ: ${density.toFixed(1)}%${densityOk ? ' ✓' : ' (cần 1–3%)'}` : 'Mật độ: –');
+    sw('swf-headings',    hasH2H3,    hasH2H3    ? 'Có H2/H3 trong bài ✓' : 'Chưa có heading H2/H3');
+    sw('swf-words',       wordsOk,    `${words} từ ${wordsOk ? '✓' : '(cần ≥800)'}`);
+    sw('swf-seo-title',   seoTitleOk, `SEO Title: ${seoLen}/60${seoTitleOk ? ' ✓' : ''}`);
+    sw('swf-meta',        metaOk,     `Meta Desc: ${metaLen}/160${metaOk ? ' ✓' : ''}`);
+
+    const rt = document.getElementById('swf-readtime');
+    if (rt) rt.textContent = `📖 ~${readTime} phút đọc · ${words} từ`;
   }
 </script>
 </body>

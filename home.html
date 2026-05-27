@@ -923,6 +923,7 @@
     .piw-orange { background: linear-gradient(135deg, rgba(255,107,74,0.12), rgba(255,122,77,0.06)); }
     .piw-green { background: linear-gradient(135deg, rgba(0,179,65,0.12), rgba(0,210,80,0.06)); }
     .piw-yellow { background: linear-gradient(135deg, rgba(255,184,0,0.12), rgba(255,210,0,0.06)); }
+    .piw-img { background: transparent; overflow: hidden; padding: 0; }
     .piw-purple { background: linear-gradient(135deg, rgba(120,60,255,0.12), rgba(160,100,255,0.06)); }
 
     .prod-badge {
@@ -3073,7 +3074,7 @@
       <div class="solution-grid">
         <a href="/phan-mem" class="solution-card reveal">
           <div class="solution-icon-area">
-            <img src="anhlogo/anh3.png" alt="Phần mềm AI Agent ViAI" class="sol-img" loading="lazy" />
+            <img src="anhlogo/anh3.png" alt="Phần mềm AI Agent ViAI" class="sol-img sol-img-dark" loading="lazy" />
           </div>
           <div class="solution-body">
             <span class="solution-kicker">Phần mềm</span>
@@ -3110,71 +3111,60 @@
 
   <!-- SERVICES INTRO -->
   <section class="services-intro-section" id="services-intro">
-    <div class="services-intro-inner">
+    <div class="section-inner">
 
-      <!-- LEFT: image -->
-      <div class="si-left reveal">
-        <div class="si-img-wrap">
-          <img src="anhlogo/dung.png" alt="ViAI Technology – AI Agent Platform cho doanh nghiệp Việt Nam" class="si-img" width="520" height="480" />
-          <div class="si-img-badge">
-            <span class="si-badge-num">500+</span>
-            <span class="si-badge-text">Doanh nghiệp tin dùng</span>
+      <!-- Hero row: robot + features + stats -->
+      <div class="si-hero-row reveal">
+        <div class="si-robot-wrap">
+          <img src="anhlogo/dung.png" alt="AI Agent ViAI" class="si-robot-img" loading="lazy" />
+        </div>
+        <div class="si-content">
+          <h2 class="sec-title" style="text-align:left;margin-bottom:12px">Công nghệ AI Agent<br>thế hệ mới cho <em style="font-style:normal;color:var(--primary)">SMEs Việt</em></h2>
+          <p style="color:#475569;font-size:.95rem;line-height:1.75;margin-bottom:24px">ViAI xây dựng nền tảng AI Agent chuyên biệt cho doanh nghiệp vừa và nhỏ Việt Nam — dễ dùng, triển khai nhanh và tạo ra kết quả thực sự.</p>
+          <ul class="si-feat-list">
+            <li><span class="si-feat-icon">⚡</span><div><strong>Tự động hóa toàn bộ quy trình</strong><br><span>Từ tiếp nhận khách hàng, tạo đơn đến báo cáo — AI Agent thay thế 24/7</span></div></li>
+            <li><span class="si-feat-icon">🔗</span><div><strong>Tích hợp 50+ nền tảng</strong><br><span>Zalo, Facebook, CRM/ERP — kết nối chỉ vài phút, không cần lập trình</span></div></li>
+            <li><span class="si-feat-icon">🛡️</span><div><strong>Bảo mật chuẩn doanh nghiệp</strong><br><span>ISO 27001, mã hóa 256-bit, lưu trữ tại Việt Nam — dữ liệu luôn an toàn</span></div></li>
+            <li><span class="si-feat-icon">🎯</span><div><strong>Hỗ trợ chuyển đổi 24/7</strong><br><span>Đội ngũ tư vấn tiếng Việt, onboarding 1-1, hỗ trợ đến khi có kết quả</span></div></li>
+          </ul>
+          <div class="si-stats">
+            <div class="si-stat"><span class="si-stat-num">500+</span><span class="si-stat-lbl">Doanh nghiệp</span></div>
+            <div class="si-stat"><span class="si-stat-num">98%</span><span class="si-stat-lbl">Hài lòng</span></div>
+            <div class="si-stat"><span class="si-stat-num">78%</span><span class="si-stat-lbl">Tiết kiệm chi phí</span></div>
+            <div class="si-stat"><span class="si-stat-num">3x</span><span class="si-stat-lbl">Tăng hiệu suất</span></div>
           </div>
         </div>
       </div>
 
-      <!-- RIGHT: stacked features -->
-      <div class="si-right reveal">
-
-        <h2 class="si-title">Công nghệ AI Agent<br/>thế hệ mới cho SMEs Việt</h2>
-        <p class="si-desc">ViAI xây dựng nền tảng AI Agent chuyên biệt cho doanh nghiệp vừa và nhỏ Việt Nam — dễ dùng, triển khai nhanh và tạo ra kết quả thực sự.</p>
-
-        <div class="si-feature-list">
-          <div class="si-feature">
-            <div class="si-feat-icon" style="background:linear-gradient(135deg,#1A56DB,#4B82F4)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="white"/></svg>
-            </div>
-            <div>
-              <div class="si-feat-title">Tự động hóa toàn bộ quy trình</div>
-              <div class="si-feat-desc">Từ tiếp nhận khách hàng, xử lý đơn hàng đến báo cáo — AI làm thay bạn 24/7.</div>
-            </div>
+      <div class="tech-card-grid reveal">
+        <a href="/nen-tang-ai-agent" class="tech-img-card">
+          <div class="tech-img-area" style="background:#06112a">
+            <img src="anhlogo/congnghe4.png" alt="Nền tảng AI Agent ViAI" class="tech-img-main tech-img-dark" loading="lazy" />
           </div>
-          <div class="si-feature">
-            <div class="si-feat-icon" style="background:linear-gradient(135deg,#FF6B00,#FFB800)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="white"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="white" opacity="0.8"/><rect x="3" y="14" width="7" height="7" rx="1.5" fill="white" opacity="0.8"/><rect x="14" y="14" width="7" height="7" rx="1.5" fill="white"/></svg>
-            </div>
-            <div>
-              <div class="si-feat-title">Tích hợp 50+ nền tảng</div>
-              <div class="si-feat-desc">Zalo, Facebook, Website, CRM, ERP — kết nối chỉ vài phút, không cần lập trình.</div>
-            </div>
+          <div class="tech-img-body">
+            <h3>Nền tảng AI Agent</h3>
+            <p>AI Brain trung tâm xử lý dữ liệu — tự động hóa toàn bộ quy trình từ đầu đến cuối 24/7.</p>
           </div>
-          <div class="si-feature">
-            <div class="si-feat-icon" style="background:linear-gradient(135deg,#00B341,#0891B2)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2a5 5 0 015 5v2h1a2 2 0 012 2v9a2 2 0 01-2 2H6a2 2 0 01-2-2v-9a2 2 0 012-2h1V7a5 5 0 015-5zm0 2a3 3 0 00-3 3v2h6V7a3 3 0 00-3-3zm0 9a2 2 0 110 4 2 2 0 010-4z" fill="white"/></svg>
-            </div>
-            <div>
-              <div class="si-feat-title">Bảo mật chuẩn doanh nghiệp</div>
-              <div class="si-feat-desc">ISO 27001, mã hóa 256-bit, lưu trữ tại Việt Nam — dữ liệu luôn an toàn tuyệt đối.</div>
-            </div>
+        </a>
+        <a href="/tich-hop-50-nen-tang" class="tech-img-card">
+          <div class="tech-img-area" style="background:#06112a">
+            <img src="anhlogo/congnghe5.png" alt="Tích hợp 50+ nền tảng" class="tech-img-main tech-img-dark" loading="lazy" />
           </div>
-          <div class="si-feature">
-            <div class="si-feat-icon" style="background:linear-gradient(135deg,#7C3AED,#1A56DB)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="white" stroke-width="2"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-            </div>
-            <div>
-              <div class="si-feat-title">Hỗ trợ chuyên sâu 24/7</div>
-              <div class="si-feat-desc">Đội ngũ chuyên gia đồng hành từ onboarding đến vận hành, phản hồi trong vòng 2 giờ.</div>
-            </div>
+          <div class="tech-img-body">
+            <h3>Tích hợp 50+ nền tảng</h3>
+            <p>Zalo, Facebook, Website, CRM, ERP — kết nối chỉ vài phút, không cần lập trình.</p>
           </div>
-        </div>
-
-        <div class="si-stats-row">
-          <div class="si-stat-item"><span class="si-stat-num">98%</span><span class="si-stat-lbl">Độ chính xác</span></div>
-          <div class="si-stat-item"><span class="si-stat-num">78%</span><span class="si-stat-lbl">Tiết kiệm thời gian</span></div>
-          <div class="si-stat-item"><span class="si-stat-num">3x</span><span class="si-stat-lbl">Tăng doanh thu</span></div>
-        </div>
+        </a>
+        <a href="/bao-mat-doanh-nghiep" class="tech-img-card">
+          <div class="tech-img-area" style="background:#06112a">
+            <img src="anhlogo/congnghe6.png" alt="Bảo mật chuẩn doanh nghiệp" class="tech-img-main tech-img-dark" loading="lazy" />
+          </div>
+          <div class="tech-img-body">
+            <h3>Bảo mật chuẩn doanh nghiệp</h3>
+            <p>ISO 27001, mã hóa 256-bit, lưu trữ tại Việt Nam — dữ liệu luôn an toàn tuyệt đối.</p>
+          </div>
+        </a>
       </div>
-
     </div>
   </section>
 
@@ -3426,8 +3416,34 @@
         <h2 class="sec-title">Công nghệ đằng sau ViAI</h2>
         <p class="sec-desc">Nền tảng AI Agent được xây dựng trên hạ tầng hiện đại, bảo mật cao và tối ưu cho doanh nghiệp Việt Nam.</p>
       </div>
-      <div class="tech-grid reveal" id="tech-grid">
-        <div style="grid-column:1/-1;text-align:center;padding:40px;color:#94a3b8">Đang tải...</div>
+      <div class="tech-card-grid reveal">
+        <a href="/ai-agent-thong-minh" class="tech-img-card">
+          <div class="tech-img-area" style="background:linear-gradient(180deg,#eef4ff,#fff)">
+            <img src="anhlogo/congnghe1.png" alt="Nền tảng AI ViAI" class="tech-img-main" loading="lazy" />
+          </div>
+          <div class="tech-img-body">
+            <h3>AI Agent thông minh</h3>
+            <p>Robot AI hiểu ngữ cảnh, tự ra quyết định và thực hiện hành động — vượt xa chatbot thông thường.</p>
+          </div>
+        </a>
+        <a href="/kien-truc-api-mo" class="tech-img-card">
+          <div class="tech-img-area" style="background:linear-gradient(180deg,#eef4ff,#fff)">
+            <img src="anhlogo/congnghe2.png" alt="Hệ thống tích hợp API" class="tech-img-main" loading="lazy" />
+          </div>
+          <div class="tech-img-body">
+            <h3>Kiến trúc API mở</h3>
+            <p>Hệ thống API chuẩn REST, webhook linh hoạt — kết nối bất kỳ phần mềm nào trong vài phút.</p>
+          </div>
+        </a>
+        <a href="/ha-tang-bao-mat-cao" class="tech-img-card">
+          <div class="tech-img-area" style="background:#06112a">
+            <img src="anhlogo/congnghe3.png" alt="Bảo mật dữ liệu ViAI" class="tech-img-main tech-img-dark" loading="lazy" />
+          </div>
+          <div class="tech-img-body">
+            <h3>Hạ tầng bảo mật cao</h3>
+            <p>Mã hóa end-to-end, hệ thống phòng thủ đa lớp — dữ liệu doanh nghiệp được bảo vệ tuyệt đối.</p>
+          </div>
+        </a>
       </div>
     </div>
   </section>
@@ -3499,7 +3515,7 @@
   </section>
 
   <!-- CTA -->
-  <section class="cta-section" style="background:white;padding:72px 20px">
+  <section class="cta-section" style="padding:72px 20px">
     <div class="cta-box">
       <div class="cta-text">
         <h2>Sẵn sàng để <em>AI làm việc</em> thay bạn?</h2>
@@ -3940,13 +3956,18 @@
       renderProducts('all');
     }
 
+    function renderProductIcon(icon) {
+      if (icon && icon.startsWith('http')) return `<img src="${icon}" style="width:44px;height:44px;object-fit:cover;border-radius:10px">`;
+      return icon || '🤖';
+    }
+
     function renderProducts(cat) {
       const grid = document.getElementById('products-grid');
       const list = cat === 'all' ? allProducts : allProducts.filter(p => p.category === cat);
       grid.innerHTML = list.map(p => `
         <a href="${p.link || PRODUCT_DETAIL_LINKS[p.name] || '#products'}" class="prod-card reveal" data-cat="${p.category}" style="display:block;text-decoration:none;color:inherit;cursor:pointer">
           ${p.badge_type ? `<span class="prod-badge ${BADGE_CLASS[p.badge_type]||''}">${p.badge}</span>` : ''}
-          <div class="prod-icon-wrap ${ICON_CLASS[p.icon_color]||'piw-blue'}">${p.icon}</div>
+          <div class="prod-icon-wrap ${p.icon && p.icon.startsWith('http') ? 'piw-img' : (ICON_CLASS[p.icon_color]||'piw-blue')}">${renderProductIcon(p.icon)}</div>
           <div class="prod-name">${p.name}</div>
           <div class="prod-desc">${p.description || ''}</div>
           <div class="prod-footer">
@@ -5451,19 +5472,34 @@
       height: 260px;
       background: linear-gradient(180deg, #eef4ff, #fff);
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       justify-content: center;
       overflow: hidden;
-      padding-top: 48px;
+      padding: 16px 0 0;
+    }
+
+    /* Card nền tối cho ảnh anh3 (nền xám tối) */
+    .sol-area-dark {
+      background: linear-gradient(180deg, #0d1c45 0%, #1a3070 100%) !important;
+      padding: 0 !important;
     }
 
     .sol-img {
-      width: 92%;
-      height: auto;
+      width: 88%;
+      height: 230px;
       object-fit: contain;
+      object-position: center bottom;
       mix-blend-mode: multiply;
-      margin-bottom: -8px;
       transition: transform 0.35s ease;
+    }
+
+    /* Ảnh nền tối: không blend, cover toàn vùng */
+    .sol-img-dark {
+      mix-blend-mode: normal !important;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      object-position: center center !important;
     }
 
     .solution-card:hover .sol-img {
@@ -5529,6 +5565,81 @@
       background: #fff !important;
     }
 
+    /* services-intro hero row */
+    .si-hero-row {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 56px;
+      align-items: center;
+      margin-bottom: 64px;
+    }
+    .si-robot-wrap {
+      border-radius: 20px;
+      overflow: hidden;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .si-robot-img {
+      width: 100%;
+      height: 380px;
+      object-fit: contain;
+      display: block;
+    }
+    .si-feat-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .si-feat-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: .9rem;
+      color: #374151;
+      line-height: 1.6;
+    }
+    .si-feat-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .si-feat-list strong { color: #0f172a; }
+    .si-feat-list span { color: #64748b; font-size: .85rem; }
+    .si-stats {
+      display: flex;
+      gap: 0;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      overflow: hidden;
+      background: white;
+    }
+    .si-stat {
+      flex: 1;
+      text-align: center;
+      padding: 14px 8px;
+      border-right: 1px solid #e2e8f0;
+    }
+    .si-stat:last-child { border-right: none; }
+    .si-stat-num {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--primary);
+    }
+    .si-stat-lbl {
+      display: block;
+      font-size: .72rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+    @media (max-width: 900px) {
+      .si-hero-row { grid-template-columns: 1fr; }
+      .si-robot-wrap { max-width: 360px; margin: 0 auto; }
+    }
 
     .sec-title {
       font-size: clamp(2rem, 3.2vw, 2.9rem) !important;
@@ -5546,6 +5657,73 @@
     .services-intro-section,
     .why-section {
       background: #f0f5ff !important;
+    }
+
+    .tech-card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+      margin-top: 48px;
+    }
+
+    .tech-img-card {
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid #e8eef8;
+      box-shadow: 0 18px 42px rgba(15,23,42,0.06);
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      cursor: pointer;
+    }
+
+    .tech-img-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 24px 55px rgba(26,86,219,0.12);
+    }
+
+    .tech-img-area {
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding-top: 16px;
+    }
+
+    .tech-img-main {
+      width: 85%;
+      height: auto;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+      transition: transform 0.35s ease;
+    }
+
+    .tech-img-dark {
+      mix-blend-mode: normal !important;
+    }
+
+    .tech-img-card:hover .tech-img-main {
+      transform: scale(1.05);
+    }
+
+    .tech-img-body {
+      padding: 20px 24px 24px;
+    }
+
+    .tech-img-body h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+
+    .tech-img-body p {
+      font-size: 0.9rem;
+      color: #64748b;
+      line-height: 1.65;
     }
 
     .products-grid {
@@ -5603,7 +5781,7 @@
     }
 
     .cta-section {
-      background: #fff !important;
+      background: #f0f5ff !important;
     }
 
     .cta-box {
@@ -5690,6 +5868,19 @@
       }
       .logo-wall {
         padding-bottom: 30px !important;
+      }
+      .logo-wall-track {
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 8px !important;
+      }
+      .logo-wall-track .client-logo {
+        padding: 7px 12px !important;
+        flex-shrink: 0;
+        min-width: auto;
+      }
+      .tech-card-grid {
+        grid-template-columns: 1fr !important;
       }
       .solution-overview,
       .section,

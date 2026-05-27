@@ -1,4 +1,4 @@
-const express   = require('express');
+﻿const express   = require('express');
 const router    = express.Router();
 const { db }    = require('../db');
 const bcrypt    = require('bcryptjs');
@@ -87,7 +87,7 @@ function shouldUseTemplateFallback(err) {
 }
 
 function toSlug(text) {
-  return String(text || 'viai-ai-ho-tro')
+  return String(text || 'ViAI-ai-ho-tro')
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/đ/g, 'd')
@@ -95,12 +95,12 @@ function toSlug(text) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
-    .slice(0, 70) || 'viai-ai-ho-tro';
+    .slice(0, 70) || 'ViAI-ai-ho-tro';
 }
 
 function normalizeBrandText(text) {
   return String(text || '')
-    .replace(/\bviai\b/gi, 'VIAi')
+    .replace(/\bViAI\b/gi, 'ViAI')
     .replace(/\bai\b/g, 'AI')
     .replace(/\s+/g, ' ')
     .trim();
@@ -108,7 +108,7 @@ function normalizeBrandText(text) {
 
 function cleanRepeatedSeoText(text) {
   return normalizeBrandText(text)
-    .replace(/(VIAi\s+hỗ trợ)\s+hỗ trợ/gi, '$1')
+    .replace(/(ViAI\s+hỗ trợ)\s+hỗ trợ/gi, '$1')
     .replace(/hỗ trợ\s+hỗ trợ/gi, 'hỗ trợ')
     .replace(/(AI\s+hỗ trợ)\s+hỗ trợ/gi, '$1')
     .replace(/\s+/g, ' ')
@@ -118,7 +118,7 @@ function cleanRepeatedSeoText(text) {
 function cleanTopicSubject(text, fallback = 'bán hàng') {
   let value = cleanRepeatedSeoText(text || fallback);
   value = value
-    .replace(/^VIAi\s*[:\-]?\s*/i, '')
+    .replace(/^ViAI\s*[:\-]?\s*/i, '')
     .replace(/^AI\s+hỗ trợ\s+/i, '')
     .replace(/^hỗ trợ\s+/i, '')
     .replace(/^giải pháp\s+/i, '')
@@ -129,7 +129,7 @@ function cleanTopicSubject(text, fallback = 'bán hàng') {
 
 function buildSeoTitleFromTopic(topic, fallback = 'bán hàng') {
   const subject = cleanTopicSubject(topic, fallback);
-  let value = `VIAi hỗ trợ ${subject} bằng AI`;
+  let value = `ViAI hỗ trợ ${subject} bằng AI`;
   if (!/(doanh nghiệp|công ty|đội ngũ|kinh doanh)/i.test(subject)) {
     value += ' cho doanh nghiệp';
   }
@@ -138,7 +138,7 @@ function buildSeoTitleFromTopic(topic, fallback = 'bán hàng') {
 
 function normalizeBrandMarkdown(text) {
   return String(text || '')
-    .replace(/\bviai\b/gi, 'VIAi')
+    .replace(/\bViAI\b/gi, 'ViAI')
     .replace(/\bai\b/g, 'AI')
     .trim();
 }
@@ -164,7 +164,7 @@ function ensureMetaDescription(meta, keyword, topic) {
   let value = cleanRepeatedSeoText(meta);
   if (value.length < 140) {
     const subject = cleanTopicSubject(topic || keyword || 'bán hàng', 'bán hàng');
-    value = `VIAi giúp doanh nghiệp ứng dụng AI vào ${subject} để tư vấn khách hàng nhanh hơn, tự động hóa quy trình, chăm sóc khách hàng và tối ưu vận hành hiệu quả.`;
+    value = `ViAI giúp doanh nghiệp ứng dụng AI vào ${subject} để tư vấn khách hàng nhanh hơn, tự động hóa quy trình, chăm sóc khách hàng và tối ưu vận hành hiệu quả.`;
   }
   if (value.length < 140) value += ' Phù hợp đội ngũ kinh doanh tại Việt Nam.';
   if (value.length > 160) value = value.slice(0, 160).replace(/\s+\S*$/, '');
@@ -174,9 +174,9 @@ function ensureMetaDescription(meta, keyword, topic) {
 function ensureSeoTitle(title, topic) {
   let value = cleanRepeatedSeoText(title);
   if (!value) value = buildSeoTitleFromTopic(topic || 'bán hàng');
-  value = value.replace(/\s*\|\s*VIAi$/i, '');
+  value = value.replace(/\s*\|\s*ViAI$/i, '');
   value = cleanRepeatedSeoText(value);
-  if (!/\bVIAi\b/.test(value)) value = `VIAi: ${value}`;
+  if (!/\bViAI\b/.test(value)) value = `ViAI: ${value}`;
   if (
     value.length < 45 &&
     /\bbằng AI$/i.test(value) &&
@@ -188,7 +188,16 @@ function ensureSeoTitle(title, topic) {
   return value;
 }
 
-// Cải thiện bài có sẵn: chuẩn hóa heading, thêm ảnh sau H2, in đậm từ khóa, thêm CTA
+// Chuẩn hóa heading: # → ## (H1 không được xuất hiện trong body, chỉ dùng làm title bên ngoài)
+function normalizeHeadings(content) {
+  return String(content || '')
+    .replace(/^# (?!#)/gm, '## ')   // # heading → ## heading
+    .replace(/^## (?!#)/gm, '## ')  // giữ nguyên ## (no-op, for clarity)
+    .replace(/^### (?!#)/gm, '### ') // giữ nguyên ###
+    .replace(/^#### (?!#)/gm, '#### '); // giữ nguyên ####
+}
+
+// Cải thiện bài có sẵn: thêm ảnh sau H2, in đậm từ khóa, thêm CTA — KHÔNG sửa cấu trúc
 function improveExistingContent(content, keyword, topic, sectionImages) {
   const mainKeyword = normalizeBrandText(keyword || topic || '');
   const shuffled = [...IMG_POOL].sort(() => Math.random() - 0.5);
@@ -204,42 +213,16 @@ function improveExistingContent(content, keyword, topic, sectionImages) {
     return `![${alt || mainKeyword}](${img})`;
   }
 
-  // Bước 1: chuẩn hóa heading — nhận dạng nhiều kiểu plain text
-  function isLikelyHeading(line, prevLine, nextLine) {
-    const t = line.trim();
-    if (!t || t.length > 100) return false;
-    if (/^#{1,3}\s/.test(t)) return false; // đã là heading rồi
-    if (/^\d+\.\s+\S/.test(t) && t.length < 80) return true; // 1. Tiêu đề
-    if (/^[IVX]+\.\s+\S/.test(t)) return true; // I. II. III.
-    if (t.endsWith(':') && t.length < 60) return true; // Kết luận:
-    if (t.length < 55 && !t.includes('.') && !t.includes(',') && prevLine === '' && (nextLine === '' || nextLine.length > 50)) return true;
-    return false;
-  }
-
-  const rawLines = content.split('\n').map(l => l.trimEnd());
-  const normalized = [];
-  for (let i = 0; i < rawLines.length; i++) {
-    const line = rawLines[i];
-    const prev = (rawLines[i - 1] || '').trim();
-    const next = (rawLines[i + 1] || '').trim();
-    if (isLikelyHeading(line.trim(), prev, next)) {
-      normalized.push('');
-      normalized.push(`## ${line.trim()}`);
-      normalized.push('');
-    } else {
-      normalized.push(line);
-    }
-  }
-
-  // Bước 2: thêm ảnh sau mỗi H2 nếu chưa có
+  // Chỉ thêm ảnh sau H2 có sẵn trong bài, KHÔNG convert plain text thành heading
+  const lines = content.split('\n').map(l => l.trimEnd());
   const out = [];
-  for (let i = 0; i < normalized.length; i++) {
-    const line = normalized[i];
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
     out.push(line);
     if (/^##\s/.test(line)) {
       let nextNonEmpty = '';
-      for (let j = i + 1; j < normalized.length; j++) {
-        if (normalized[j].trim()) { nextNonEmpty = normalized[j].trim(); break; }
+      for (let j = i + 1; j < lines.length; j++) {
+        if (lines[j].trim()) { nextNonEmpty = lines[j].trim(); break; }
       }
       if (!nextNonEmpty.startsWith('![')) {
         const alt = line.replace(/^##\s*/, '').trim();
@@ -249,7 +232,7 @@ function improveExistingContent(content, keyword, topic, sectionImages) {
     }
   }
 
-  let result = out.join('\n');
+  let result = normalizeHeadings(out.join('\n'));
 
   // Bước 3: in đậm từ khóa chính lần đầu (nếu chưa bold)
   if (mainKeyword && mainKeyword.length > 3) {
@@ -267,7 +250,7 @@ function improveExistingContent(content, keyword, topic, sectionImages) {
 }
 
 function ensureBlogContent(content, title, keyword, topic, audience) {
-  let value = stripMarkdownTitle(normalizeBrandMarkdown(content), title);
+  let value = normalizeHeadings(stripMarkdownTitle(normalizeBrandMarkdown(content), title));
   const mainTopic = normalizeBrandText(topic || keyword || 'AI hỗ trợ bán hàng');
   if (!value) {
     value = buildTemplateBlogDraft({ keyword, topic, audience }).content;
@@ -292,7 +275,7 @@ Khi quy trình đầu tiên vận hành ổn định, mở rộng dần sang mar
 
 ## Doanh nghiệp nên chuẩn bị gì?
 
-![Chuẩn bị trước khi triển khai AI Agent VIAi](${extraImg2})
+![Chuẩn bị trước khi triển khai AI Agent ViAI](${extraImg2})
 
 Trước khi bắt đầu, hãy chuẩn bị:
 
@@ -308,14 +291,14 @@ Khi dữ liệu đầu vào rõ ràng, AI phản hồi chính xác hơn và dễ
 }
 
 function buildTemplateExcerpt(title, excerpt) {
-  const base = excerpt || 'VIAi hỗ trợ doanh nghiệp ứng dụng AI vào bán hàng, chăm sóc khách hàng và vận hành hằng ngày.';
-  return `${title || 'VIAi'} giúp doanh nghiệp tận dụng AI để xử lý các công việc lặp lại nhanh hơn, từ tư vấn khách hàng đến tổng hợp dữ liệu. ${base} Giải pháp phù hợp với đội ngũ muốn bắt đầu tự động hóa mà không cần triển khai hệ thống phức tạp.`;
+  const base = excerpt || 'ViAI hỗ trợ doanh nghiệp ứng dụng AI vào bán hàng, chăm sóc khách hàng và vận hành hằng ngày.';
+  return `${title || 'ViAI'} giúp doanh nghiệp tận dụng AI để xử lý các công việc lặp lại nhanh hơn, từ tư vấn khách hàng đến tổng hợp dữ liệu. ${base} Giải pháp phù hợp với đội ngũ muốn bắt đầu tự động hóa mà không cần triển khai hệ thống phức tạp.`;
 }
 
 function buildTemplateSeoResult({ mode, keyword, topic, audience, intent, tone, draft }) {
-  const mainKeyword = keyword || topic || 'VIAi AI hỗ trợ';
+  const mainKeyword = keyword || topic || 'ViAI AI hỗ trợ';
   const mainTopic = topic || keyword || 'AI hỗ trợ doanh nghiệp';
-  const title = `VIAi: ${mainTopic}`;
+  const title = `ViAI: ${mainTopic}`;
   const slug = toSlug(mainTopic);
 
   if (mode === 'audit') {
@@ -327,34 +310,34 @@ ${draft ? 'Bài đã có nền nội dung để tối ưu, nhưng cần kiểm t
 
 2. Các lỗi quan trọng cần sửa ngay
 - Làm rõ từ khóa chính: "${mainKeyword}" trong tiêu đề, đoạn mở bài và ít nhất một heading H2.
-- Bổ sung CTA cuối bài để dẫn người đọc sang tư vấn, dùng thử hoặc liên hệ VIAi.
+- Bổ sung CTA cuối bài để dẫn người đọc sang tư vấn, dùng thử hoặc liên hệ ViAI.
 - Thêm FAQ để tăng khả năng hiển thị với truy vấn dạng câu hỏi.
 - Kiểm tra lại meta description để nằm trong khoảng 140-160 ký tự.
 
 3. Tiêu đề SEO, slug, meta description đề xuất
 SEO Title: ${title}
 Slug: ${slug}
-Meta description: VIAi cung cấp AI hỗ trợ doanh nghiệp tự động hóa bán hàng, chăm sóc khách hàng và vận hành hiệu quả hơn.
+Meta description: ViAI cung cấp AI hỗ trợ doanh nghiệp tự động hóa bán hàng, chăm sóc khách hàng và vận hành hiệu quả hơn.
 
 4. Checklist
 H1: Nên có đúng 1 H1 chứa chủ đề chính.
-H2/H3: Nên chia theo lợi ích, cách hoạt động, ứng dụng và lý do chọn VIAi.
+H2/H3: Nên chia theo lợi ích, cách hoạt động, ứng dụng và lý do chọn ViAI.
 Mật độ từ khóa: Dùng tự nhiên, tránh lặp quá nhiều.
 Internal link: Thêm link tới trang sản phẩm, bảng giá hoặc đăng ký dùng thử.
 External link: Có thể dẫn tới nguồn uy tín về AI/automation nếu phù hợp.
-Alt ảnh: Mô tả rõ hình ảnh và có ngữ cảnh VIAi.
+Alt ảnh: Mô tả rõ hình ảnh và có ngữ cảnh ViAI.
 FAQ: Nên có 4-5 câu hỏi ngắn.
 CTA: Có lời mời hành động cụ thể ở cuối bài.
 
 5. Đoạn mở bài tối ưu hơn
-Trong bối cảnh doanh nghiệp cần phản hồi khách hàng nhanh hơn và giảm việc thủ công, ${mainKeyword} trở thành một giải pháp đáng cân nhắc. VIAi giúp đội ngũ bán hàng, marketing và vận hành ứng dụng AI vào các quy trình thực tế mà không cần bắt đầu bằng một hệ thống phức tạp.
+Trong bối cảnh doanh nghiệp cần phản hồi khách hàng nhanh hơn và giảm việc thủ công, ${mainKeyword} trở thành một giải pháp đáng cân nhắc. ViAI giúp đội ngũ bán hàng, marketing và vận hành ứng dụng AI vào các quy trình thực tế mà không cần bắt đầu bằng một hệ thống phức tạp.
 
 6. FAQ nên thêm
-- VIAi hỗ trợ doanh nghiệp những công việc nào?
-- VIAi có phù hợp với doanh nghiệp nhỏ không?
+- ViAI hỗ trợ doanh nghiệp những công việc nào?
+- ViAI có phù hợp với doanh nghiệp nhỏ không?
 - AI hỗ trợ có thay thế nhân viên không?
-- Bao lâu có thể triển khai VIAi?
-- Doanh nghiệp cần chuẩn bị gì trước khi dùng VIAi?`;
+- Bao lâu có thể triển khai ViAI?
+- Doanh nghiệp cần chuẩn bị gì trước khi dùng ViAI?`;
   }
 
   return `Lưu ý: Đây là bài viết mẫu vì server chưa có ANTHROPIC_API_KEY hợp lệ. Khi có key thật, Claude sẽ tạo nội dung linh hoạt hơn.
@@ -366,14 +349,14 @@ ${title}
 ${slug}
 
 3. Meta description
-VIAi cung cấp AI hỗ trợ doanh nghiệp tự động hóa bán hàng, chăm sóc khách hàng và vận hành hiệu quả hơn.
+ViAI cung cấp AI hỗ trợ doanh nghiệp tự động hóa bán hàng, chăm sóc khách hàng và vận hành hiệu quả hơn.
 
 4. Dàn ý H1, H2, H3
 H1: ${title}
 H2: AI hỗ trợ doanh nghiệp là gì?
-H2: VIAi giúp gì cho bán hàng và chăm sóc khách hàng?
-H2: Ứng dụng VIAi trong vận hành hằng ngày
-H2: Vì sao doanh nghiệp nên cân nhắc VIAi?
+H2: ViAI giúp gì cho bán hàng và chăm sóc khách hàng?
+H2: Ứng dụng ViAI trong vận hành hằng ngày
+H2: Vì sao doanh nghiệp nên cân nhắc ViAI?
 H2: Kết luận và bước tiếp theo
 
 5. Bài viết hoàn chỉnh
@@ -382,7 +365,7 @@ H2: Kết luận và bước tiếp theo
 
 Trong bối cảnh chi phí nhân sự, quảng cáo và vận hành ngày càng tăng, nhiều doanh nghiệp Việt đang tìm kiếm một giải pháp giúp làm việc nhanh hơn nhưng không làm phức tạp hệ thống hiện tại. Đây là lý do ${mainKeyword} ngày càng được quan tâm, đặc biệt với các đội ngũ bán hàng, marketing và chăm sóc khách hàng.
 
-VIAi được xây dựng để hỗ trợ doanh nghiệp ứng dụng AI vào các công việc thực tế. Thay vì chỉ dừng ở việc trả lời tin nhắn đơn giản, VIAi có thể hỗ trợ tư vấn khách hàng, phân loại nhu cầu, ghi nhận thông tin, tạo báo cáo và giảm bớt các thao tác lặp lại trong ngày.
+ViAI được xây dựng để hỗ trợ doanh nghiệp ứng dụng AI vào các công việc thực tế. Thay vì chỉ dừng ở việc trả lời tin nhắn đơn giản, ViAI có thể hỗ trợ tư vấn khách hàng, phân loại nhu cầu, ghi nhận thông tin, tạo báo cáo và giảm bớt các thao tác lặp lại trong ngày.
 
 ## AI hỗ trợ doanh nghiệp là gì?
 
@@ -390,56 +373,56 @@ AI hỗ trợ doanh nghiệp là việc sử dụng trí tuệ nhân tạo để
 
 Điểm quan trọng là AI không nhất thiết thay thế con người. Trong nhiều trường hợp, AI đóng vai trò như một trợ lý vận hành, giúp nhân viên tập trung vào các việc cần tư duy, đàm phán hoặc xử lý tình huống phức tạp hơn.
 
-## VIAi giúp gì cho bán hàng và chăm sóc khách hàng?
+## ViAI giúp gì cho bán hàng và chăm sóc khách hàng?
 
-Với hoạt động bán hàng, VIAi có thể hỗ trợ phản hồi khách hàng nhanh hơn trên các kênh online. Khi khách để lại thông tin, AI có thể ghi nhận nhu cầu, đề xuất hướng tư vấn và chuyển dữ liệu cho đội ngũ phụ trách. Điều này đặc biệt hữu ích với doanh nghiệp có nhiều khách hỏi nhưng chưa đủ nhân sự trực liên tục.
+Với hoạt động bán hàng, ViAI có thể hỗ trợ phản hồi khách hàng nhanh hơn trên các kênh online. Khi khách để lại thông tin, AI có thể ghi nhận nhu cầu, đề xuất hướng tư vấn và chuyển dữ liệu cho đội ngũ phụ trách. Điều này đặc biệt hữu ích với doanh nghiệp có nhiều khách hỏi nhưng chưa đủ nhân sự trực liên tục.
 
-Ở khâu chăm sóc khách hàng, VIAi có thể hỗ trợ nhắc lịch, gửi hướng dẫn, phân loại phản hồi và tạo kịch bản chăm sóc sau bán. Nhờ đó, doanh nghiệp giữ được sự chuyên nghiệp mà không cần tăng quá nhiều chi phí vận hành.
+Ở khâu chăm sóc khách hàng, ViAI có thể hỗ trợ nhắc lịch, gửi hướng dẫn, phân loại phản hồi và tạo kịch bản chăm sóc sau bán. Nhờ đó, doanh nghiệp giữ được sự chuyên nghiệp mà không cần tăng quá nhiều chi phí vận hành.
 
-## Ứng dụng VIAi trong vận hành hằng ngày
+## Ứng dụng ViAI trong vận hành hằng ngày
 
-Ngoài bán hàng, VIAi còn có thể hỗ trợ tổng hợp dữ liệu và báo cáo. Thay vì mất thời gian gom thông tin thủ công, doanh nghiệp có thể dùng AI để chuẩn hóa dữ liệu, tóm tắt tình hình và gợi ý các điểm cần theo dõi.
+Ngoài bán hàng, ViAI còn có thể hỗ trợ tổng hợp dữ liệu và báo cáo. Thay vì mất thời gian gom thông tin thủ công, doanh nghiệp có thể dùng AI để chuẩn hóa dữ liệu, tóm tắt tình hình và gợi ý các điểm cần theo dõi.
 
 Khi dữ liệu được tổ chức tốt hơn, chủ doanh nghiệp và đội ngũ quản lý có thêm cơ sở để ra quyết định. Đây là lợi ích quan trọng của ${mainKeyword}: không chỉ làm nhanh hơn, mà còn giúp doanh nghiệp nhìn rõ hơn các điểm nghẽn trong quy trình.
 
-## Vì sao doanh nghiệp nên cân nhắc VIAi?
+## Vì sao doanh nghiệp nên cân nhắc ViAI?
 
-VIAi phù hợp với doanh nghiệp muốn bắt đầu ứng dụng AI theo từng bước nhỏ. Thay vì triển khai một hệ thống lớn ngay từ đầu, doanh nghiệp có thể chọn một quy trình cụ thể như tư vấn khách hàng, chăm sóc sau bán hoặc báo cáo tự động. Cách tiếp cận này giúp giảm rủi ro và dễ đo hiệu quả hơn.
+ViAI phù hợp với doanh nghiệp muốn bắt đầu ứng dụng AI theo từng bước nhỏ. Thay vì triển khai một hệ thống lớn ngay từ đầu, doanh nghiệp có thể chọn một quy trình cụ thể như tư vấn khách hàng, chăm sóc sau bán hoặc báo cáo tự động. Cách tiếp cận này giúp giảm rủi ro và dễ đo hiệu quả hơn.
 
-Với đối tượng đọc là ${audience || 'chủ doanh nghiệp và đội ngũ marketing tại Việt Nam'}, giải pháp AI cần dễ hiểu, dễ triển khai và gắn với kết quả kinh doanh thực tế. VIAi hướng tới đúng nhu cầu đó: hỗ trợ đội ngũ làm việc hiệu quả hơn mà không yêu cầu kiến thức kỹ thuật phức tạp.
+Với đối tượng đọc là ${audience || 'chủ doanh nghiệp và đội ngũ marketing tại Việt Nam'}, giải pháp AI cần dễ hiểu, dễ triển khai và gắn với kết quả kinh doanh thực tế. ViAI hướng tới đúng nhu cầu đó: hỗ trợ đội ngũ làm việc hiệu quả hơn mà không yêu cầu kiến thức kỹ thuật phức tạp.
 
 ## Kết luận
 
-${mainTopic} không còn là xu hướng xa vời. Với VIAi, doanh nghiệp có thể bắt đầu tự động hóa những công việc lặp lại, phản hồi khách hàng nhanh hơn và xây dựng quy trình vận hành rõ ràng hơn. Nếu doanh nghiệp của bạn đang cân nhắc ứng dụng AI, hãy bắt đầu từ một nhu cầu cụ thể và đo hiệu quả từng bước.
+${mainTopic} không còn là xu hướng xa vời. Với ViAI, doanh nghiệp có thể bắt đầu tự động hóa những công việc lặp lại, phản hồi khách hàng nhanh hơn và xây dựng quy trình vận hành rõ ràng hơn. Nếu doanh nghiệp của bạn đang cân nhắc ứng dụng AI, hãy bắt đầu từ một nhu cầu cụ thể và đo hiệu quả từng bước.
 
-CTA: Liên hệ VIAi để được tư vấn giải pháp AI hỗ trợ phù hợp với quy trình bán hàng, marketing và vận hành của doanh nghiệp bạn.
+CTA: Liên hệ ViAI để được tư vấn giải pháp AI hỗ trợ phù hợp với quy trình bán hàng, marketing và vận hành của doanh nghiệp bạn.
 
 6. FAQ
 
-VIAi có phải chatbot không?
-VIAi không chỉ là chatbot. VIAi được định hướng như trợ lý AI hỗ trợ nhiều quy trình trong doanh nghiệp.
+ViAI có phải chatbot không?
+ViAI không chỉ là chatbot. ViAI được định hướng như trợ lý AI hỗ trợ nhiều quy trình trong doanh nghiệp.
 
-Doanh nghiệp nhỏ có dùng VIAi được không?
-Có. VIAi phù hợp với doanh nghiệp vừa và nhỏ muốn bắt đầu tự động hóa từng phần công việc.
+Doanh nghiệp nhỏ có dùng ViAI được không?
+Có. ViAI phù hợp với doanh nghiệp vừa và nhỏ muốn bắt đầu tự động hóa từng phần công việc.
 
-VIAi hỗ trợ những bộ phận nào?
-VIAi có thể hỗ trợ bán hàng, marketing, chăm sóc khách hàng, vận hành và báo cáo.
+ViAI hỗ trợ những bộ phận nào?
+ViAI có thể hỗ trợ bán hàng, marketing, chăm sóc khách hàng, vận hành và báo cáo.
 
 AI có thay thế nhân viên không?
 Không nhất thiết. AI giúp giảm việc lặp lại để nhân viên tập trung vào công việc quan trọng hơn.
 
-Khi nào nên dùng VIAi?
+Khi nào nên dùng ViAI?
 Khi doanh nghiệp có nhiều khách hàng, nhiều tin nhắn, nhiều dữ liệu hoặc nhiều thao tác thủ công cần tối ưu.
 
 7. Internal link anchor text
 - Giải pháp AI Agent cho doanh nghiệp
-- Đăng ký dùng thử VIAi
-- Bảng giá VIAi
+- Đăng ký dùng thử ViAI
+- Bảng giá ViAI
 
 8. Alt text ảnh
-- Giao diện VIAi hỗ trợ doanh nghiệp quản lý khách hàng
+- Giao diện ViAI hỗ trợ doanh nghiệp quản lý khách hàng
 - AI hỗ trợ bán hàng và chăm sóc khách hàng tự động
-      - Dashboard báo cáo vận hành doanh nghiệp bằng VIAi`;
+      - Dashboard báo cáo vận hành doanh nghiệp bằng ViAI`;
 }
 
 function normalizeFaq(faq) {
@@ -457,11 +440,11 @@ function normalizeFaq(faq) {
 }
 
 function normalizeBlogDraft(raw, fallbackInput = {}) {
-  const keyword = fallbackInput.keyword || fallbackInput.topic || 'VIAi AI hỗ trợ';
+  const keyword = fallbackInput.keyword || fallbackInput.topic || 'ViAI AI hỗ trợ';
   const topic = fallbackInput.topic || fallbackInput.keyword || 'AI hỗ trợ doanh nghiệp';
   const title = ensureSeoTitle(raw?.title || raw?.seo_title, topic);
   const content = ensureBlogContent(raw?.content || raw?.article || '', title, keyword, topic, fallbackInput.audience);
-  const excerpt = ensureSentence(raw?.excerpt || raw?.summary || content.split(/\n+/).find(Boolean), `VIAi giúp doanh nghiệp ứng dụng AI vào ${cleanTopicSubject(topic, 'bán hàng')} để phản hồi khách hàng nhanh hơn, giảm việc thủ công và tối ưu vận hành.`);
+  const excerpt = ensureSentence(raw?.excerpt || raw?.summary || content.split(/\n+/).find(Boolean), `ViAI giúp doanh nghiệp ứng dụng AI vào ${cleanTopicSubject(topic, 'bán hàng')} để phản hồi khách hàng nhanh hơn, giảm việc thủ công và tối ưu vận hành.`);
   const slug = toSlug(raw?.slug || title);
   return {
     title,
@@ -472,10 +455,10 @@ function normalizeBlogDraft(raw, fallbackInput = {}) {
     content,
     faq: normalizeFaq(raw?.faq),
     image_prompt: normalizeBrandText(raw?.image_prompt || `Ảnh minh họa ${topic}, phong cách công nghệ AI hiện đại cho doanh nghiệp Việt Nam`),
-    image_alt: normalizeBrandText(raw?.image_alt || `${topic} cùng VIAi`),
+    image_alt: normalizeBrandText(raw?.image_alt || `${topic} cùng ViAI`),
     image_url: String(raw?.image_url || 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&q=80').trim(),
     category: normalizeBrandText(raw?.category || 'Kiến thức AI'),
-    author: normalizeBrandText(raw?.author || 'VIAi Team')
+    author: normalizeBrandText(raw?.author || 'ViAI Team')
   };
 }
 
@@ -515,7 +498,7 @@ const IMG_POOL = [
 
 function buildTemplateBlogDraft(input) {
   const { keyword, topic, audience, intent, tone } = input;
-  const mainKeyword = cleanRepeatedSeoText(keyword || topic || 'VIAi AI hỗ trợ');
+  const mainKeyword = cleanRepeatedSeoText(keyword || topic || 'ViAI AI hỗ trợ');
   const mainTopic = cleanRepeatedSeoText(topic || keyword || 'AI hỗ trợ doanh nghiệp');
   const title = buildSeoTitleFromTopic(mainTopic, 'doanh nghiệp');
 
@@ -539,6 +522,8 @@ Nhiều chủ doanh nghiệp vừa và nhỏ tại Việt Nam đang đối mặt
 
 **${mainTopic}** không phải chatbot trả lời theo kịch bản cố định. Đây là hệ thống AI thế hệ mới, có khả năng hiểu ngữ cảnh, học từ dữ liệu thực tế và thực hiện hành động thay con người trong quy trình kinh doanh.
 
+### Khác biệt so với chatbot thông thường
+
 Khác với các công cụ tự động hóa truyền thống chỉ làm theo luật cứng nhắc, AI Agent có thể:
 
 - Hiểu ngữ cảnh hội thoại và phản hồi linh hoạt theo từng khách hàng
@@ -546,17 +531,21 @@ Khác với các công cụ tự động hóa truyền thống chỉ làm theo l
 - Kết nối đồng thời nhiều kênh: Zalo, Facebook, Website, email
 - Hoạt động 24/7 không cần người trực, không mệt mỏi, không sai sót
 
+### Tại sao AI học ngày càng thông minh hơn?
+
 Điều khiến AI Agent trở nên quan trọng là khả năng **học và cải thiện theo thời gian**. Càng nhiều dữ liệu tương tác, hệ thống càng phản hồi chính xác và phù hợp hơn với đặc thù ngành của từng doanh nghiệp.
 
 > Theo khảo sát McKinsey, **70% công việc lặp lại** trong doanh nghiệp SME có thể được tự động hóa bằng AI Agent, giải phóng nhân sự để tập trung vào các công việc sáng tạo và có giá trị cao hơn.
 
 ## Doanh nghiệp được gì khi ứng dụng ${mainTopic}?
 
-![Kết quả kinh doanh sau khi dùng AI Agent VIAi](${imgs[2]||IMG_POOL[2]})
+![Kết quả kinh doanh sau khi dùng AI Agent ViAI](${imgs[2]||IMG_POOL[2]})
+
+### Tiết kiệm thời gian và chi phí vận hành
 
 Lợi ích không chỉ dừng lại ở tiết kiệm thời gian. Khi AI đảm nhận phần việc lặp lại, toàn bộ đội ngũ có thêm bandwidth để tập trung vào chiến lược, sáng tạo và xây dựng quan hệ khách hàng sâu hơn.
 
-| Tiêu chí | Trước khi dùng AI | Sau khi dùng VIAi |
+| Tiêu chí | Trước khi dùng AI | Sau khi dùng ViAI |
 |----------|-------------------|-------------------|
 | Thời gian phản hồi | 30 phút – 2 tiếng | Dưới 5 giây |
 | Hoạt động ngoài giờ | ❌ Không | ✅ 24/7 |
@@ -566,13 +555,17 @@ Lợi ích không chỉ dừng lại ở tiết kiệm thời gian. Khi AI đả
 
 Bên cạnh hiệu quả vận hành, doanh nghiệp còn có thêm **dữ liệu khách hàng chất lượng cao**: mỗi cuộc hội thoại được ghi lại, phân tích và chuyển thành insight giúp cải thiện sản phẩm, dịch vụ và chiến lược marketing.
 
+### Dữ liệu khách hàng chất lượng cao
+
+Bên cạnh hiệu quả vận hành, doanh nghiệp còn có thêm **dữ liệu khách hàng chất lượng cao**: mỗi cuộc hội thoại được ghi lại, phân tích và chuyển thành insight giúp cải thiện sản phẩm, dịch vụ và chiến lược marketing.
+
 ## Ví dụ thực tế: Shop Thời Trang Minh Anh
 
-![Chủ doanh nghiệp sử dụng AI Agent VIAi](${imgs[3]||IMG_POOL[3]})
+![Chủ doanh nghiệp sử dụng AI Agent ViAI](${imgs[3]||IMG_POOL[3]})
 
 Chị Minh Anh — chủ shop thời trang online tại TP.HCM — nhận **150-200 tin nhắn Zalo mỗi ngày**. Trước đây chị mất 5-6 tiếng chỉ để trả lời khách hỏi giá, hỏi size và xác nhận đơn. Vào mùa cao điểm như lễ Tết hay 11/11, số tin nhắn tăng gấp đôi khiến chị gần như không thể nghỉ ngơi.
 
-Sau khi triển khai VIAi Zalo Sales Agent chỉ trong một buổi sáng, toàn bộ quy trình tư vấn và chốt đơn được tự động hóa. Kết quả sau 30 ngày đầu:
+Sau khi triển khai ViAI Zalo Sales Agent chỉ trong một buổi sáng, toàn bộ quy trình tư vấn và chốt đơn được tự động hóa. Kết quả sau 30 ngày đầu:
 
 - ⏱ Tiết kiệm **5 giờ/ngày** — tương đương 1 nhân viên bán thời gian
 - 📦 Đơn hàng tăng **35%** nhờ không bỏ lỡ khách nhắn đêm hoặc giờ nghỉ trưa
@@ -585,6 +578,8 @@ Sau khi triển khai VIAi Zalo Sales Agent chỉ trong một buổi sáng, toàn
 
 ![Lợi ích triển khai AI Agent đúng cách](${imgs[4]||IMG_POOL[4]})
 
+### Bắt đầu từ một quy trình cụ thể
+
 Để AI tạo ra kết quả thực tế, doanh nghiệp nên bắt đầu từ **một quy trình cụ thể** thay vì triển khai dàn trải. Điểm khởi đầu phù hợp với hầu hết doanh nghiệp SME thường là:
 
 - Tư vấn và phản hồi khách hàng tự động qua Zalo hoặc Facebook
@@ -595,7 +590,9 @@ Khi quy trình đầu tiên vận hành ổn định — thường sau 2-4 tuầ
 
 ## Doanh nghiệp nên chuẩn bị gì?
 
-![Chuẩn bị trước khi triển khai AI Agent VIAi](${imgs[5]||IMG_POOL[5]})
+![Chuẩn bị trước khi triển khai AI Agent ViAI](${imgs[5]||IMG_POOL[5]})
+
+### Dữ liệu đầu vào — nền tảng để AI hoạt động tốt
 
 Một trong những lý do khiến nhiều doanh nghiệp triển khai AI không hiệu quả là thiếu dữ liệu đầu vào rõ ràng. AI chỉ phản hồi tốt khi được cung cấp đủ thông tin về sản phẩm, quy trình và khách hàng. Trước khi bắt đầu, hãy chuẩn bị:
 
@@ -610,24 +607,24 @@ Khi dữ liệu đầu vào rõ ràng và nhất quán, AI phản hồi chính x
 ## Checklist: Bắt Đầu Với ${mainTopic} Trong 24 Giờ
 
 - [ ] Xác định 1 quy trình lặp lại tốn thời gian nhất
-- [ ] Đăng ký dùng thử VIAi miễn phí 14 ngày
+- [ ] Đăng ký dùng thử ViAI miễn phí 14 ngày
 - [ ] Kết nối kênh Zalo OA hoặc Website (mất 15 phút)
 - [ ] Cài đặt kịch bản phản hồi cơ bản với dữ liệu sản phẩm
 - [ ] Chạy thử 7 ngày và đo kết quả: số tin nhắn xử lý, tỷ lệ chuyển đổi
 - [ ] Đánh giá và tinh chỉnh kịch bản dựa trên phản hồi thực tế
 - [ ] Mở rộng sang quy trình tiếp theo
 
-## Vì Sao Chọn VIAi Thay Vì Tự Xây?
+## Vì Sao Chọn ViAI Thay Vì Tự Xây?
 
-Tự xây hệ thống AI tốn 6-12 tháng và hàng trăm triệu đồng chi phí kỹ thuật, chưa kể thời gian đào tạo và bảo trì. VIAi triển khai trong **24 giờ**, không cần đội kỹ thuật riêng, không cần kiến thức lập trình.
+Tự xây hệ thống AI tốn 6-12 tháng và hàng trăm triệu đồng chi phí kỹ thuật, chưa kể thời gian đào tạo và bảo trì. ViAI triển khai trong **24 giờ**, không cần đội kỹ thuật riêng, không cần kiến thức lập trình.
 
-- ✅ Hỗ trợ 1-1 từ đội ngũ VIAi trong suốt quá trình triển khai
+- ✅ Hỗ trợ 1-1 từ đội ngũ ViAI trong suốt quá trình triển khai
 - ✅ Tích hợp 50+ ứng dụng phổ biến: Zalo, Facebook, Google Sheets, CRM
 - ✅ Cập nhật tính năng liên tục, không mất phí nâng cấp
 - ✅ Hoàn tiền 100% trong 7 ngày nếu không hài lòng
 - ✅ Không ràng buộc hợp đồng dài hạn, linh hoạt theo quy mô doanh nghiệp
 
-Với doanh nghiệp SME Việt Nam đang cần tăng tốc mà không muốn gánh thêm rủi ro kỹ thuật, VIAi là con đường ngắn nhất từ ý tưởng đến kết quả thực tế.
+Với doanh nghiệp SME Việt Nam đang cần tăng tốc mà không muốn gánh thêm rủi ro kỹ thuật, ViAI là con đường ngắn nhất từ ý tưởng đến kết quả thực tế.
 
 ---
 
@@ -638,17 +635,17 @@ Sẵn sàng để AI làm việc thay bạn? [Dùng thử miễn phí 14 ngày](
     seo_title: ensureSeoTitle(title, mainTopic),
     slug: toSlug(mainTopic),
     meta_description: ensureMetaDescription('', mainKeyword, mainTopic),
-    excerpt: `VIAi giúp doanh nghiệp tận dụng AI để xử lý các công việc lặp lại nhanh hơn, từ tư vấn khách hàng đến tổng hợp dữ liệu.`,
+    excerpt: `ViAI giúp doanh nghiệp tận dụng AI để xử lý các công việc lặp lại nhanh hơn, từ tư vấn khách hàng đến tổng hợp dữ liệu.`,
     content,
     faq: [
-      { question: 'VIAi có phải chatbot không?', answer: 'VIAi không chỉ là chatbot. VIAi được định hướng như trợ lý AI hỗ trợ nhiều quy trình trong doanh nghiệp.' },
-      { question: 'Doanh nghiệp nhỏ có dùng VIAi được không?', answer: 'Có. VIAi phù hợp với doanh nghiệp vừa và nhỏ muốn bắt đầu tự động hóa từng phần công việc.' },
-      { question: 'VIAi hỗ trợ những bộ phận nào?', answer: 'VIAi có thể hỗ trợ bán hàng, marketing, chăm sóc khách hàng, vận hành và báo cáo.' },
+      { question: 'ViAI có phải chatbot không?', answer: 'ViAI không chỉ là chatbot. ViAI được định hướng như trợ lý AI hỗ trợ nhiều quy trình trong doanh nghiệp.' },
+      { question: 'Doanh nghiệp nhỏ có dùng ViAI được không?', answer: 'Có. ViAI phù hợp với doanh nghiệp vừa và nhỏ muốn bắt đầu tự động hóa từng phần công việc.' },
+      { question: 'ViAI hỗ trợ những bộ phận nào?', answer: 'ViAI có thể hỗ trợ bán hàng, marketing, chăm sóc khách hàng, vận hành và báo cáo.' },
       { question: 'AI có thay thế nhân viên không?', answer: 'Không nhất thiết. AI giúp giảm việc lặp lại để nhân viên tập trung vào công việc quan trọng hơn.' },
-      { question: 'Khi nào nên dùng VIAi?', answer: 'Khi doanh nghiệp có nhiều khách hàng, nhiều tin nhắn, nhiều dữ liệu hoặc nhiều thao tác thủ công cần tối ưu.' }
+      { question: 'Khi nào nên dùng ViAI?', answer: 'Khi doanh nghiệp có nhiều khách hàng, nhiều tin nhắn, nhiều dữ liệu hoặc nhiều thao tác thủ công cần tối ưu.' }
     ],
     image_prompt: `Ảnh minh họa ${mainTopic}, giao diện công nghệ AI hiện đại, doanh nghiệp Việt Nam, màu xanh dương và cam`,
-    image_alt: `${mainTopic} cùng VIAi`
+    image_alt: `${mainTopic} cùng ViAI`
   }, input);
 }
 
@@ -733,6 +730,70 @@ function runAnthropicPrompt(prompt, maxTokens = 1200) {
   });
 }
 
+// Gọi Claude Vision API với ảnh (base64 hoặc URL)
+function runAnthropicWithImage(imageUrl, textPrompt, maxTokens = 200) {
+  const apiKey = getAnthropicApiKey();
+
+  const buildContent = () => {
+    let imageBlock;
+    if (imageUrl.startsWith('/uploads/')) {
+      const filePath = path.join(__dirname, '..', imageUrl);
+      const fileBuffer = fs.readFileSync(filePath);
+      const base64 = fileBuffer.toString('base64');
+      const ext = path.extname(imageUrl).toLowerCase().slice(1);
+      const mediaType = ext === 'png' ? 'image/png'
+        : ext === 'gif' ? 'image/gif'
+        : ext === 'webp' ? 'image/webp'
+        : 'image/jpeg';
+      imageBlock = { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } };
+    } else if (imageUrl.startsWith('http')) {
+      imageBlock = { type: 'image', source: { type: 'url', url: imageUrl } };
+    } else {
+      throw new Error('URL ảnh không hợp lệ');
+    }
+    return [imageBlock, { type: 'text', text: textPrompt }];
+  };
+
+  return new Promise((resolve, reject) => {
+    let content;
+    try { content = buildContent(); } catch (e) { return reject(e); }
+
+    const body = JSON.stringify({
+      model: cleanEnvValue('ANTHROPIC_MODEL') || DEFAULT_ANTHROPIC_MODEL,
+      max_tokens: maxTokens,
+      messages: [{ role: 'user', content }]
+    });
+
+    const req2 = https.request({
+      hostname: 'api.anthropic.com',
+      path: '/v1/messages',
+      method: 'POST',
+      headers: {
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+        'content-length': Buffer.byteLength(body)
+      }
+    }, (r) => {
+      let d = '';
+      r.on('data', c => d += c);
+      r.on('end', () => {
+        try {
+          const result = JSON.parse(d || '{}');
+          if (r.statusCode >= 400 || result.error) return reject(new Error(result.error?.message || `API error ${r.statusCode}`));
+          const text = (result.content || []).map(p => p.text || '').join('\n').trim();
+          if (!text) return reject(new Error('Empty response'));
+          resolve(text);
+        } catch (e) { reject(e); }
+      });
+    });
+    req2.on('error', reject);
+    req2.setTimeout(45000, () => req2.destroy(new Error('AI timeout')));
+    req2.write(body);
+    req2.end();
+  });
+}
+
 // ── Auth ──────────────────────────────────────────────
 router.post('/login', loginLimiter, async (req, res) => {
   const { username, password, totp_code } = req.body;
@@ -765,7 +826,7 @@ router.post('/login', loginLimiter, async (req, res) => {
 router.post('/2fa/setup', auth, async (req, res) => {
   try {
     const user = await db.prepare('SELECT * FROM admin_users WHERE id = ?').get(req.user?.id || 1);
-    const secret = speakeasy.generateSecret({ name: `VIAi Admin (${user.username})` });
+    const secret = speakeasy.generateSecret({ name: `ViAI Admin (${user.username})` });
     await db.prepare('UPDATE admin_users SET totp_secret = ? WHERE id = ?').run(secret.base32, user.id);
     const qrUrl = await QRCode.toDataURL(secret.otpauth_url);
     res.json({ secret: secret.base32, qr: qrUrl });
@@ -1021,7 +1082,7 @@ router.post('/blog-posts', auth, async (req, res) => {
   const r = await db.prepare(`
     INSERT INTO blog_posts (title, excerpt, content, seo_title, meta_description, faq_json, image_url, image_alt, category, author, slug, published_at, active)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-  ).run(title, excerpt, content||null, seo_title||null, meta_description||null, faq_json||'[]', image_url||null, image_alt||null, category||'Tin tức', author||'VIAi Team', finalSlug, published_at||new Date().toISOString().slice(0,10), active?1:0);
+  ).run(title, excerpt, content||null, seo_title||null, meta_description||null, faq_json||'[]', image_url||null, image_alt||null, category||'Tin tức', author||'ViAI Team', finalSlug, published_at||new Date().toISOString().slice(0,10), active?1:0);
   res.json(await db.prepare('SELECT * FROM blog_posts WHERE id = ?').get(r.lastInsertRowid));
 });
 
@@ -1242,7 +1303,7 @@ Trả về bằng tiếng Việt, có cấu trúc rõ ràng:
 4. Checklist: H1, H2/H3, mật độ từ khóa, internal link, external link, alt ảnh, FAQ, CTA.
 5. Phiên bản đoạn mở bài tối ưu hơn.
 6. 5 câu hỏi FAQ nên thêm.`
-    : `Bạn là trợ lý viết bài SEO tiếng Việt cho website VIAi, sản phẩm AI Agent cho doanh nghiệp.
+    : `Bạn là trợ lý viết bài SEO tiếng Việt cho website ViAI, sản phẩm AI Agent cho doanh nghiệp.
 Hãy tạo một bài viết chuẩn SEO, tự nhiên, không nhồi nhét từ khóa và phù hợp độc giả Việt Nam.
 
 Từ khóa chính: ${keyword || topic}
@@ -1302,10 +1363,11 @@ router.post('/ai-blog-draft', auth, async (req, res) => {
     return res.status(400).json({ error: 'Vui lòng nhập yêu cầu, từ khóa hoặc chủ đề bài viết' });
   }
 
-  const prompt = input.mode === 'improve' ? `Bạn là chuyên gia Content Website với 7 năm kinh nghiệm thực chiến, chuyên cải thiện và tối ưu bài viết cho VIAi — nền tảng AI Agent dành cho doanh nghiệp SME Việt Nam.
+  const prompt = input.mode === 'improve' ? `Bạn là chuyên gia Content Website với 7 năm kinh nghiệm thực chiến, chuyên cải thiện và tối ưu bài viết cho ViAI — nền tảng AI Agent dành cho doanh nghiệp SME Việt Nam.
 
 NHIỆM VỤ: Cải thiện bài viết có sẵn dưới đây. GIỮ NGUYÊN ý chính, chỉ nâng cấp về:
-- Cấu trúc (thêm H2/H3 rõ ràng nếu thiếu)
+- Cấu trúc heading chuẩn SEO: ## (H2 — section lớn), ### (H3 — mục nhỏ trong H2), #### (H4 — phụ đề). H1 đã là tiêu đề bài viết ở trên, trong nội dung ưu tiên dùng ## trở xuống
+- Mỗi section H2 nên có ít nhất 1 H3 bên trong để tạo cấu trúc phân cấp rõ ràng
 - SEO (hook mạnh hơn, từ khóa tự nhiên, meta chuẩn)
 - Hình ảnh (thêm ảnh sau mỗi H2 nếu chưa có)
 - Bảng so sánh hoặc checklist nếu phù hợp
@@ -1329,7 +1391,7 @@ ${input.existing_content}
 Chỉ trả về JSON hợp lệ, không thêm text ngoài JSON:
 {
   "title": "Tiêu đề cải thiện (có từ khóa, hấp dẫn hơn bản gốc)",
-  "seo_title": "SEO title tối đa 60 ký tự | VIAi",
+  "seo_title": "SEO title tối đa 60 ký tự | ViAI",
   "slug": "slug-khong-dau",
   "meta_description": "140-160 ký tự",
   "excerpt": "2-3 câu tóm tắt hấp dẫn",
@@ -1337,8 +1399,8 @@ Chỉ trả về JSON hợp lệ, không thêm text ngoài JSON:
   "faq": [{"question":"Câu hỏi thực tế","answer":"Câu trả lời ngắn gọn"}],
   "image_alt": "Mô tả ảnh thumbnail",
   "category": "Kiến thức AI",
-  "author": "VIAi Team"
-}` : `Bạn là chuyên gia Content Website với 7 năm kinh nghiệm thực chiến, chuyên viết nội dung cho lĩnh vực phần mềm, công nghệ và dịch vụ Digital Marketing — hiện đang viết cho VIAi, nền tảng AI Agent dành cho doanh nghiệp SME Việt Nam.
+  "author": "ViAI Team"
+}` : `Bạn là chuyên gia Content Website với 7 năm kinh nghiệm thực chiến, chuyên viết nội dung cho lĩnh vực phần mềm, công nghệ và dịch vụ Digital Marketing — hiện đang viết cho ViAI, nền tảng AI Agent dành cho doanh nghiệp SME Việt Nam.
 
 Vai trò: Tạo bài blog chất lượng cao, chuẩn SEO, đúng insight khách hàng, hỗ trợ tăng tỷ lệ chuyển đổi.
 Phong cách: HubSpot / Notion blog — hiện đại, dễ đọc, thực chiến. KHÔNG viết như textbook hay bài SEO nhàm, không lan man, không nhồi nhét từ khóa, không dùng văn phong máy móc.
@@ -1355,7 +1417,7 @@ ${input.preset_title ? `- SEO Title BẮT BUỘC dùng: "${input.preset_title}"`
 ${input.preset_meta ? `- Meta Description BẮT BUỘC dùng: "${input.preset_meta}"` : ''}
 
 CẤU TRÚC NỘI DUNG CHUẨN (theo framework service content):
-  Vấn đề khách hàng đang gặp → Giải pháp VIAi cung cấp → Lợi ích cụ thể → Quy trình triển khai → Lý do nên chọn VIAi → CTA rõ ràng
+  Vấn đề khách hàng đang gặp → Giải pháp ViAI cung cấp → Lợi ích cụ thể → Quy trình triển khai → Lý do nên chọn ViAI → CTA rõ ràng
 
 CHUẨN VIẾT BẮT BUỘC:
 
@@ -1368,8 +1430,13 @@ CHUẨN VIẾT BẮT BUỘC:
    - Paragraph tối đa 3 câu — ngắn, dễ scan trên mobile
    - Dùng **bold** cho từ quan trọng, điểm mạnh dịch vụ, con số nổi bật
    - Có bullet points, ordered list, checklist (- [ ] Việc cần làm)
-   - Có ít nhất 1 bảng so sánh markdown: | Tiêu chí | Thủ công | VIAi |
-   - Heading H2/H3 rõ ràng, bám sát lợi ích — không đặt heading chung chung
+   - Có ít nhất 1 bảng so sánh markdown: | Tiêu chí | Thủ công | ViAI |
+   - HEADING — CẤU TRÚC CHUẨN SEO:
+     * ## = H2 — tiêu đề section lớn (3–6 section/bài)
+     * ### = H3 — tiêu đề mục nhỏ BÊN TRONG mỗi H2 (mỗi H2 nên có ít nhất 1 H3)
+     * #### = H4 — phụ đề chi tiết (dùng khi cần)
+     * Lưu ý: # (H1) đã là tiêu đề bài viết nằm ở trên — trong nội dung ưu tiên dùng ## trở xuống
+     * Heading bám sát lợi ích — không đặt heading chung chung như "Giới thiệu", "Kết luận"
 
 3. ẢNH SAU MỖI H2 SECTION (BẮT BUỘC)
    - Mỗi H2 PHẢI có 1 ảnh ngay sau heading hoặc sau đoạn đầu của section đó
@@ -1397,7 +1464,7 @@ ${input.section_images.map((u,i) => `     * Section ${i+1}: ${u}`).join('\n')}`
    - KHÔNG bịa số liệu phi thực tế, KHÔNG dùng ngôn từ cường điệu quá mức
 
 5. SEO TỰ NHIÊN
-   - SEO title 50-60 ký tự, có từ khóa + VIAi
+   - SEO title 50-60 ký tự, có từ khóa + ViAI
    - Meta description 140-160 ký tự, kết thúc bằng câu đầy đủ
    - Từ khóa chính + phụ xuất hiện tự nhiên, KHÔNG nhồi nhét
    - Internal links BẮT BUỘC chèn vào bài: ${input.internal_links}
@@ -1416,28 +1483,39 @@ TUYỆT ĐỐI TRÁNH:
 Chỉ trả về JSON hợp lệ, không thêm text ngoài JSON:
 {
   "title": "Tiêu đề bài viết (có từ khóa, hấp dẫn, phản ánh lợi ích thực tế)",
-  "seo_title": "SEO title tối đa 60 ký tự | VIAi",
+  "seo_title": "SEO title tối đa 60 ký tự | ViAI",
   "slug": "slug-khong-dau-viet-hoa",
   "meta_description": "140-160 ký tự, có từ khóa, kết thúc bằng câu đầy đủ",
   "excerpt": "2-3 câu tóm tắt, có pain point, nêu lợi ích chính",
-  "content": "Nội dung markdown đầy đủ: hook câu hỏi → vấn đề → giải pháp (mỗi H2 có ảnh) → lợi ích cụ thể → quy trình → ví dụ thực tế → checklist → lý do chọn VIAi → CTA. Tối thiểu 1200 từ.",
+  "content": "Nội dung markdown đầy đủ: hook câu hỏi → vấn đề → giải pháp (mỗi H2 có ảnh) → lợi ích cụ thể → quy trình → ví dụ thực tế → checklist → lý do chọn ViAI → CTA. Tối thiểu 1200 từ.",
   "faq": [{"question":"Câu hỏi thực tế độc giả hay hỏi về chủ đề này","answer":"Câu trả lời ngắn gọn, hữu ích, không lan man"}],
   "image_alt": "Mô tả ảnh thumbnail phù hợp chủ đề",
   "category": "Kiến thức AI",
-  "author": "VIAi Team"
+  "author": "ViAI Team"
 }`;
 
   try {
     const text = await runAnthropicPrompt(prompt, 5200);
     const draft = normalizeBlogDraft(extractJsonObject(text), input);
+    // Ưu tiên ảnh thumbnail user cung cấp (trước hoặc sau khi tạo draft)
     if (input.image_url) draft.image_url = input.image_url;
+    // Post-process: thay section images bằng URL user cung cấp (đừng nhờ Claude)
+    if (input.section_images && input.section_images.length > 0 && draft.content) {
+      let idx = 0;
+      draft.content = draft.content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, url) => {
+        if (idx < input.section_images.length) {
+          return `![${alt}](${input.section_images[idx++]})`;
+        }
+        return match;
+      });
+    }
     res.json({ draft, fallback: false });
   } catch (e) {
     if (shouldUseTemplateFallback(e)) {
       let draft;
       // Nếu mode improve + có nội dung gốc → dùng nội dung anh paste, không tạo template mới
       if (input.mode === 'improve' && input.existing_content) {
-        const mainTopic = input.topic || input.keyword || 'VIAi AI Agent';
+        const mainTopic = input.topic || input.keyword || 'ViAI AI Agent';
         const improvedContent = improveExistingContent(
           input.existing_content, input.keyword, input.topic, input.section_images
         );
@@ -1450,12 +1528,19 @@ Chỉ trả về JSON hợp lệ, không thêm text ngoài JSON:
           content: improvedContent,
           faq: [],
           category: 'Kiến thức AI',
-          author: 'VIAi Team'
+          author: 'ViAI Team'
         }, input);
       } else {
         draft = buildTemplateBlogDraft(input);
       }
       if (input.image_url) draft.image_url = input.image_url;
+      if (input.section_images && input.section_images.length > 0 && draft.content) {
+        let idx = 0;
+        draft.content = draft.content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, url) => {
+          if (idx < input.section_images.length) return `![${alt}](${input.section_images[idx++]})`;
+          return match;
+        });
+      }
       return res.json({
         draft,
         fallback: true,
@@ -1484,14 +1569,14 @@ router.post('/ai-blog-publish', auth, async (req, res) => {
     `).run(
       draft.title, draft.excerpt, draft.content, draft.seo_title, draft.meta_description,
       JSON.stringify(draft.faq || []), draft.image_alt, imageUrl,
-      draft.category || 'Kiến thức AI', draft.author || 'VIAi Team', slug, publishedAt, 1
+      draft.category || 'Kiến thức AI', draft.author || 'ViAI Team', slug, publishedAt, 1
     );
 
     const sourceUrl = `/blog/${slug}`;
     const newsResult = await db.prepare(`
       INSERT INTO news_posts (title, excerpt, image_url, source_name, source_tag, source_url, published_at, active)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(draft.title, draft.excerpt, imageUrl, 'VIAi Blog', 'viai', sourceUrl, publishedAt, 1);
+    `).run(draft.title, draft.excerpt, imageUrl, 'ViAI Blog', 'ViAI', sourceUrl, publishedAt, 1);
 
     res.json({
       success: true,
@@ -1502,6 +1587,124 @@ router.post('/ai-blog-publish', auth, async (req, res) => {
   } catch (e) {
     res.status(500).json({ error: e.message || 'Không đăng được bài viết' });
   }
+});
+
+// ── AI gợi ý emoji icon cho Agent ─────────────────────
+router.post('/suggest-emoji', auth, async (req, res) => {
+  const name = String(req.body.name || '').trim().slice(0, 100);
+  const desc = String(req.body.desc || '').trim().slice(0, 200);
+  if (!name) return res.status(400).json({ error: 'Thiếu tên Agent' });
+
+  // Fallback nhanh: map từ khóa → emoji (không cần Claude)
+  const map = [
+    { keys: ['zalo','chat','tin nhắn','message','nhắn','hội thoại'], emojis: ['💬','📱','🗨️','🤝','📲'] },
+    { keys: ['sales','bán hàng','chốt đơn','tư vấn bán','telesales'], emojis: ['🛒','💰','🎯','🤝','📞'] },
+    { keys: ['order','đơn hàng','quản lý đơn','xử lý đơn'], emojis: ['📋','🗂️','✅','📌','🔖'] },
+    { keys: ['đóng gói','đóng hàng','packing','pack','gói hàng','bao bì'], emojis: ['📦','🎁','📫','🏷️','📮'] },
+    { keys: ['vận chuyển','ship','giao hàng','logistics','giao vận','delivery'], emojis: ['🚚','🚛','📦','🗺️','⏱️'] },
+    { keys: ['kho','warehouse','tồn kho','inventory','nhập kho','xuất kho'], emojis: ['🏭','📦','🗃️','🔢','📊'] },
+    { keys: ['crm','khách hàng','customer','chăm sóc khách','loyalty'], emojis: ['🤝','💼','👥','❤️','🌟'] },
+    { keys: ['report','báo cáo','analytics','phân tích','thống kê','dashboard'], emojis: ['📊','📈','📉','🔍','💹'] },
+    { keys: ['email','mail','marketing email'], emojis: ['✉️','📧','📨','📣','🎯'] },
+    { keys: ['marketing','quảng cáo','campaign','content','thương hiệu'], emojis: ['📣','🎨','🌐','💡','🎯'] },
+    { keys: ['booking','lịch','appointment','đặt hẹn','hẹn','lịch hẹn'], emojis: ['📅','🗓️','⏰','🔔','📌'] },
+    { keys: ['facebook','fb ads','ads','paid ads'], emojis: ['📣','🎯','📱','💰','📈'] },
+    { keys: ['enterprise','custom','doanh nghiệp lớn','tập đoàn'], emojis: ['🏢','💼','🔧','⚙️','🌐'] },
+    { keys: ['tuyển dụng','hr','nhân sự','recruitment','phỏng vấn'], emojis: ['👥','🤝','📋','🏆','💼'] },
+    { keys: ['security','bảo mật','an ninh','xác thực','bảo vệ'], emojis: ['🔒','🛡️','🔐','✅','⚠️'] },
+    { keys: ['thanh toán','payment','invoice','hoá đơn','thu tiền'], emojis: ['💳','💰','🧾','✅','🏦'] },
+    { keys: ['hỗ trợ','support','helpdesk','chăm sóc 24','trợ lý'], emojis: ['🎧','💬','🆘','🤖','⚡'] },
+    { keys: ['sản xuất','manufacturing','nhà máy','quy trình','dây chuyền'], emojis: ['🏭','⚙️','🔩','📊','✅'] },
+    { keys: ['tài chính','finance','kế toán','accounting','chi phí'], emojis: ['💰','📊','🧮','💹','📋'] },
+    { keys: ['giáo dục','education','đào tạo','training','học'], emojis: ['🎓','📚','✏️','💡','🏫'] },
+    { keys: ['y tế','health','bệnh viện','clinic','sức khoẻ'], emojis: ['🏥','💊','🩺','❤️','🩻'] },
+    { keys: ['ăn uống','nhà hàng','restaurant','food','thực phẩm','menu'], emojis: ['🍽️','🛒','🧑‍🍳','📋','⭐'] },
+    { keys: ['ai','robot','tự động','automation','auto'], emojis: ['🤖','⚡','🔮','🧠','💻'] },
+  ];
+
+  const text = (name + ' ' + desc).toLowerCase();
+  let suggested = null;
+  for (const { keys, emojis } of map) {
+    if (keys.some(k => text.includes(k))) { suggested = emojis; break; }
+  }
+
+  // Nếu không match → thử Claude với prompt rõ ràng hơn
+  if (!suggested) {
+    try {
+      const prompt = `Bạn là chuyên gia UX đang chọn emoji icon cho một AI Agent.
+Tên Agent: "${name}"
+Mô tả: "${desc || 'không có'}"
+
+Yêu cầu:
+- Chọn đúng 5 emoji liên quan TRỰC TIẾP đến nghĩa/chức năng của tên Agent
+- KHÔNG dùng emoji chung chung như 🤖💡⚡🎯🚀 trừ khi thật sự phù hợp
+- Ưu tiên emoji mô tả vật thể/hành động cụ thể liên quan đến lĩnh vực đó
+- Ví dụ: "đóng gói" → 📦🎁🏷️📮📫, "vận chuyển" → 🚚🚛🗺️⏱️📍
+
+Chỉ trả về JSON array, không giải thích: ["emoji1","emoji2","emoji3","emoji4","emoji5"]`;
+      const out = await runAnthropicPrompt(prompt, 80);
+      const match = out.match(/\[[\s\S]*?\]/);
+      if (match) suggested = JSON.parse(match[0]).slice(0, 5);
+    } catch (_) {}
+  }
+
+  if (!suggested) suggested = ['📋','⚡','🎯','💼','✅'];
+  res.json({ emojis: suggested });
+});
+
+// ── AI caption & alt cho gallery ──────────────────────
+router.post('/ai-gallery-caption', auth, async (req, res) => {
+  const filename = String(req.body.filename || '').trim().slice(0, 100);
+  const imageUrl = String(req.body.url || '').trim();
+
+  const visionPrompt = `Bạn đang xem ảnh của công ty ViAI (cung cấp AI Agent cho doanh nghiệp Việt Nam).
+Quan sát ảnh và tạo:
+- caption: 5-8 từ tiếng Việt mô tả nội dung ảnh cụ thể (người, địa điểm, hoạt động...)
+- alt: 8-12 từ tiếng Việt cho SEO, bắt đầu bằng "ViAI -"
+Chỉ trả về JSON: {"caption":"...","alt":"..."}`;
+
+  // Thử Vision API nếu có URL ảnh
+  if (imageUrl) {
+    try {
+      const text = await runAnthropicWithImage(imageUrl, visionPrompt, 150);
+      const match = text.match(/\{[\s\S]*?\}/);
+      if (match) {
+        const data = JSON.parse(match[0]);
+        if (data.caption) {
+          // Đảm bảo alt không bị double prefix "ViAI - ViAI -"
+          let alt = data.alt || `ViAI - ${data.caption}`;
+          if (alt.toLowerCase().startsWith('viai - viai')) alt = alt.replace(/^viai\s*-\s*/i, '');
+          return res.json({ caption: data.caption, alt });
+        }
+      }
+    } catch (_) {}
+  }
+
+  // Fallback text-only nếu vision lỗi
+  const raw = filename.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ').trim();
+  const hasWords = /[a-zA-ZÀ-ỹ]{3,}/.test(raw);
+  if (hasWords) {
+    try {
+      const prompt = `Tên file ảnh: "${raw}". Đây là ảnh công ty ViAI (AI Agent cho doanh nghiệp Việt).
+Tạo caption 5-8 từ và alt text SEO 8-12 từ tiếng Việt.
+Chỉ trả về JSON: {"caption":"...","alt":"..."}`;
+      const text = await runAnthropicPrompt(prompt, 120);
+      const match = text.match(/\{[\s\S]*?\}/);
+      if (match) {
+        const data = JSON.parse(match[0]);
+        if (data.caption) {
+          let alt = data.alt || `ViAI - ${data.caption}`;
+          if (alt.toLowerCase().startsWith('viai - viai')) alt = alt.replace(/^viai\s*-\s*/i, '');
+          return res.json({ caption: data.caption, alt });
+        }
+      }
+    } catch (_) {}
+  }
+
+  // Fallback cuối
+  const fallbacks = ['Sự kiện ViAI 2026', 'Workshop AI doanh nghiệp', 'Đội ngũ ViAI', 'Hoạt động ViAI'];
+  const caption = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+  res.json({ caption, alt: `ViAI - ${caption}` });
 });
 
 router.post('/upload', auth, upload.single('file'), (req, res) => {
@@ -1515,7 +1718,7 @@ router.post('/fetch-url', auth, (req, res) => {
   if (!url) return res.status(400).json({ error: 'Thiếu URL' });
 
   const protocol = url.startsWith('https') ? https : http;
-  const options = { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; VIAi-bot/1.0)' } };
+  const options = { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; ViAI-bot/1.0)' } };
 
   protocol.get(url, options, (resp) => {
     if (resp.statusCode >= 300 && resp.statusCode < 400 && resp.headers.location) {
